@@ -182,7 +182,11 @@ export default function Header() {
             <div className="md:hidden flex-shrink-0">
               <button
                 onClick={toggleMobileMenu}
-                className="text-gray-700 hover:text-orange-500 p-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                className={`p-3 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
+                  isMobileMenuOpen 
+                    ? 'text-orange-600 bg-orange-50 hover:bg-orange-100' 
+                    : 'text-gray-700 hover:text-orange-500'
+                }`}
                 aria-label="Toggle mobile menu"
                 aria-expanded={isMobileMenuOpen}
               >
@@ -225,11 +229,11 @@ export default function Header() {
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between py-3 px-6 border-b border-gray-200">
+          <div className="flex items-center justify-between py-3 px-6 border-b border-gray-200 bg-orange-50">
             <h2 className="text-xl font-semibold text-gray-800">Menu</h2>
             <button
               onClick={closeMobileMenu}
-              className="text-gray-500 hover:text-gray-700 p-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+              className="text-orange-600 hover:text-orange-700 hover:bg-orange-100 p-2 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               aria-label="Close mobile menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -312,7 +316,7 @@ export default function Header() {
           </nav>
 
           {/* Sidebar Footer */}
-          <div className="py-3 px-6 border-t border-gray-200">
+          <div className="py-3 px-6 border-t border-gray-200 bg-orange-50">
             <div className="text-center">
               <p className="text-sm text-gray-500">DataInYourself</p>
               <p className="text-xs text-gray-400 mt-1">© 2024 All rights reserved</p>
