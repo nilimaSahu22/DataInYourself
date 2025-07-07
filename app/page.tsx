@@ -9,25 +9,38 @@ export default function Home() {
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
+          {/* Search Bar */}
+          <div className="mb-12">
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search for courses, skills, or topics..."
+                  className="w-full px-4 py-3 pl-12 pr-16 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent shadow-sm"
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <button className="absolute inset-y-0 right-0 px-4 bg-orange-500 text-white rounded-r-lg hover:bg-orange-600 transition-colors duration-200 font-medium">
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+          
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Welcome to <span className="text-orange-500">DataInYourself</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-orange-500 text-white px-8 py-3 rounded-lg font-medium hover:bg-orange-600 transition-colors duration-200">
-              Explore Courses
-            </button>
-            <button className="border border-orange-500 text-orange-500 px-8 py-3 rounded-lg font-medium hover:bg-orange-50 transition-colors duration-200">
-              Learn More
-            </button>
-          </div>
         </div>
       </section>
 
       {/* Placement Courses Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-0 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Placement Courses</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">

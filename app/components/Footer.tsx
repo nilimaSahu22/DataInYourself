@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 export default function Footer() {
@@ -10,8 +11,16 @@ export default function Footer() {
           {/* Column 1 - Company Info */}
           <div className="lg:col-span-1">
             <div className="space-y-4">
-              {/* Row 1: Company Name */}
-              <h3 className="text-2xl font-bold text-orange-400">DataInYourself</h3>
+              {/* Row 1: Company Logo */}
+              <div className="flex items-center p-3 mb-2">
+                <Image
+                  src="/logo.png"
+                  alt="DataInYourself Logo"
+                  width={300}
+                  height={100}
+                  className="h-24 w-auto"
+                />
+              </div>
               
               {/* Row 2: Tagline */}
               <p className="text-gray-300 text-sm">India's number one computer training</p>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Header() {
@@ -28,28 +29,35 @@ export default function Header() {
     <>
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Left Section - Site Name */}
+          <div className="flex items-center justify-between h-24">
+            {/* Left Section - Logo */}
             <div className="flex-shrink-0">
               <Link 
                 href="/" 
-                className="text-2xl font-bold text-orange-500 hover:text-orange-600 transition-colors duration-200"
+                className="flex items-center hover:opacity-80 transition-opacity duration-200 p-2"
                 aria-label="DataInYourself - Home"
               >
-                DataInYourself
+                <Image
+                  src="/logo.png"
+                  alt="DataInYourself Logo"
+                  width={500}
+                  height={150}
+                  className="h-20 w-auto"
+                  priority
+                />
               </Link>
             </div>
 
             {/* Center Section - Navigation */}
-            <nav className="hidden md:flex space-x-8" aria-label="Main navigation">
+            <nav className="hidden md:flex space-x-10" aria-label="Main navigation">
               {navigationLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-gray-700 hover:text-orange-500 px-3 py-2 text-sm font-medium transition-colors duration-200 relative group"
+                  className="text-gray-700 hover:text-orange-500 px-4 py-3 text-base font-medium transition-colors duration-200 relative group"
                 >
                   {link.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
                 </Link>
               ))}
             </nav>
@@ -58,11 +66,11 @@ export default function Header() {
             <div className="md:hidden flex-shrink-0">
               <button
                 onClick={toggleMobileMenu}
-                className="text-gray-700 hover:text-orange-500 p-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                className="text-gray-700 hover:text-orange-500 p-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                 aria-label="Toggle mobile menu"
                 aria-expanded={isMobileMenuOpen}
               >
-                <div className="w-6 h-6 flex flex-col justify-center items-center">
+                <div className="w-7 h-7 flex flex-col justify-center items-center">
                   <span 
                     className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
                       isMobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'
@@ -130,8 +138,14 @@ export default function Header() {
 
           {/* Sidebar Footer */}
           <div className="p-4 border-t border-gray-200">
-            <div className="text-sm text-orange-500 text-center">
-              DataInYourself
+            <div className="flex justify-center p-3">
+              <Image
+                src="/logo.png"
+                alt="DataInYourself Logo"
+                width={180}
+                height={40}
+                className="h-16 w-auto"
+              />
             </div>
           </div>
         </div>

@@ -23,7 +23,7 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   rating = defaultRating,
 }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300">
+    <div className="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 max-w-xs hover:bg-orange-50 hover:shadow-orange-500">
       <div className="w-16 h-16 mb-4 flex items-center justify-center bg-orange-50 rounded-full">
         <img src={iconSrc} alt={iconAlt} className="w-10 h-10" />
       </div>
