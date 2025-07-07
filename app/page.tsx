@@ -1,4 +1,5 @@
 import Image from "next/image";
+import PlacementCourseCard from "./components/PlacementCourseCard";
 
 
 
@@ -21,6 +22,57 @@ export default function Home() {
             <button className="border border-orange-500 text-orange-500 px-8 py-3 rounded-lg font-medium hover:bg-orange-50 transition-colors duration-200">
               Learn More
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Placement Courses Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Placement Courses</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <PlacementCourseCard
+              iconSrc="/file.svg"
+              iconAlt="Data Analytics"
+              title="Data Analytics"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+            />
+            <PlacementCourseCard
+              iconSrc="/globe.svg"
+              iconAlt="Data Science"
+              title="Data Science"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+            />
+            <PlacementCourseCard
+              iconSrc="/window.svg"
+              iconAlt="Business Analytics"
+              title="Business Analytics"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+            />
+            <PlacementCourseCard
+              iconSrc="/next.svg"
+              iconAlt="CAD"
+              title="CAD"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+            />
+            <PlacementCourseCard
+              iconSrc="/vercel.svg"
+              iconAlt="Digital Marketing"
+              title="Digital Marketing"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+            />
+            <PlacementCourseCard
+              iconSrc="/file.svg"
+              iconAlt="Cyber Security"
+              title="Cyber Security"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+            />
           </div>
         </div>
       </section>
