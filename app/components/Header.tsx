@@ -41,8 +41,8 @@ export default function Header() {
       name: 'Gallery', 
       href: '/gallery',
       submenu: [
-        { name: 'Photo', href: '/gallery/photo' },
-        { name: 'Videos', href: '/gallery/videos' }
+        { name: 'Photo Gallery', href: '/gallery/photo' },
+        { name: 'Video Gallery', href: '/gallery/videos' }
       ]
     },
     { name: 'Contact Us', href: '/contact' },
@@ -67,6 +67,13 @@ export default function Header() {
 
   const toggleMobileDropdown = (menuName: string) => {
     setMobileOpenDropdown(mobileOpenDropdown === menuName ? null : menuName);
+  };
+
+  // Ensure mobile dropdowns work properly on touch devices
+  const handleMobileDropdownClick = (menuName: string, event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    toggleMobileDropdown(menuName);
   };
 
   const closeDropdown = () => {
@@ -212,14 +219,14 @@ export default function Header() {
 
       {/* Mobile Sidebar */}
       <div 
-        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed top-0 right-0 h-full w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between py-2 px-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Menu</h2>
+          <div className="flex items-center justify-between py-3 px-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-800">Menu</h2>
             <button
               onClick={closeMobileMenu}
               className="text-gray-500 hover:text-gray-700 p-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
@@ -232,16 +239,25 @@ export default function Header() {
           </div>
 
           {/* Sidebar Navigation */}
-          <nav className="flex-1 px-4 py-2 overflow-y-auto" aria-label="Mobile navigation">
+          <nav className="flex-1 px-6 py-4 overflow-y-auto" aria-label="Mobile navigation">
             {navigationLinks.map((link) => (
               <div key={link.name} className="mb-1">
                 {link.submenu ? (
                   // Mobile dropdown menu item
-                  <div className="border border-gray-100 rounded-lg overflow-hidden">
+                  <div className={`border rounded-lg overflow-hidden transition-all duration-300 ${
+                    mobileOpenDropdown === link.name 
+                      ? 'border-orange-300 shadow-md shadow-orange-100' 
+                      : 'border-gray-100'
+                  }`}>
                     <button
-                      onClick={() => toggleMobileDropdown(link.name)}
-                      className="w-full text-left text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-4 py-3 text-base font-medium transition-all duration-200 flex items-center justify-between bg-gray-50"
+                      onClick={(e) => handleMobileDropdownClick(link.name, e)}
+                      className={`w-full text-left px-4 py-3 text-base font-medium transition-all duration-200 flex items-center justify-between touch-manipulation ${
+                        mobileOpenDropdown === link.name
+                          ? 'text-orange-600 bg-orange-50 border-l-4 border-l-orange-500'
+                          : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 bg-gray-50'
+                      }`}
                       aria-expanded={mobileOpenDropdown === link.name}
+                      aria-haspopup="true"
                     >
                       {link.name}
                       <svg 
@@ -258,13 +274,22 @@ export default function Header() {
                     <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
                       mobileOpenDropdown === link.name ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                     }`}>
-                      <div className="bg-white border-t border-gray-100">
+                      <div className={`border-t ${
+                        mobileOpenDropdown === link.name 
+                          ? 'bg-orange-50/50 border-orange-200' 
+                          : 'bg-white border-gray-100'
+                      }`}>
                         {link.submenu.map((subItem) => (
                           <Link
                             key={subItem.name}
                             href={subItem.href}
                             onClick={closeMobileMenu}
-                            className="block px-6 py-3 text-sm text-gray-600 hover:text-orange-500 hover:bg-orange-50 transition-all duration-200 border-b border-gray-50 last:border-b-0"
+                            className={`block px-6 py-3 text-sm transition-all duration-200 border-b last:border-b-0 touch-manipulation ${
+                              mobileOpenDropdown === link.name
+                                ? 'text-gray-700 hover:text-orange-600 hover:bg-orange-100 border-orange-100 active:bg-orange-200'
+                                : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50 border-gray-50 active:bg-gray-100'
+                            }`}
+                            aria-label={`Navigate to ${subItem.name}`}
                           >
                             {subItem.name}
                           </Link>
@@ -287,15 +312,10 @@ export default function Header() {
           </nav>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex justify-center p-3">
-              <Image
-                src="/logo.png"
-                alt="DataInYourself Logo"
-                width={180}
-                height={40}
-                className="h-16 w-auto"
-              />
+          <div className="py-3 px-6 border-t border-gray-200">
+            <div className="text-center">
+              <p className="text-sm text-gray-500">DataInYourself</p>
+              <p className="text-xs text-gray-400 mt-1">© 2024 All rights reserved</p>
             </div>
           </div>
         </div>
