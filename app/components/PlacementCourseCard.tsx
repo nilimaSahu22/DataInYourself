@@ -23,26 +23,26 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   rating = defaultRating,
 }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 max-w-xs hover:bg-orange-50 hover:shadow-orange-500">
-      <div className="w-16 h-16 mb-4 flex items-center justify-center bg-orange-50 rounded-full">
-        <img src={iconSrc} alt={iconAlt} className="w-10 h-10" />
+    <div className="bg-white rounded-2xl shadow-lg p-3 sm:p-4 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 max-w-xs hover:bg-orange-50 hover:shadow-orange-500">
+      <div className="w-14 h-14 sm:w-16 sm:h-16 mb-3 sm:mb-4 flex items-center justify-center bg-orange-50 rounded-full">
+        <img src={iconSrc} alt={iconAlt} className="w-8 h-8 sm:w-10 sm:h-10" />
       </div>
-      <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold mb-2">
+      <span className="px-2 sm:px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold mb-2">
         {badge}
       </span>
-      <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">{title}</h3>
-      <div className="flex items-center mb-4">
+      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 text-center leading-tight">{title}</h3>
+      <div className="flex items-center mb-3 sm:mb-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} className={i < rating ? "text-yellow-400 text-lg" : "text-gray-300 text-lg"}>
+          <span key={i} className={i < rating ? "text-yellow-400 text-base sm:text-lg" : "text-gray-300 text-base sm:text-lg"}>
             ★
           </span>
         ))}
       </div>
-      <div className="flex justify-between w-full text-sm text-gray-600 border-t pt-4 mt-auto">
+      <div className="flex justify-between w-full text-xs sm:text-sm text-gray-600 border-t pt-3 sm:pt-4 mt-auto">
         <span>Course Price :</span>
         <span className="font-semibold text-gray-900">{price}</span>
       </div>
-      <div className="flex justify-between w-full text-sm text-gray-600 mt-1">
+      <div className="flex justify-between w-full text-xs sm:text-sm text-gray-600 mt-1">
         <span>Duration :</span>
         <span className="font-semibold text-gray-900">{duration}</span>
       </div>

@@ -212,32 +212,30 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [companyLogos.length]);
 
-  // Remove firstRow and secondRow
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
             Welcome to <span className="text-orange-500">DataInYourself</span>
           </h1>
-          <p className="text-lg text-orange-600 font-medium mb-4">
+          <p className="text-base sm:text-lg text-orange-600 font-medium mb-3 sm:mb-4">
             by Rudriva Technology
           </p>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
             India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.
           </p>
         </div>
       </section>
 
       {/* Placement Courses Section */}
-      <section className="py-12 sm:py-16 lg:py-20 px-6 sm:px-8 lg:px-12 xl:px-16">
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8 sm:mb-12">Placement Courses</h2>
+      <section className="py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6 sm:mb-8 md:mb-12">Placement Courses</h2>
           
           {/* Search Bar */}
-          <div className="mb-12 sm:mb-16">
+          <div className="mb-8 sm:mb-12 md:mb-16">
             <div className="max-w-2xl mx-auto px-2 sm:px-0">
               <div className="relative">
                 <input
@@ -246,17 +244,17 @@ export default function Home() {
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full px-4 py-4 sm:py-3 pl-12 pr-20 sm:pr-16 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent shadow-sm text-base sm:text-sm"
+                  className="w-full px-4 py-3 sm:py-4 md:py-3 pl-12 pr-20 sm:pr-16 md:pr-16 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent shadow-sm text-sm sm:text-base md:text-sm"
                   suppressHydrationWarning
                 />
-                <div className="absolute inset-y-0 left-0 pl-4 sm:pl-3 flex items-center pointer-events-none">
+                <div className="absolute inset-y-0 left-0 pl-4 sm:pl-3 md:pl-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
                 <button 
                   onClick={handleSearchClick}
-                  className="absolute inset-y-0 right-0 px-4 sm:px-4 bg-orange-500 text-white rounded-r-lg hover:bg-orange-600 transition-colors duration-200 font-medium text-sm sm:text-sm min-w-[80px] sm:min-w-0"
+                  className="absolute inset-y-0 right-0 px-3 sm:px-4 md:px-4 bg-orange-500 text-white rounded-r-lg hover:bg-orange-600 transition-colors duration-200 font-medium text-sm sm:text-sm md:text-sm min-w-[70px] sm:min-w-[80px] md:min-w-0"
                   suppressHydrationWarning
                 >
                   Search
@@ -267,8 +265,8 @@ export default function Home() {
           
           {/* Search Results Info */}
           {isClient && searchQuery && (
-            <div className="text-center mb-8 sm:mb-12">
-              <p className="text-gray-600">
+            <div className="text-center mb-6 sm:mb-8 md:mb-12">
+              <p className="text-gray-600 text-sm sm:text-base">
                 {filteredCourses.length === 0 
                   ? `No courses found for "${searchQuery}"`
                   : `Found ${filteredCourses.length} course${filteredCourses.length === 1 ? '' : 's'} for "${searchQuery}"`
@@ -286,7 +284,7 @@ export default function Home() {
             </div>
           )}
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
             {filteredCourses.map((course) => (
               <PlacementCourseCard
                 key={course.id}
@@ -301,17 +299,17 @@ export default function Home() {
           
           {/* No results message */}
           {isClient && filteredCourses.length === 0 && searchQuery && (
-            <div className="text-center py-16 sm:py-20">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center py-12 sm:py-16 md:py-20">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <svg className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2 sm:mb-3">No courses found</h3>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">No courses found</h3>
               <p className="text-gray-600 mb-4 sm:mb-6">Try searching with different keywords</p>
               <button 
                 onClick={() => handleSearch("")}
-                className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 text-sm sm:text-base"
                 suppressHydrationWarning
               >
                 View all courses
@@ -322,48 +320,48 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-8 sm:mb-12 md:mb-16">
             Why Choose DataInYourself?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-            <div className="text-center p-6 sm:p-8">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-8 lg:gap-12">
+            <div className="text-center p-4 sm:p-6 md:p-8">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+                <svg className="w-7 h-7 sm:w-8 sm:h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 sm:mb-3">Expert Instructors</h3>
-              <p className="text-gray-600">Learn from industry professionals with years of experience.</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Expert Instructors</h3>
+              <p className="text-gray-600 text-sm sm:text-base">Learn from industry professionals with years of experience.</p>
             </div>
-            <div className="text-center p-6 sm:p-8">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center p-4 sm:p-6 md:p-8">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+                <svg className="w-7 h-7 sm:w-8 sm:h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 sm:mb-3">Certified Courses</h3>
-              <p className="text-gray-600">Get industry-recognized certificates upon completion.</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Certified Courses</h3>
+              <p className="text-gray-600 text-sm sm:text-base">Get industry-recognized certificates upon completion.</p>
             </div>
-            <div className="text-center p-6 sm:p-8">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center p-4 sm:p-6 md:p-8 sm:col-span-2 md:col-span-1">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+                <svg className="w-7 h-7 sm:w-8 sm:h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2 sm:mb-3">Flexible Learning</h3>
-              <p className="text-gray-600">Learn at your own pace with 24/7 access to courses.</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Flexible Learning</h3>
+              <p className="text-gray-600 text-sm sm:text-base">Learn at your own pace with 24/7 access to courses.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Company Logos Section - just above the footer */}
-      <section className="bg-white py-8 border-t border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-6 sm:py-8 border-t border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-8">
           {/* Mobile: Carousel, show one logo at a time */}
-          <div className="flex justify-center items-center sm:hidden" style={{ minHeight: 90 }}>
+          <div className="flex justify-center items-center sm:hidden" style={{ minHeight: 80 }}>
             <Image
               key={companyLogos[currentLogo].alt}
               src={companyLogos[currentLogo].src}
@@ -374,8 +372,29 @@ export default function Home() {
               priority
             />
           </div>
+          {/* Tablet: Show 3-4 logos in a row */}
+          <div className="hidden sm:flex md:hidden flex-wrap items-center justify-center gap-3 sm:gap-4 mb-0 overflow-x-auto">
+            {companyLogos.slice(0, 4).map((logo) => {
+              const isAmazon = logo.alt === 'Amazon';
+              const isInfosys = logo.alt === 'Infosys';
+              const width = isAmazon || isInfosys ? 100 : 120;
+              const height = isAmazon || isInfosys ? 50 : 60;
+              const sizeClass = isAmazon || isInfosys ? 'w-[100px] h-[50px]' : 'w-[120px] h-[60px]';
+              return (
+                <Image
+                  key={logo.alt}
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={width}
+                  height={height}
+                  className={`object-contain ${sizeClass}`}
+                  priority
+                />
+              );
+            })}
+          </div>
           {/* Desktop: All logos in a row */}
-          <div className="hidden sm:flex flex-wrap items-center justify-center gap-4 mb-0 overflow-x-auto">
+          <div className="hidden md:flex flex-wrap items-center justify-center gap-4 mb-0 overflow-x-auto">
             {companyLogos.map((logo) => {
               // Reduce size for Amazon and Infosys
               const isAmazon = logo.alt === 'Amazon';
