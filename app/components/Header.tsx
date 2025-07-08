@@ -127,6 +127,7 @@ export default function Header() {
                         onClick={() => toggleDropdown(link.name)}
                         onMouseEnter={() => setOpenDropdown(link.name)}
                         className="text-gray-700 hover:text-orange-500 px-4 py-3 text-base font-medium transition-colors duration-200 relative group flex items-center"
+                        suppressHydrationWarning
                       >
                         {link.name}
                         <svg 
@@ -188,6 +189,7 @@ export default function Header() {
                 }`}
                 aria-label="Toggle mobile menu"
                 aria-expanded={isMobileMenuOpen}
+                suppressHydrationWarning
               >
                 <div className="w-7 h-7 flex flex-col justify-center items-center">
                   <span 
@@ -234,6 +236,7 @@ export default function Header() {
               onClick={closeMobileMenu}
               className="text-orange-600 hover:text-orange-700 hover:bg-orange-100 p-2 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
               aria-label="Close mobile menu"
+              suppressHydrationWarning
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -261,6 +264,7 @@ export default function Header() {
                       }`}
                       aria-expanded={mobileOpenDropdown === link.name}
                       aria-haspopup="true"
+                      suppressHydrationWarning
                     >
                       {link.name}
                       <svg 

@@ -189,109 +189,10 @@ export default function Home() {
     }
   };
 
-  // Don't render search functionality until client-side hydration is complete
-  if (!isClient) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-              {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            Welcome to <span className="text-orange-500">DataInYourself</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.
-          </p>
-        </div>
-      </section>
-
-        {/* Placement Courses Section */}
-        <section className="py-0 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Placement Courses</h2>
-            
-            {/* Search Bar */}
-            <div className="mb-12">
-              <div className="max-w-2xl mx-auto px-4 sm:px-0">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search courses..."
-                    value=""
-                    onChange={() => {}}
-                    className="w-full px-4 py-4 sm:py-3 pl-12 pr-20 sm:pr-16 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent shadow-sm text-base sm:text-sm"
-                  />
-                  <div className="absolute inset-y-0 left-0 pl-4 sm:pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                  <button className="absolute inset-y-0 right-0 px-4 sm:px-4 bg-orange-500 text-white rounded-r-lg hover:bg-orange-600 transition-colors duration-200 font-medium text-sm sm:text-sm min-w-[80px] sm:min-w-0">
-                    Search
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {coursesData.map((course) => (
-                <PlacementCourseCard
-                  key={course.id}
-                  iconSrc={course.iconSrc}
-                  iconAlt={course.iconAlt}
-                  title={course.title}
-                  price={course.price}
-                  duration={course.duration}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-              Why Choose DataInYourself?
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center p-6">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Expert Instructors</h3>
-                <p className="text-gray-600">Learn from industry professionals with years of experience.</p>
-              </div>
-              <div className="text-center p-6">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Certified Courses</h3>
-                <p className="text-gray-600">Get industry-recognized certificates upon completion.</p>
-              </div>
-              <div className="text-center p-6">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Flexible Learning</h3>
-                <p className="text-gray-600">Learn at your own pace with 24/7 access to courses.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Welcome to <span className="text-orange-500">DataInYourself</span>
@@ -303,13 +204,13 @@ export default function Home() {
       </section>
 
       {/* Placement Courses Section */}
-      <section className="py-0 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Placement Courses</h2>
+      <section className="py-12 sm:py-16 lg:py-20 px-6 sm:px-8 lg:px-12 xl:px-16">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8 sm:mb-12">Placement Courses</h2>
           
           {/* Search Bar */}
-          <div className="mb-12">
-            <div className="max-w-2xl mx-auto px-4 sm:px-0">
+          <div className="mb-12 sm:mb-16">
+            <div className="max-w-2xl mx-auto px-2 sm:px-0">
               <div className="relative">
                 <input
                   type="text"
@@ -318,6 +219,7 @@ export default function Home() {
                   onChange={(e) => handleSearch(e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="w-full px-4 py-4 sm:py-3 pl-12 pr-20 sm:pr-16 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent shadow-sm text-base sm:text-sm"
+                  suppressHydrationWarning
                 />
                 <div className="absolute inset-y-0 left-0 pl-4 sm:pl-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -327,6 +229,7 @@ export default function Home() {
                 <button 
                   onClick={handleSearchClick}
                   className="absolute inset-y-0 right-0 px-4 sm:px-4 bg-orange-500 text-white rounded-r-lg hover:bg-orange-600 transition-colors duration-200 font-medium text-sm sm:text-sm min-w-[80px] sm:min-w-0"
+                  suppressHydrationWarning
                 >
                   Search
                 </button>
@@ -335,8 +238,8 @@ export default function Home() {
           </div>
           
           {/* Search Results Info */}
-          {searchQuery && (
-            <div className="text-center mb-8">
+          {isClient && searchQuery && (
+            <div className="text-center mb-8 sm:mb-12">
               <p className="text-gray-600">
                 {filteredCourses.length === 0 
                   ? `No courses found for "${searchQuery}"`
@@ -347,6 +250,7 @@ export default function Home() {
                 <button 
                   onClick={() => handleSearch("")}
                   className="mt-2 text-orange-500 hover:text-orange-600 underline text-sm"
+                  suppressHydrationWarning
                 >
                   Clear search
                 </button>
@@ -354,9 +258,7 @@ export default function Home() {
             </div>
           )}
           
-
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
             {filteredCourses.map((course) => (
               <PlacementCourseCard
                 key={course.id}
@@ -370,18 +272,19 @@ export default function Home() {
           </div>
           
           {/* No results message */}
-          {filteredCourses.length === 0 && searchQuery && (
-            <div className="text-center py-12">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          {isClient && filteredCourses.length === 0 && searchQuery && (
+            <div className="text-center py-16 sm:py-20">
+              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No courses found</h3>
-              <p className="text-gray-600 mb-4">Try searching with different keywords</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 sm:mb-3">No courses found</h3>
+              <p className="text-gray-600 mb-4 sm:mb-6">Try searching with different keywords</p>
               <button 
                 onClick={() => handleSearch("")}
                 className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+                suppressHydrationWarning
               >
                 View all courses
               </button>
@@ -391,37 +294,37 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12 sm:mb-16">
             Why Choose DataInYourself?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            <div className="text-center p-6 sm:p-8">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Expert Instructors</h3>
+              <h3 className="text-xl font-semibold mb-2 sm:mb-3">Expert Instructors</h3>
               <p className="text-gray-600">Learn from industry professionals with years of experience.</p>
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 sm:p-8">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Certified Courses</h3>
+              <h3 className="text-xl font-semibold mb-2 sm:mb-3">Certified Courses</h3>
               <p className="text-gray-600">Get industry-recognized certificates upon completion.</p>
             </div>
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 sm:p-8">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Flexible Learning</h3>
+              <h3 className="text-xl font-semibold mb-2 sm:mb-3">Flexible Learning</h3>
               <p className="text-gray-600">Learn at your own pace with 24/7 access to courses.</p>
             </div>
           </div>
