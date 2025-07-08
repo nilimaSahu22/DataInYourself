@@ -5,7 +5,6 @@ interface PlacementCourseCardProps {
   iconAlt: string;
   title: string;
   price: string;
-  batch: string;
   duration: string;
   badge?: string;
   rating?: number; // out of 5
@@ -19,7 +18,6 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   iconAlt,
   title,
   price,
-  batch,
   duration,
   badge = defaultBadge,
   rating = defaultRating,
