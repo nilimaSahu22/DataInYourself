@@ -189,6 +189,31 @@ export default function Home() {
     }
   };
 
+  // Company logos data
+  const companyLogos = [
+    { src: '/accenture.png', alt: 'Accenture' },
+    { src: '/amazon-6536326_1920.png', alt: 'Amazon' },
+    { src: '/Cognizant.png', alt: 'Cognizant' },
+    { src: '/ericsson.png', alt: 'Ericsson' },
+    { src: '/HCL.png', alt: 'HCL' },
+    { src: '/infosys-logo-png.png', alt: 'Infosys' },
+    { src: '/microland.png', alt: 'Microland' },
+    { src: '/microsoft-80658_1920.png', alt: 'Microsoft' },
+    { src: '/tcs.png', alt: 'TCS' },
+    { src: '/tech-mahindra.png', alt: 'Tech Mahindra' },
+  ];
+
+  // Carousel state for mobile
+  const [currentLogo, setCurrentLogo] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentLogo((prev) => (prev + 1) % companyLogos.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [companyLogos.length]);
+
+  // Remove firstRow and secondRow
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -197,6 +222,9 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Welcome to <span className="text-orange-500">DataInYourself</span>
           </h1>
+          <p className="text-lg text-orange-600 font-medium mb-4">
+            by Rudriva Technology
+          </p>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.
           </p>
@@ -327,6 +355,46 @@ export default function Home() {
               <h3 className="text-xl font-semibold mb-2 sm:mb-3">Flexible Learning</h3>
               <p className="text-gray-600">Learn at your own pace with 24/7 access to courses.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Company Logos Section - just above the footer */}
+      <section className="bg-white py-8 border-t border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Mobile: Carousel, show one logo at a time */}
+          <div className="flex justify-center items-center sm:hidden" style={{ minHeight: 90 }}>
+            <Image
+              key={companyLogos[currentLogo].alt}
+              src={companyLogos[currentLogo].src}
+              alt={companyLogos[currentLogo].alt}
+              width={companyLogos[currentLogo].alt === 'Amazon' || companyLogos[currentLogo].alt === 'Infosys' ? 120 : 150}
+              height={companyLogos[currentLogo].alt === 'Amazon' || companyLogos[currentLogo].alt === 'Infosys' ? 60 : 80}
+              className={`object-contain ${companyLogos[currentLogo].alt === 'Amazon' || companyLogos[currentLogo].alt === 'Infosys' ? 'w-[120px] h-[60px]' : 'w-[150px] h-[80px]'}`}
+              priority
+            />
+          </div>
+          {/* Desktop: All logos in a row */}
+          <div className="hidden sm:flex flex-wrap items-center justify-center gap-4 mb-0 overflow-x-auto">
+            {companyLogos.map((logo) => {
+              // Reduce size for Amazon and Infosys
+              const isAmazon = logo.alt === 'Amazon';
+              const isInfosys = logo.alt === 'Infosys';
+              const width = isAmazon || isInfosys ? 120 : 150;
+              const height = isAmazon || isInfosys ? 60 : 80;
+              const sizeClass = isAmazon || isInfosys ? 'w-[120px] h-[60px]' : 'w-[150px] h-[80px]';
+              return (
+                <Image
+                  key={logo.alt}
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={width}
+                  height={height}
+                  className={`object-contain ${sizeClass}`}
+                  priority
+                />
+              );
+            })}
           </div>
         </div>
       </section>

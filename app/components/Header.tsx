@@ -17,7 +17,7 @@ export default function Header() {
       href: '/about',
       submenu: [
         { name: 'About Datainyourself', href: '/about' },
-        { name: 'Direct Message', href: '/about/contact' }
+        { name: 'Director Message', href: '/about/contact' }
       ]
     },
     { 
