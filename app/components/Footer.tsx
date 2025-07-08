@@ -105,9 +105,8 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4 text-orange-400">Contact</h4>
             <ul className="space-y-2">
-              <li className="text-gray-300">Toll Free: 1800-XXX-XXXX</li>
-              <li className="text-gray-300">Email: info@datainyourself.com</li>
-              <li className="text-gray-300">Address: Your Address Here</li>
+              <li className="text-gray-300">Toll Free: 9558092200, 8839381619</li>
+              <li className="text-gray-300">Email: mukulsharma1602@gmail.com</li>
             </ul>
           </div>
         </div>
