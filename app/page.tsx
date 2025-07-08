@@ -43,41 +43,86 @@ export default function Home() {
       <section className="py-0 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">Placement Courses</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             <PlacementCourseCard
               iconSrc="/file.svg"
-              iconAlt="Data Analytics"
-              title="Data Analytics"
+              iconAlt="Data Analyst"
+              title="Data Analyst"
               price="₹ 57,820.00"
               batch="Coming Soon"
+              duration="3-4 months"
             />
             <PlacementCourseCard
               iconSrc="/globe.svg"
+              iconAlt="Business Analyst"
+              title="Business Analyst"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="3-4 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/window.svg"
               iconAlt="Data Science"
               title="Data Science"
               price="₹ 57,820.00"
               batch="Coming Soon"
-            />
-            <PlacementCourseCard
-              iconSrc="/window.svg"
-              iconAlt="Business Analytics"
-              title="Business Analytics"
-              price="₹ 57,820.00"
-              batch="Coming Soon"
+              duration="4-5 months"
             />
             <PlacementCourseCard
               iconSrc="/next.svg"
-              iconAlt="CAD"
-              title="CAD"
+              iconAlt="SQL Analyst"
+              title="SQL Analyst"
               price="₹ 57,820.00"
               batch="Coming Soon"
+              duration="1 month"
             />
             <PlacementCourseCard
               iconSrc="/vercel.svg"
+              iconAlt="Machine Learning"
+              title="Machine Learning"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="1 month"
+            />
+            <PlacementCourseCard
+              iconSrc="/file.svg"
+              iconAlt="Python for Beginners"
+              title="Python for Beginners"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="1 month"
+            />
+            <PlacementCourseCard
+              iconSrc="/globe.svg"
+              iconAlt="Power BI / Tableau Mastery"
+              title="Power BI / Tableau Mastery"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="1 month"
+            />
+            <PlacementCourseCard
+              iconSrc="/window.svg"
               iconAlt="Digital Marketing"
               title="Digital Marketing"
               price="₹ 57,820.00"
               batch="Coming Soon"
+              duration="2-3 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/next.svg"
+              iconAlt="Placement Ready"
+              title="Placement Ready"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="1 month"
+            />
+            <PlacementCourseCard
+              iconSrc="/vercel.svg"
+              iconAlt="Web Developer"
+              title="Web Developer"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="3 months"
             />
             <PlacementCourseCard
               iconSrc="/file.svg"
@@ -85,6 +130,63 @@ export default function Home() {
               title="Cyber Security"
               price="₹ 57,820.00"
               batch="Coming Soon"
+              duration="3 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/globe.svg"
+              iconAlt="Cloud Engineer"
+              title="Cloud Engineer"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="2 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/window.svg"
+              iconAlt="Prompt Engineer"
+              title="Prompt Engineer"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="3 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/next.svg"
+              iconAlt="Product Management"
+              title="Product Management"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="3 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/vercel.svg"
+              iconAlt="Finance Analyst"
+              title="Finance Analyst"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="3 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/file.svg"
+              iconAlt="AutoCAD AutoDesk"
+              title="AutoCAD AutoDesk"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="1-2 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/globe.svg"
+              iconAlt="Autodesk Revit"
+              title="Autodesk Revit"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="1-2 months"
+            />
+            <PlacementCourseCard
+              iconSrc="/window.svg"
+              iconAlt="STAAD Pro"
+              title="STAAD Pro"
+              price="₹ 57,820.00"
+              batch="Coming Soon"
+              duration="1-2 months"
             />
           </div>
         </div>

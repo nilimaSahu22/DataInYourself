@@ -6,6 +6,7 @@ interface PlacementCourseCardProps {
   title: string;
   price: string;
   batch: string;
+  duration: string;
   badge?: string;
   rating?: number; // out of 5
 }
@@ -19,6 +20,7 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   title,
   price,
   batch,
+  duration,
   badge = defaultBadge,
   rating = defaultRating,
 }) => {
@@ -43,8 +45,8 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
         <span className="font-semibold text-gray-900">{price}</span>
       </div>
       <div className="flex justify-between w-full text-sm text-gray-600 mt-1">
-        <span>Starting Batch :</span>
-        <span className="font-semibold text-gray-900">{batch}</span>
+        <span>Duration :</span>
+        <span className="font-semibold text-gray-900">{duration}</span>
       </div>
     </div>
   );
