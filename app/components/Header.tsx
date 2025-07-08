@@ -6,92 +6,21 @@ import { useState, useRef, useEffect } from 'react';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [mobileOpenDropdown, setMobileOpenDropdown] = useState<string | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navigationLinks = [
     { name: 'Home', href: '/' },
-    { 
-      name: 'About Us', 
-      href: '/about',
-      submenu: [
-        { name: 'About Datainyourself', href: '/about' },
-        { name: 'Director Message', href: '/about/contact' }
-      ]
-    },
-    { 
-      name: 'Courses', 
-      href: '/courses',
-      submenu: [
-        { name: 'Placement Courses', href: '/courses/placement' },
-        { name: 'Certification Courses', href: '/courses/certification' },
-        { name: 'Trending Courses', href: '/courses/trending' }
-      ]
-    },
-    { 
-      name: 'Franchise', 
-      href: '/franchise',
-      submenu: [
-        { name: 'Get Franchise', href: '/franchise/get-franchise' }
-      ]
-    },
-    { 
-      name: 'Gallery', 
-      href: '/gallery',
-      submenu: [
-        { name: 'Photo Gallery', href: '/gallery/photo' },
-        { name: 'Video Gallery', href: '/gallery/videos' }
-      ]
-    },
+    { name: 'About Us', href: '/about' },
+    { name: 'Franchise', href: '/franchise' },
     { name: 'Contact Us', href: '/contact' },
   ];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    // Close mobile dropdowns when closing mobile menu
-    if (isMobileMenuOpen) {
-      setMobileOpenDropdown(null);
-    }
   };
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
-    setMobileOpenDropdown(null);
   };
-
-  const toggleDropdown = (menuName: string) => {
-    setOpenDropdown(openDropdown === menuName ? null : menuName);
-  };
-
-  const toggleMobileDropdown = (menuName: string) => {
-    setMobileOpenDropdown(mobileOpenDropdown === menuName ? null : menuName);
-  };
-
-  // Ensure mobile dropdowns work properly on touch devices
-  const handleMobileDropdownClick = (menuName: string, event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    toggleMobileDropdown(menuName);
-  };
-
-  const closeDropdown = () => {
-    setOpenDropdown(null);
-  };
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        closeDropdown();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   return (
     <>
@@ -117,63 +46,16 @@ export default function Header() {
             </div>
 
             {/* Center Section - Navigation */}
-            <nav className="hidden lg:flex space-x-6 xl:space-x-8" aria-label="Main navigation" ref={dropdownRef}>
+            <nav className="hidden lg:flex space-x-6 xl:space-x-8" aria-label="Main navigation">
               {navigationLinks.map((link) => (
                 <div key={link.name} className="relative">
-                  {link.submenu ? (
-                    // Dropdown menu item
-                    <div className="relative">
-                      <button
-                        onClick={() => toggleDropdown(link.name)}
-                        onMouseEnter={() => setOpenDropdown(link.name)}
-                        className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center"
-                        suppressHydrationWarning
-                      >
-                        {link.name}
-                        <svg 
-                          className={`ml-1 w-4 h-4 transition-transform duration-200 ${openDropdown === link.name ? 'rotate-180' : ''}`}
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                        <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
-                      </button>
-                      
-                      {/* Dropdown Menu */}
-                      <div 
-                        className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 transition-all duration-200 ${
-                          openDropdown === link.name 
-                            ? 'opacity-100 visible translate-y-0' 
-                            : 'opacity-0 invisible -translate-y-2'
-                        }`}
-                        onMouseLeave={() => closeDropdown()}
-                      >
-                        <div className="py-2">
-                          {link.submenu.map((subItem) => (
-                            <Link
-                              key={subItem.name}
-                              href={subItem.href}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:text-orange-500 hover:bg-orange-50 transition-colors duration-200"
-                              onClick={closeDropdown}
-                            >
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    // Regular menu item
-                    <Link
-                      href={link.href}
-                      className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center"
-                    >
-                      {link.name}
-                      <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
-                    </Link>
-                  )}
+                  <Link
+                    href={link.href}
+                    className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center"
+                  >
+                    {link.name}
+                    <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
+                  </Link>
                 </div>
               ))}
             </nav>
@@ -248,72 +130,13 @@ export default function Header() {
           <nav className="flex-1 px-4 sm:px-6 py-4 overflow-y-auto" aria-label="Mobile navigation">
             {navigationLinks.map((link) => (
               <div key={link.name} className="mb-1">
-                {link.submenu ? (
-                  // Mobile dropdown menu item
-                  <div className={`border rounded-lg overflow-hidden transition-all duration-300 ${
-                    mobileOpenDropdown === link.name 
-                      ? 'border-orange-300 shadow-md shadow-orange-100' 
-                      : 'border-gray-100'
-                  }`}>
-                    <button
-                      onClick={(e) => handleMobileDropdownClick(link.name, e)}
-                      className={`w-full text-left px-4 py-3 text-sm sm:text-base font-medium transition-all duration-200 flex items-center justify-between touch-manipulation ${
-                        mobileOpenDropdown === link.name
-                          ? 'text-orange-600 bg-orange-50 border-l-4 border-l-orange-500'
-                          : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 bg-gray-50'
-                      }`}
-                      aria-expanded={mobileOpenDropdown === link.name}
-                      aria-haspopup="true"
-                      suppressHydrationWarning
-                    >
-                      {link.name}
-                      <svg 
-                        className={`w-4 h-4 transition-transform duration-200 ${mobileOpenDropdown === link.name ? 'rotate-180' : ''}`}
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    
-                    {/* Mobile Submenu */}
-                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      mobileOpenDropdown === link.name ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                    }`}>
-                      <div className={`border-t ${
-                        mobileOpenDropdown === link.name 
-                          ? 'bg-orange-50/50 border-orange-200' 
-                          : 'bg-white border-gray-100'
-                      }`}>
-                        {link.submenu.map((subItem) => (
-                          <Link
-                            key={subItem.name}
-                            href={subItem.href}
-                            onClick={closeMobileMenu}
-                            className={`block px-6 py-3 text-sm transition-all duration-200 border-b last:border-b-0 touch-manipulation ${
-                              mobileOpenDropdown === link.name
-                                ? 'text-gray-700 hover:text-orange-600 hover:bg-orange-100 border-orange-100 active:bg-orange-200'
-                                : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50 border-gray-50 active:bg-gray-100'
-                            }`}
-                            aria-label={`Navigate to ${subItem.name}`}
-                          >
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  // Regular mobile menu item
-                  <Link
-                    href={link.href}
-                    onClick={closeMobileMenu}
-                    className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-4 py-3 text-sm sm:text-base font-medium rounded-md transition-all duration-200 border border-gray-100"
-                  >
-                    {link.name}
-                  </Link>
-                )}
+                <Link
+                  href={link.href}
+                  onClick={closeMobileMenu}
+                  className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-4 py-3 text-sm sm:text-base font-medium rounded-md transition-all duration-200 border border-gray-100"
+                >
+                  {link.name}
+                </Link>
               </div>
             ))}
           </nav>
