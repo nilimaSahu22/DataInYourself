@@ -99,21 +99,21 @@ export default function Header() {
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0  bg-opacity-30 z-40 lg:hidden"
           onClick={closeMobileMenu}
         ></div>
       )}
 
       {/* Mobile Sidebar */}
       <div 
-        className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 max-h-screen w-64 sm:w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between py-3 px-4 sm:px-6 border-b border-gray-200 bg-orange-50">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Menu</h2>
+          <div className="flex items-center justify-between py-3 px-4 border-b border-gray-200 bg-orange-50">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Menu</h2>
             <button
               onClick={closeMobileMenu}
               className="text-orange-600 hover:text-orange-700 hover:bg-orange-100 p-2 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
@@ -127,22 +127,24 @@ export default function Header() {
           </div>
 
           {/* Sidebar Navigation */}
-          <nav className="flex-1 px-4 sm:px-6 py-4 overflow-y-auto" aria-label="Mobile navigation">
-            {navigationLinks.map((link) => (
-              <div key={link.name} className="mb-1">
-                <Link
-                  href={link.href}
-                  onClick={closeMobileMenu}
-                  className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-4 py-3 text-sm sm:text-base font-medium rounded-md transition-all duration-200 border border-gray-100"
-                >
-                  {link.name}
-                </Link>
-              </div>
-            ))}
+          <nav className="px-4 py-4" aria-label="Mobile navigation">
+            <div className="space-y-2">
+              {navigationLinks.map((link) => (
+                <div key={link.name}>
+                  <Link
+                    href={link.href}
+                    onClick={closeMobileMenu}
+                    className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm"
+                  >
+                    {link.name}
+                  </Link>
+                </div>
+              ))}
+            </div>
           </nav>
 
           {/* Sidebar Footer */}
-          <div className="py-3 px-4 sm:px-6 border-t border-gray-200 bg-orange-50">
+          <div className="py-3 px-4 border-t border-gray-200 bg-orange-50">
             <div className="text-center">
               <p className="text-sm text-gray-500">DataInYourself</p>
               <p className="text-xs text-gray-400 mt-1">© 2024 All rights reserved</p>

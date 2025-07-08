@@ -213,24 +213,24 @@ export default function Home() {
   }, [companyLogos.length]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-white via-orange-50/30 to-white">
       {/* Hero Section */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8">
+      <section className="pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-4 sm:pb-6 md:pb-8 lg:pb-10 px-4 sm:px-6 md:px-8 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
-            Welcome to <span className="text-orange-500">DataInYourself</span>
+            Welcome to <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">DataInYourself</span>
           </h1>
           <p className="text-base sm:text-lg text-orange-600 font-medium mb-3 sm:mb-4">
             by Rudriva Technology
           </p>
-          <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
+          <p className="text-lg sm:text-xl text-gray-900 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
             India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.
           </p>
         </div>
       </section>
 
       {/* Placement Courses Section */}
-      <section className="py-8 sm:py-12 md:py-16 lg:py-20 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <section className="py-4 sm:py-6 md:py-8 lg:py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6 sm:mb-8 md:mb-12">Placement Courses</h2>
           
@@ -244,7 +244,7 @@ export default function Home() {
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="w-full px-4 py-3 sm:py-4 md:py-3 pl-12 pr-20 sm:pr-16 md:pr-16 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent shadow-sm text-sm sm:text-base md:text-sm"
+                  className="w-full px-4 py-3 sm:py-4 md:py-3 pl-12 pr-20 sm:pr-16 md:pr-16 text-gray-900 bg-white border-2 border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 shadow-lg text-sm sm:text-base md:text-sm transition-all duration-300"
                   suppressHydrationWarning
                 />
                 <div className="absolute inset-y-0 left-0 pl-4 sm:pl-3 md:pl-3 flex items-center pointer-events-none">
@@ -254,7 +254,7 @@ export default function Home() {
                 </div>
                 <button 
                   onClick={handleSearchClick}
-                  className="absolute inset-y-0 right-0 px-3 sm:px-4 md:px-4 bg-orange-500 text-white rounded-r-lg hover:bg-orange-600 transition-colors duration-200 font-medium text-sm sm:text-sm md:text-sm min-w-[70px] sm:min-w-[80px] md:min-w-0"
+                  className="absolute inset-y-0 right-0 px-3 sm:px-4 md:px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-r-2xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 font-medium text-sm sm:text-sm md:text-sm min-w-[70px] sm:min-w-[80px] md:min-w-0 shadow-lg"
                   suppressHydrationWarning
                 >
                   Search
@@ -275,7 +275,7 @@ export default function Home() {
               {searchQuery && (
                 <button 
                   onClick={() => handleSearch("")}
-                  className="mt-2 text-orange-500 hover:text-orange-600 underline text-sm"
+                  className="mt-2 text-orange-500 hover:text-orange-600 underline text-sm transition-colors duration-300"
                   suppressHydrationWarning
                 >
                   Clear search
@@ -309,7 +309,7 @@ export default function Home() {
               <p className="text-gray-600 mb-4 sm:mb-6">Try searching with different keywords</p>
               <button 
                 onClick={() => handleSearch("")}
-                className="px-4 sm:px-6 py-2 sm:py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 text-sm sm:text-base"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:from-orange-600 hover:to-orange-700 transition-all duration-300 text-sm sm:text-base shadow-lg hover:shadow-xl hover:scale-105"
                 suppressHydrationWarning
               >
                 View all courses
@@ -326,8 +326,8 @@ export default function Home() {
             Why Choose DataInYourself?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-8 lg:gap-12">
-            <div className="text-center p-4 sm:p-6 md:p-8">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+            <div className="text-center p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
                 <svg className="w-7 h-7 sm:w-8 sm:h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
@@ -335,8 +335,8 @@ export default function Home() {
               <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Expert Instructors</h3>
               <p className="text-gray-600 text-sm sm:text-base">Learn from industry professionals with years of experience.</p>
             </div>
-            <div className="text-center p-4 sm:p-6 md:p-8">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+            <div className="text-center p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
                 <svg className="w-7 h-7 sm:w-8 sm:h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -344,8 +344,8 @@ export default function Home() {
               <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3">Certified Courses</h3>
               <p className="text-gray-600 text-sm sm:text-base">Get industry-recognized certificates upon completion.</p>
             </div>
-            <div className="text-center p-4 sm:p-6 md:p-8 sm:col-span-2 md:col-span-1">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
+            <div className="text-center p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 sm:col-span-2 md:col-span-1">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 md:mb-6">
                 <svg className="w-7 h-7 sm:w-8 sm:h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -358,62 +358,51 @@ export default function Home() {
       </section>
 
       {/* Company Logos Section - just above the footer */}
-      <section className="bg-white py-6 sm:py-8 border-t border-b border-gray-200">
+      <section className="bg-gradient-to-r from-orange-50 to-orange-100 py-6 sm:py-8 border-t border-b border-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-8">
           {/* Mobile: Carousel, show one logo at a time */}
           <div className="flex justify-center items-center sm:hidden" style={{ minHeight: 80 }}>
-            <Image
-              key={companyLogos[currentLogo].alt}
-              src={companyLogos[currentLogo].src}
-              alt={companyLogos[currentLogo].alt}
-              width={companyLogos[currentLogo].alt === 'Amazon' || companyLogos[currentLogo].alt === 'Infosys' ? 120 : 150}
-              height={companyLogos[currentLogo].alt === 'Amazon' || companyLogos[currentLogo].alt === 'Infosys' ? 60 : 80}
-              className={`object-contain ${companyLogos[currentLogo].alt === 'Amazon' || companyLogos[currentLogo].alt === 'Infosys' ? 'w-[120px] h-[60px]' : 'w-[150px] h-[80px]'}`}
-              priority
-            />
+            <div className="relative h-20 w-[140px] flex items-center justify-center">
+              <Image
+                key={companyLogos[currentLogo].alt}
+                src={companyLogos[currentLogo].src}
+                alt={companyLogos[currentLogo].alt}
+                fill
+                sizes="140px"
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
           {/* Tablet: Show 3-4 logos in a row */}
-          <div className="hidden sm:flex md:hidden flex-wrap items-center justify-center gap-3 sm:gap-4 mb-0 overflow-x-auto">
-            {companyLogos.slice(0, 4).map((logo) => {
-              const isAmazon = logo.alt === 'Amazon';
-              const isInfosys = logo.alt === 'Infosys';
-              const width = isAmazon || isInfosys ? 100 : 120;
-              const height = isAmazon || isInfosys ? 50 : 60;
-              const sizeClass = isAmazon || isInfosys ? 'w-[100px] h-[50px]' : 'w-[120px] h-[60px]';
-              return (
+          <div className="hidden sm:flex md:hidden flex-wrap items-center justify-center gap-4 mb-0 overflow-x-auto">
+            {companyLogos.slice(0, 4).map((logo) => (
+              <div key={logo.alt} className="relative h-20 w-[140px] flex items-center justify-center">
                 <Image
-                  key={logo.alt}
                   src={logo.src}
                   alt={logo.alt}
-                  width={width}
-                  height={height}
-                  className={`object-contain ${sizeClass}`}
+                  fill
+                  sizes="140px"
+                  className="object-contain"
                   priority
                 />
-              );
-            })}
+              </div>
+            ))}
           </div>
           {/* Desktop: All logos in a row */}
-          <div className="hidden md:flex flex-wrap items-center justify-center gap-4 mb-0 overflow-x-auto">
-            {companyLogos.map((logo) => {
-              // Reduce size for Amazon and Infosys
-              const isAmazon = logo.alt === 'Amazon';
-              const isInfosys = logo.alt === 'Infosys';
-              const width = isAmazon || isInfosys ? 120 : 150;
-              const height = isAmazon || isInfosys ? 60 : 80;
-              const sizeClass = isAmazon || isInfosys ? 'w-[120px] h-[60px]' : 'w-[150px] h-[80px]';
-              return (
+          <div className="hidden md:flex flex-wrap items-center justify-center gap-6 mb-0 overflow-x-auto">
+            {companyLogos.map((logo) => (
+              <div key={logo.alt} className="relative h-20 w-[140px] flex items-center justify-center">
                 <Image
-                  key={logo.alt}
                   src={logo.src}
                   alt={logo.alt}
-                  width={width}
-                  height={height}
-                  className={`object-contain ${sizeClass}`}
+                  fill
+                  sizes="140px"
+                  className="object-contain"
                   priority
                 />
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </section>
