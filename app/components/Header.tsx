@@ -29,7 +29,6 @@ export default function Header() {
         { name: 'Trending Courses', href: '/courses/trending' }
       ]
     },
-    { name: 'Student Zone', href: '/student-zone' },
     { 
       name: 'Franchise', 
       href: '/franchise',
