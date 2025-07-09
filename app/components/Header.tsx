@@ -10,6 +10,7 @@ export default function Header() {
   const navigationLinks = [
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
+    { name: 'Gallery', href: '/gallery' },
     { name: 'Franchise', href: '/franchise' },
     { name: 'Contact Us', href: '#contact' },
   ];

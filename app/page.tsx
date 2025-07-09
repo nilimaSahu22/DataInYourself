@@ -480,10 +480,29 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="text-sm sm:text-base font-semibold text-orange-900 mb-1 sm:mb-2">Address</h4>
-                    <p className="text-orange-700 text-sm sm:text-base">
-                      Rudriva Technology<br />
-                      India's Premier Computer Training Institute
-                    </p>
+                    <div className="space-y-2 sm:space-y-3">
+                      <div>
+                        <p className="text-orange-700 text-sm sm:text-base font-medium">Surat</p>
+                        <p className="text-orange-700 text-sm sm:text-base">
+                          Rudriva Technology<br />
+                          India's Premier Computer Training Institute
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-orange-700 text-sm sm:text-base font-medium">Pune</p>
+                        <p className="text-orange-700 text-sm sm:text-base">
+                          Rudriva Technology<br />
+                          India's Premier Computer Training Institute
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-orange-700 text-sm sm:text-base font-medium">Raipur</p>
+                        <p className="text-orange-700 text-sm sm:text-base">
+                          Rudriva Technology<br />
+                          India's Premier Computer Training Institute
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
