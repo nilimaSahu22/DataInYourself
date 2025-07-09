@@ -33,7 +33,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 4,
-    iconSrc: "/next.svg",
+    iconSrc: "/file.svg", // Use a generic icon, not the SQL image
     iconAlt: "SQL Analyst",
     title: "SQL Analyst",
     duration: "1 month",
