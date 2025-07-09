@@ -4,7 +4,6 @@ interface PlacementCourseCardProps {
   iconSrc: string;
   iconAlt: string;
   title: string;
-  price: string;
   duration: string;
   badge?: string;
   rating?: number; // out of 5
@@ -17,7 +16,6 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   iconSrc,
   iconAlt,
   title,
-  price,
   duration,
   badge = defaultBadge,
   rating = defaultRating,
@@ -39,10 +37,6 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
         ))}
       </div>
       <div className="flex justify-between w-full text-xs sm:text-sm text-gray-600 border-t pt-3 sm:pt-4 mt-auto">
-        <span>Course Price :</span>
-        <span className="font-semibold text-gray-900">{price}</span>
-      </div>
-      <div className="flex justify-between w-full text-xs sm:text-sm text-gray-600 mt-1">
         <span>Duration :</span>
         <span className="font-semibold text-gray-900">{duration}</span>
       </div>

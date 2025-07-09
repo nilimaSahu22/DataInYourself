@@ -10,7 +10,6 @@ const coursesData = [
     iconSrc: "/file.svg",
     iconAlt: "Data Analyst",
     title: "Data Analyst",
-    price: "₹ 57,820.00",
     duration: "3-4 months",
   },
   {
@@ -18,7 +17,6 @@ const coursesData = [
     iconSrc: "/globe.svg",
     iconAlt: "Business Analyst",
     title: "Business Analyst",
-    price: "₹ 57,820.00",
     duration: "3-4 months",
   },
   {
@@ -26,7 +24,6 @@ const coursesData = [
     iconSrc: "/window.svg",
     iconAlt: "Data Science",
     title: "Data Science",
-    price: "₹ 57,820.00",
     duration: "4-5 months",
   },
   {
@@ -34,7 +31,6 @@ const coursesData = [
     iconSrc: "/next.svg",
     iconAlt: "SQL Analyst",
     title: "SQL Analyst",
-    price: "₹ 57,820.00",
     duration: "1 month",
   },
   {
@@ -42,7 +38,6 @@ const coursesData = [
     iconSrc: "/vercel.svg",
     iconAlt: "Machine Learning",
     title: "Machine Learning",
-    price: "₹ 57,820.00",
     duration: "1 month",
   },
   {
@@ -50,7 +45,6 @@ const coursesData = [
     iconSrc: "/file.svg",
     iconAlt: "Python for Beginners",
     title: "Python for Beginners",
-    price: "₹ 57,820.00",
     duration: "1 month",
   },
   {
@@ -58,7 +52,6 @@ const coursesData = [
     iconSrc: "/globe.svg",
     iconAlt: "Power BI / Tableau Mastery",
     title: "Power BI / Tableau Mastery",
-    price: "₹ 57,820.00",
     duration: "1 month",
   },
   {
@@ -66,7 +59,6 @@ const coursesData = [
     iconSrc: "/window.svg",
     iconAlt: "Digital Marketing",
     title: "Digital Marketing",
-    price: "₹ 57,820.00",
     duration: "2-3 months",
   },
   {
@@ -74,7 +66,6 @@ const coursesData = [
     iconSrc: "/next.svg",
     iconAlt: "Placement Ready",
     title: "Placement Ready",
-    price: "₹ 57,820.00",
     duration: "1 month",
   },
   {
@@ -82,7 +73,6 @@ const coursesData = [
     iconSrc: "/vercel.svg",
     iconAlt: "Web Developer",
     title: "Web Developer",
-    price: "₹ 57,820.00",
     duration: "3 months",
   },
   {
@@ -90,7 +80,6 @@ const coursesData = [
     iconSrc: "/file.svg",
     iconAlt: "Cyber Security",
     title: "Cyber Security",
-    price: "₹ 57,820.00",
     duration: "3 months",
   },
   {
@@ -98,7 +87,6 @@ const coursesData = [
     iconSrc: "/globe.svg",
     iconAlt: "Cloud Engineer",
     title: "Cloud Engineer",
-    price: "₹ 57,820.00",
     duration: "2 months",
   },
   {
@@ -106,7 +94,6 @@ const coursesData = [
     iconSrc: "/window.svg",
     iconAlt: "Prompt Engineer",
     title: "Prompt Engineer",
-    price: "₹ 57,820.00",
     duration: "3 months",
   },
   {
@@ -114,7 +101,6 @@ const coursesData = [
     iconSrc: "/next.svg",
     iconAlt: "Product Management",
     title: "Product Management",
-    price: "₹ 57,820.00",
     duration: "3 months",
   },
   {
@@ -122,7 +108,6 @@ const coursesData = [
     iconSrc: "/vercel.svg",
     iconAlt: "Finance Analyst",
     title: "Finance Analyst",
-    price: "₹ 57,820.00",
     duration: "3 months",
   },
   {
@@ -130,7 +115,6 @@ const coursesData = [
     iconSrc: "/file.svg",
     iconAlt: "AutoCAD AutoDesk",
     title: "AutoCAD AutoDesk",
-    price: "₹ 57,820.00",
     duration: "1-2 months",
   },
   {
@@ -138,7 +122,6 @@ const coursesData = [
     iconSrc: "/globe.svg",
     iconAlt: "Autodesk Revit",
     title: "Autodesk Revit",
-    price: "₹ 57,820.00",
     duration: "1-2 months",
   },
   {
@@ -146,7 +129,6 @@ const coursesData = [
     iconSrc: "/window.svg",
     iconAlt: "STAAD Pro",
     title: "STAAD Pro",
-    price: "₹ 57,820.00",
     duration: "1-2 months",
   },
 ];
@@ -291,7 +273,6 @@ export default function Home() {
                 iconSrc={course.iconSrc}
                 iconAlt={course.iconAlt}
                 title={course.title}
-                price={course.price}
                 duration={course.duration}
               />
             ))}
