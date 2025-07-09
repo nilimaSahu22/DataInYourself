@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useContactNavigation } from '../utils/contactNavigation';
+import { useContactNavigation } from '../../utils/contactNavigation';
 
 
 export default function Footer() {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useContactNavigation } from '../utils/contactNavigation';
+import { useContactNavigation } from '../../utils/contactNavigation';
 
 const AboutUs = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);

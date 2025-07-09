@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import PlacementCourseCard from "./components/PlacementCourseCard";
+import PlacementCourseCard from "./components/ui/PlacementCourseCard";
 import { coursesData } from "./data/courses";
 
 export default function Home() {

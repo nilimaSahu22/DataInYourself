@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { generateCourseSlug } from "../utils/courseUtils";
+import { generateCourseSlug } from "../../utils/courseUtils";
 
 interface PlacementCourseCardProps {
   id: number;
