@@ -2,136 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import PlacementCourseCard from "./components/PlacementCourseCard";
-
-// Course data array
-const coursesData = [
-  {
-    id: 1,
-    iconSrc: "/file.svg",
-    iconAlt: "Data Analyst",
-    title: "Data Analyst",
-    duration: "3-4 months",
-  },
-  {
-    id: 2,
-    iconSrc: "/globe.svg",
-    iconAlt: "Business Analyst",
-    title: "Business Analyst",
-    duration: "3-4 months",
-  },
-  {
-    id: 3,
-    iconSrc: "/window.svg",
-    iconAlt: "Data Science",
-    title: "Data Science",
-    duration: "4-5 months",
-  },
-  {
-    id: 4,
-    iconSrc: "/next.svg",
-    iconAlt: "SQL Analyst",
-    title: "SQL Analyst",
-    duration: "1 month",
-  },
-  {
-    id: 5,
-    iconSrc: "/vercel.svg",
-    iconAlt: "Machine Learning",
-    title: "Machine Learning",
-    duration: "1 month",
-  },
-  {
-    id: 6,
-    iconSrc: "/file.svg",
-    iconAlt: "Python for Beginners",
-    title: "Python for Beginners",
-    duration: "1 month",
-  },
-  {
-    id: 7,
-    iconSrc: "/globe.svg",
-    iconAlt: "Power BI / Tableau Mastery",
-    title: "Power BI / Tableau Mastery",
-    duration: "1 month",
-  },
-  {
-    id: 8,
-    iconSrc: "/window.svg",
-    iconAlt: "Digital Marketing",
-    title: "Digital Marketing",
-    duration: "2-3 months",
-  },
-  {
-    id: 9,
-    iconSrc: "/next.svg",
-    iconAlt: "Placement Ready",
-    title: "Placement Ready",
-    duration: "1 month",
-  },
-  {
-    id: 10,
-    iconSrc: "/vercel.svg",
-    iconAlt: "Web Developer",
-    title: "Web Developer",
-    duration: "3 months",
-  },
-  {
-    id: 11,
-    iconSrc: "/file.svg",
-    iconAlt: "Cyber Security",
-    title: "Cyber Security",
-    duration: "3 months",
-  },
-  {
-    id: 12,
-    iconSrc: "/globe.svg",
-    iconAlt: "Cloud Engineer",
-    title: "Cloud Engineer",
-    duration: "2 months",
-  },
-  {
-    id: 13,
-    iconSrc: "/window.svg",
-    iconAlt: "Prompt Engineer",
-    title: "Prompt Engineer",
-    duration: "3 months",
-  },
-  {
-    id: 14,
-    iconSrc: "/next.svg",
-    iconAlt: "Product Management",
-    title: "Product Management",
-    duration: "3 months",
-  },
-  {
-    id: 15,
-    iconSrc: "/vercel.svg",
-    iconAlt: "Finance Analyst",
-    title: "Finance Analyst",
-    duration: "3 months",
-  },
-  {
-    id: 16,
-    iconSrc: "/file.svg",
-    iconAlt: "AutoCAD AutoDesk",
-    title: "AutoCAD AutoDesk",
-    duration: "1-2 months",
-  },
-  {
-    id: 17,
-    iconSrc: "/globe.svg",
-    iconAlt: "Autodesk Revit",
-    title: "Autodesk Revit",
-    duration: "1-2 months",
-  },
-  {
-    id: 18,
-    iconSrc: "/window.svg",
-    iconAlt: "STAAD Pro",
-    title: "STAAD Pro",
-    duration: "1-2 months",
-  },
-];
+import { coursesData } from "./data/courses";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -270,6 +141,7 @@ export default function Home() {
             {filteredCourses.map((course) => (
               <PlacementCourseCard
                 key={course.id}
+                id={course.id}
                 iconSrc={course.iconSrc}
                 iconAlt={course.iconAlt}
                 title={course.title}
@@ -500,25 +372,27 @@ export default function Home() {
                     <label htmlFor="firstName" className="block text-sm font-medium text-orange-900 mb-2">
                       First Name
                     </label>
-                    <input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
-                      placeholder="Enter your first name"
-                    />
+                                      <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
+                    placeholder="Enter your first name"
+                    suppressHydrationWarning
+                  />
                   </div>
                   <div>
                     <label htmlFor="lastName" className="block text-sm font-medium text-orange-900 mb-2">
                       Last Name
                     </label>
-                    <input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
-                      placeholder="Enter your last name"
-                    />
+                                      <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
+                    placeholder="Enter your last name"
+                    suppressHydrationWarning
+                  />
                   </div>
                 </div>
                 
@@ -532,6 +406,7 @@ export default function Home() {
                     name="email"
                     className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
                     placeholder="Enter your email address"
+                    suppressHydrationWarning
                   />
                 </div>
 
@@ -545,6 +420,7 @@ export default function Home() {
                     name="phone"
                     className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
                     placeholder="Enter your phone number"
+                    suppressHydrationWarning
                   />
                 </div>
 
@@ -556,6 +432,7 @@ export default function Home() {
                     id="course"
                     name="course"
                     className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 bg-white"
+                    suppressHydrationWarning
                   >
                     <option value="">Select a course</option>
                     <option value="data-analyst">Data Analyst</option>
@@ -589,12 +466,14 @@ export default function Home() {
                     rows={4}
                     className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400 resize-none"
                     placeholder="Tell us about your requirements..."
+                    suppressHydrationWarning
                   ></textarea>
                 </div>
 
                 <button
                   type="submit"
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 sm:py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
+                  suppressHydrationWarning
                 >
                   Send Message
                 </button>
