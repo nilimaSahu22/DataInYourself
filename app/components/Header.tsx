@@ -11,7 +11,7 @@ export default function Header() {
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
     { name: 'Franchise', href: '/franchise' },
-    { name: 'Contact Us', href: '/contact' },
+    { name: 'Contact Us', href: '#contact' },
   ];
 
   const toggleMobileMenu = () => {
@@ -20,6 +20,19 @@ export default function Header() {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  // Smooth scroll function
+  const scrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+    closeMobileMenu();
   };
 
   return (
@@ -49,13 +62,24 @@ export default function Header() {
             <nav className="hidden lg:flex space-x-6 xl:space-x-8" aria-label="Main navigation">
               {navigationLinks.map((link) => (
                 <div key={link.name} className="relative">
-                  <Link
-                    href={link.href}
-                    className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center"
-                  >
-                    {link.name}
-                    <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
-                  </Link>
+                  {link.name === 'Contact Us' ? (
+                    <a
+                      href={link.href}
+                      onClick={scrollToContact}
+                      className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer"
+                    >
+                      {link.name}
+                      <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center"
+                    >
+                      {link.name}
+                      <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
+                    </Link>
+                  )}
                 </div>
               ))}
             </nav>
@@ -131,13 +155,23 @@ export default function Header() {
             <div className="space-y-2">
               {navigationLinks.map((link) => (
                 <div key={link.name}>
-                  <Link
-                    href={link.href}
-                    onClick={closeMobileMenu}
-                    className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm"
-                  >
-                    {link.name}
-                  </Link>
+                  {link.name === 'Contact Us' ? (
+                    <a
+                      href={link.href}
+                      onClick={scrollToContact}
+                      className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm cursor-pointer"
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      onClick={closeMobileMenu}
+                      className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
