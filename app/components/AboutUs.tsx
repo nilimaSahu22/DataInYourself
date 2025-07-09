@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useContactNavigation } from '../utils/contactNavigation';
 
 const AboutUs = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const handleContactClick = useContactNavigation();
   
   return (
     <div className="min-h-screen bg-white">
@@ -181,9 +183,13 @@ const AboutUs = () => {
               Join thousands of learners who have already taken the first step towards their dream careers 
               with DataInYourself
             </p>
-            <button className="bg-white text-orange-600 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border-2 border-white hover:border-orange-50">
+            <a 
+              href="#contact" 
+              onClick={handleContactClick}
+              className="inline-block bg-white text-orange-600 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border-2 border-white hover:border-orange-50 cursor-pointer"
+            >
               Start Your Journey Today
-            </button>
+            </a>
           </div>
         </div>
       </div>

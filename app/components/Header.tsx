@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
+import { useContactNavigation } from '../utils/contactNavigation';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const handleContactClick = useContactNavigation();
 
   const navigationLinks = [
     { name: 'Home', href: '/' },
@@ -23,16 +25,9 @@ export default function Header() {
     setIsMobileMenuOpen(false);
   };
 
-  // Smooth scroll function
-  const scrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
+  // Enhanced contact navigation function
+  const handleContactNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    handleContactClick(e);
     closeMobileMenu();
   };
 
@@ -66,7 +61,7 @@ export default function Header() {
                   {link.name === 'Contact Us' ? (
                     <a
                       href={link.href}
-                      onClick={scrollToContact}
+                      onClick={handleContactNavigation}
                       className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer"
                     >
                       {link.name}
@@ -159,7 +154,7 @@ export default function Header() {
                   {link.name === 'Contact Us' ? (
                     <a
                       href={link.href}
-                      onClick={scrollToContact}
+                      onClick={handleContactNavigation}
                       className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm cursor-pointer"
                     >
                       {link.name}

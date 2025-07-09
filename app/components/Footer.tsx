@@ -1,8 +1,13 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useContactNavigation } from '../utils/contactNavigation';
 
 
 export default function Footer() {
+  const handleContactClick = useContactNavigation();
+  
   return (
     <footer className="bg-gray-900 text-white">
       {/* Section 1 - Main Footer Content */}
@@ -74,7 +79,7 @@ export default function Footer() {
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">Company</h4>
             <ul className="space-y-1 sm:space-y-2">
               <li><Link href="/about" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">About Us</Link></li>
-              <li><Link href="/contact" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Contact Us</Link></li>
+              <li><a href="#contact" onClick={handleContactClick} className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base cursor-pointer">Contact Us</a></li>
               <li><Link href="/career" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Career</Link></li>
             </ul>
           </div>
