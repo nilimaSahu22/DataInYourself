@@ -47,7 +47,7 @@ export default function Header() {
                 aria-label="DataInYourself - Home"
               >
                 <Image
-                  src="/icon_assets/logo.png"
+                  src="/icon_assets/diy.png"
                   alt="DataInYourself Logo"
                   width={500}
                   height={150}

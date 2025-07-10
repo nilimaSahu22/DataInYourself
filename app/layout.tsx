@@ -18,7 +18,60 @@ export const metadata: Metadata = {
   title: "Data In Yourself",
   description: "India's number one computer training platform",
   icons: {
-    icon: '/favicon.ico',
+    // Standard favicon sizes
+    icon: [
+      {
+        url: '/icon_assets/diy.png',
+        sizes: '16x16',
+        type: 'image/png',
+      },
+      {
+        url: '/icon_assets/diy.png',
+        sizes: '32x32',
+        type: 'image/png',
+      },
+      {
+        url: '/icon_assets/diy.png',
+        sizes: '48x48',
+        type: 'image/png',
+      },
+    ],
+    // Apple Touch Icons for iOS devices
+    apple: [
+      {
+        url: '/icon_assets/diy.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
+    // Android Chrome icons
+    other: [
+      {
+        rel: 'icon',
+        url: '/icon_assets/diy.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        rel: 'icon',
+        url: '/icon_assets/diy.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+      {
+        rel: 'mask-icon',
+        url: '/icon_assets/diy.png',
+        color: '#FFA500',
+      },
+    ],
+  },
+  // Additional metadata for better favicon support
+  manifest: '/manifest.json',
+  themeColor: '#FFA500',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'DataInYourself',
   },
 };
 
