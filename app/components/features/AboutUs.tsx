@@ -5,7 +5,36 @@ import { useContactNavigation } from '../../utils/contactNavigation';
 
 const AboutUs = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isAdmissionModalOpen, setIsAdmissionModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    course: ''
+  });
   const handleContactClick = useContactNavigation();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAdmissionSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you can add logic to handle form submission
+    console.log('Admission form submitted:', formData);
+    alert('Thank you for your interest! We will contact you soon to discuss your admission.');
+    setIsAdmissionModalOpen(false);
+    setFormData({ name: '', email: '', phone: '', course: '' });
+  };
+
+  const handleAdmissionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setIsAdmissionModalOpen(true);
+  };
   
   return (
     <div className="min-h-screen bg-white">
@@ -184,8 +213,8 @@ const AboutUs = () => {
               with DataInYourself
             </p>
             <a 
-              href="#contact" 
-              onClick={handleContactClick}
+              href="#admission" 
+              onClick={handleAdmissionClick}
               className="inline-block bg-white text-orange-600 px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 border-2 border-white hover:border-orange-50 cursor-pointer"
             >
               Start Your Journey Today
@@ -193,6 +222,114 @@ const AboutUs = () => {
           </div>
         </div>
       </div>
+
+      {/* Admission Form Modal */}
+      {isAdmissionModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Admission Form</h3>
+              <button 
+                onClick={() => setIsAdmissionModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleAdmissionSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your full name"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your email address"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-2">
+                  Interested Course *
+                </label>
+                <select
+                  id="course"
+                  name="course"
+                  value={formData.course}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white text-gray-800"
+                >
+                  <option value="" className="text-gray-800">Select a course</option>
+                  <option value="Data Analyst" className="text-gray-800">Data Analyst</option>
+                  <option value="Business Analyst" className="text-gray-800">Business Analyst</option>
+                  <option value="Data Science" className="text-gray-800">Data Science</option>
+                  <option value="SQL Analyst" className="text-gray-800">SQL Analyst</option>
+                  <option value="Machine Learning" className="text-gray-800">Machine Learning</option>
+                  <option value="Python for Beginners" className="text-gray-800">Python for Beginners</option>
+                  <option value="Power BI / Tableau" className="text-gray-800">Power BI / Tableau</option>
+                  <option value="Digital Marketing" className="text-gray-800">Digital Marketing</option>
+                  <option value="Placement Ready" className="text-gray-800">Placement Ready</option>
+                  <option value="Web Developer" className="text-gray-800">Web Developer</option>
+                  <option value="Cyber Security" className="text-gray-800">Cyber Security</option>
+                  <option value="Cloud Engineer" className="text-gray-800">Cloud Engineer</option>
+                  <option value="Prompt Engineer" className="text-gray-800">Prompt Engineer</option>
+                  <option value="Product Management" className="text-gray-800">Product Management</option>
+                  <option value="Finance Analyst" className="text-gray-800">Finance Analyst</option>
+                  <option value="AutoCAD AutoDesk" className="text-gray-800">AutoCAD AutoDesk</option>
+                  <option value="Autodesk Revit" className="text-gray-800">Autodesk Revit</option>
+                  <option value="STAAD Pro" className="text-gray-800">STAAD Pro</option>
+                </select>
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Submit Application
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

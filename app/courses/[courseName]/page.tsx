@@ -10,6 +10,12 @@ export default function CourseDetail() {
   const params = useParams();
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmissionModalOpen, setIsAdmissionModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
 
   useEffect(() => {
     const courseSlug = decodeURIComponent(params.courseName as string);
@@ -30,6 +36,28 @@ export default function CourseDetail() {
     setCourse(foundCourse);
     setLoading(false);
   }, [params.courseName]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAdmissionSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you can add logic to handle form submission
+    console.log('Admission form submitted for course:', course?.title, formData);
+    alert(`Thank you for your interest in the ${course?.title} course! We will contact you soon to discuss your admission.`);
+    setIsAdmissionModalOpen(false);
+    setFormData({ name: '', email: '', phone: '' });
+  };
+
+  const handleEnrollClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsAdmissionModalOpen(true);
+  };
 
   if (loading) {
     return (
@@ -125,7 +153,10 @@ export default function CourseDetail() {
                       <span className="font-semibold">{course.level}</span>
                     </div>
                   </div>
-                  <button className="w-full bg-white text-orange-600 py-3 px-6 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300">
+                  <button 
+                    onClick={handleEnrollClick}
+                    className="w-full bg-white text-orange-600 py-3 px-6 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
+                  >
                     Enroll Now
                   </button>
                 </div>
@@ -165,6 +196,12 @@ export default function CourseDetail() {
               Contact us today to enroll in the {course.title} course and take the first step towards your career goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={handleEnrollClick}
+                className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
+              >
+                Enroll Now
+              </button>
               <a 
                 href="tel:+919558092200"
                 className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
@@ -181,6 +218,80 @@ export default function CourseDetail() {
           </div>
         </div>
       </section>
+
+      {/* Admission Form Modal */}
+      {isAdmissionModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Enroll in {course.title}</h3>
+              <button 
+                onClick={() => setIsAdmissionModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleAdmissionSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your full name"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your email address"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Submit Enrollment
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 

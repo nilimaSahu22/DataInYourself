@@ -19,11 +19,11 @@ export default function Footer() {
               {/* Row 1: Company Logo */}
               <div className="flex items-center p-2 sm:p-3 mb-2">
                 <Image
-                  src="/logo.png"
+                  src="/icon_assets/diy.png"
                   alt="DataInYourself Logo"
                   width={300}
                   height={100}
-                  className="h-20 sm:h-24 w-auto"
+                  className="h-16 sm:h-20 w-auto"
                 />
               </div>
               

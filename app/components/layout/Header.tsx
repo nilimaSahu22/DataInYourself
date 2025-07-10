@@ -4,16 +4,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
 import { useContactNavigation } from '../../utils/contactNavigation';
+import { useTestimonialNavigation } from '../../utils/testimonialNavigation';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const handleContactClick = useContactNavigation();
+  const handleTestimonialClick = useTestimonialNavigation();
 
   const navigationLinks = [
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
     { name: 'Gallery', href: '/gallery' },
     { name: 'Franchise', href: '/franchise' },
+    { name: 'Testimonials', href: '#testimonials' },
     { name: 'Contact Us', href: '#contact' },
   ];
 
@@ -35,7 +38,7 @@ export default function Header() {
     <>
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 sm:h-24">
+          <div className="flex items-center justify-between h-12 sm:h-16">
             {/* Left Section - Logo */}
             <div className="flex-shrink-0">
               <Link 
@@ -44,11 +47,11 @@ export default function Header() {
                 aria-label="DataInYourself - Home"
               >
                 <Image
-                  src="/logo.png"
+                  src="/icon_assets/diy.png"
                   alt="DataInYourself Logo"
                   width={500}
                   height={150}
-                  className="h-16 sm:h-20 w-auto"
+                  className="h-8 sm:h-12 w-auto"
                   priority
                 />
               </Link>
@@ -62,6 +65,15 @@ export default function Header() {
                     <a
                       href={link.href}
                       onClick={handleContactNavigation}
+                      className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer"
+                    >
+                      {link.name}
+                      <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
+                    </a>
+                  ) : link.name === 'Testimonials' ? (
+                    <a
+                      href={link.href}
+                      onClick={handleTestimonialClick}
                       className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer"
                     >
                       {link.name}
@@ -155,6 +167,17 @@ export default function Header() {
                     <a
                       href={link.href}
                       onClick={handleContactNavigation}
+                      className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm cursor-pointer"
+                    >
+                      {link.name}
+                    </a>
+                  ) : link.name === 'Testimonials' ? (
+                    <a
+                      href={link.href}
+                      onClick={(e) => {
+                        handleTestimonialClick(e);
+                        closeMobileMenu();
+                      }}
                       className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm cursor-pointer"
                     >
                       {link.name}

@@ -14,6 +14,21 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
+  // Handle hash navigation for testimonials
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#testimonials') {
+      const testimonialsSection = document.getElementById('testimonials');
+      if (testimonialsSection) {
+        setTimeout(() => {
+          testimonialsSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 500);
+      }
+    }
+  }, []);
+
   // Search function
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -44,16 +59,16 @@ export default function Home() {
 
   // Company logos data
   const companyLogos = [
-    { src: '/accenture.png', alt: 'Accenture' },
-    { src: '/amazon-6536326_1920.png', alt: 'Amazon' },
-    { src: '/Cognizant.png', alt: 'Cognizant' },
-    { src: '/ericsson.png', alt: 'Ericsson' },
-    { src: '/HCL.png', alt: 'HCL' },
-    { src: '/infosys-logo-png.png', alt: 'Infosys' },
-    { src: '/microland.png', alt: 'Microland' },
-    { src: '/microsoft-80658_1920.png', alt: 'Microsoft' },
-    { src: '/tcs.png', alt: 'TCS' },
-    { src: '/tech-mahindra.png', alt: 'Tech Mahindra' },
+    { src: '/icon_assets/accenture.png', alt: 'Accenture' },
+    { src: '/icon_assets/amazon.png', alt: 'Amazon' },
+    { src: '/icon_assets/Cognizant.png', alt: 'Cognizant' },
+    { src: '/icon_assets/ericsson.png', alt: 'Ericsson' },
+    { src: '/icon_assets/HCL.png', alt: 'HCL' },
+    { src: '/icon_assets/infosys.png', alt: 'Infosys' },
+    { src: '/icon_assets/microland.png', alt: 'Microland' },
+    { src: '/icon_assets/microsoft-80658_1920.png', alt: 'Microsoft' },
+    { src: '/icon_assets/tcs.png', alt: 'TCS' },
+    { src: '/icon_assets/tech-mahindra.png', alt: 'Tech Mahindra' },
   ];
 
   // Carousel state for mobile
@@ -431,28 +446,28 @@ export default function Home() {
                   <select
                     id="course"
                     name="course"
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 bg-white"
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-gray-800 bg-white"
                     suppressHydrationWarning
                   >
-                    <option value="">Select a course</option>
-                    <option value="data-analyst">Data Analyst</option>
-                    <option value="business-analyst">Business Analyst</option>
-                    <option value="data-science">Data Science</option>
-                    <option value="sql-analyst">SQL Analyst</option>
-                    <option value="machine-learning">Machine Learning</option>
-                    <option value="python-beginners">Python for Beginners</option>
-                    <option value="power-bi-tableau">Power BI / Tableau Mastery</option>
-                    <option value="digital-marketing">Digital Marketing</option>
-                    <option value="placement-ready">Placement Ready</option>
-                    <option value="web-developer">Web Developer</option>
-                    <option value="cyber-security">Cyber Security</option>
-                    <option value="cloud-engineer">Cloud Engineer</option>
-                    <option value="prompt-engineer">Prompt Engineer</option>
-                    <option value="product-management">Product Management</option>
-                    <option value="finance-analyst">Finance Analyst</option>
-                    <option value="autocad">AutoCAD AutoDesk</option>
-                    <option value="revit">Autodesk Revit</option>
-                    <option value="staad-pro">STAAD Pro</option>
+                    <option value="" className="text-gray-800">Select a course</option>
+                    <option value="data-analyst" className="text-gray-800">Data Analyst</option>
+                    <option value="business-analyst" className="text-gray-800">Business Analyst</option>
+                    <option value="data-science" className="text-gray-800">Data Science</option>
+                    <option value="sql-analyst" className="text-gray-800">SQL Analyst</option>
+                    <option value="machine-learning" className="text-gray-800">Machine Learning</option>
+                    <option value="python-beginners" className="text-gray-800">Python for Beginners</option>
+                    <option value="power-bi-tableau" className="text-gray-800">Power BI / Tableau Mastery</option>
+                    <option value="digital-marketing" className="text-gray-800">Digital Marketing</option>
+                    <option value="placement-ready" className="text-gray-800">Placement Ready</option>
+                    <option value="web-developer" className="text-gray-800">Web Developer</option>
+                    <option value="cyber-security" className="text-gray-800">Cyber Security</option>
+                    <option value="cloud-engineer" className="text-gray-800">Cloud Engineer</option>
+                    <option value="prompt-engineer" className="text-gray-800">Prompt Engineer</option>
+                    <option value="product-management" className="text-gray-800">Product Management</option>
+                    <option value="finance-analyst" className="text-gray-800">Finance Analyst</option>
+                    <option value="autocad" className="text-gray-800">AutoCAD AutoDesk</option>
+                    <option value="revit" className="text-gray-800">Autodesk Revit</option>
+                    <option value="staad-pro" className="text-gray-800">STAAD Pro</option>
                   </select>
                 </div>
 
@@ -478,6 +493,208 @@ export default function Home() {
                   Send Message
                 </button>
               </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials and Reviews Section */}
+      <section id="testimonials" className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-white to-orange-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-900 mb-8 sm:mb-12 md:mb-16">
+            What Our Students Say
+          </h2>
+          
+          {/* Testimonials */}
+          <div className="mb-12 sm:mb-16 md:mb-20">
+            <h3 className="text-xl sm:text-2xl font-semibold text-center text-orange-800 mb-8 sm:mb-12">
+              Student Testimonials
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+              {/* Testimonial 1 */}
+              <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-lg border border-orange-200 p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl">
+                    RP
+                  </div>
+                  <div className="ml-4 min-w-0 flex-1">
+                    <h4 className="text-base sm:text-lg font-semibold text-orange-900 truncate">Rahul Patel</h4>
+                    <p className="text-sm sm:text-base text-orange-600 truncate">Data Analyst Course</p>
+                  </div>
+                </div>
+                <div className="flex items-center mt-1 mb-3 sm:mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-sm sm:text-base text-orange-700 leading-relaxed">
+                  "DataInYourself transformed my career! The Data Analyst course was comprehensive and practical. 
+                  I landed a job at a top IT company within 3 months of completing the course. The instructors are 
+                  industry experts who really know their stuff."
+                </p>
+              </div>
+
+              {/* Testimonial 2 */}
+              <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-lg border border-orange-200 p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl">
+                    SM
+                  </div>
+                  <div className="ml-4 min-w-0 flex-1">
+                    <h4 className="text-base sm:text-lg font-semibold text-orange-900 truncate">Sneha Mehta</h4>
+                    <p className="text-sm sm:text-base text-orange-600 truncate">Business Analyst Course</p>
+                  </div>
+                </div>
+                <div className="flex items-center mt-1 mb-3 sm:mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-sm sm:text-base text-orange-700 leading-relaxed">
+                  "The Business Analyst course exceeded my expectations. The practical projects and real-world 
+                  case studies helped me understand the industry better. Now I'm working as a Senior Business 
+                  Analyst at a leading consulting firm. Thank you, DataInYourself!"
+                </p>
+              </div>
+
+              {/* Testimonial 3 */}
+              <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-lg border border-orange-200 p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl">
+                    AK
+                  </div>
+                  <div className="ml-4 min-w-0 flex-1">
+                    <h4 className="text-base sm:text-lg font-semibold text-orange-900 truncate">Amit Kumar</h4>
+                    <p className="text-sm sm:text-base text-orange-600 truncate">Machine Learning Course</p>
+                  </div>
+                </div>
+                <div className="flex items-center mt-1 mb-3 sm:mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-sm sm:text-base text-orange-700 leading-relaxed">
+                  "I was skeptical about online learning, but DataInYourself proved me wrong. The Machine Learning 
+                  course was hands-on and the support team was always available. I got placed at a startup with 
+                  a great salary package. Highly recommended!"
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Reviews */}
+          <div>
+            <h3 className="text-xl sm:text-2xl font-semibold text-center text-orange-800 mb-8 sm:mb-12">
+              Student Reviews
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+              {/* Review 1 */}
+              <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-lg border border-orange-200 p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-semibold text-orange-900 truncate">Priya Sharma</h4>
+                    <p className="text-xs sm:text-sm text-orange-600 truncate">Python Course</p>
+                  </div>
+                </div>
+                <div className="flex items-center mt-1 mb-3 sm:mb-4">
+                  <span className="text-sm sm:text-base font-semibold text-orange-900 mr-1 sm:mr-2">5.0</span>
+                  <div className="flex space-x-0.5 sm:space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm sm:text-base text-orange-700 leading-relaxed">
+                  "Excellent course structure and content. The Python course helped me build a strong foundation. 
+                  The instructors are very knowledgeable and supportive. Great value for money!"
+                </p>
+                <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-orange-200">
+                  <p className="text-xs sm:text-sm text-orange-600">
+                    <span className="font-semibold">Course completed:</span> 2 months ago
+                  </p>
+                </div>
+              </div>
+
+              {/* Review 2 */}
+              <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-lg border border-orange-200 p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-semibold text-orange-900 truncate">Vikram Singh</h4>
+                    <p className="text-xs sm:text-sm text-orange-600 truncate">Digital Marketing</p>
+                  </div>
+                </div>
+                <div className="flex items-center mt-1 mb-3 sm:mb-4">
+                  <span className="text-sm sm:text-base font-semibold text-orange-900 mr-1 sm:mr-2">4.9</span>
+                  <div className="flex space-x-0.5 sm:space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className={`w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0 ${i < 4 ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm sm:text-base text-orange-700 leading-relaxed">
+                  "The Digital Marketing course is comprehensive and up-to-date with current industry trends. 
+                  I learned practical skills that I'm already using in my freelance work. Highly recommend!"
+                </p>
+                <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-orange-200">
+                  <p className="text-xs sm:text-sm text-orange-600">
+                    <span className="font-semibold">Course completed:</span> 1 month ago
+                  </p>
+                </div>
+              </div>
+
+              {/* Review 3 */}
+              <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl shadow-lg border border-orange-200 p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center mb-2 sm:mb-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-semibold text-orange-900 truncate">Neha Gupta</h4>
+                    <p className="text-xs sm:text-sm text-orange-600 truncate">Web Development</p>
+                  </div>
+                </div>
+                <div className="flex items-center mt-1 mb-3 sm:mb-4">
+                  <span className="text-sm sm:text-base font-semibold text-orange-900 mr-1 sm:mr-2">5.0</span>
+                  <div className="flex space-x-0.5 sm:space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm sm:text-base text-orange-700 leading-relaxed">
+                  "Amazing learning experience! The Web Development course covers everything from basics to advanced 
+                  concepts. I built a portfolio website during the course and got hired as a junior developer."
+                </p>
+                <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-orange-200">
+                  <p className="text-xs sm:text-sm text-orange-600">
+                    <span className="font-semibold">Course completed:</span> 3 weeks ago
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
