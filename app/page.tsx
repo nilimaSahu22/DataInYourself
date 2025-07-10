@@ -14,6 +14,21 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
+  // Handle hash navigation for testimonials
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash === '#testimonials') {
+      const testimonialsSection = document.getElementById('testimonials');
+      if (testimonialsSection) {
+        setTimeout(() => {
+          testimonialsSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }, 500);
+      }
+    }
+  }, []);
+
   // Search function
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -484,7 +499,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials and Reviews Section */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-white to-orange-50">
+      <section id="testimonials" className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-white to-orange-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-900 mb-8 sm:mb-12 md:mb-16">
             What Our Students Say
