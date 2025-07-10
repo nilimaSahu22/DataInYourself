@@ -1,0 +1,17 @@
+# wrangler.toml
+name = "datainyourself-server"
+type = "javascript"
+
+[vars]
+MONGODB_URI = "mongodb+srv://username:password@cluster.mongodb.net/datainyourself"
+PORT = "3000"
+# JWT_SECRET = "your_jwt_secret_here"
+# ADMIN_USERNAME = "admin"
+# ADMIN_PASSWORD = "admin123"
+
+# Uncomment and configure the following as needed
+# [triggers]
+# crons = ["0 0 * * *"]
+
+# [env.production.vars]
+# MONGODB_URI = "mongodb+srv://username:password@cluster.mongodb.net/datainyourself" 
