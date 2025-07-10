@@ -2,16 +2,9 @@
 name = "datainyourself-server"
 type = "javascript"
 
-[vars]
-MONGODB_URI = "mongodb+srv://username:password@cluster.mongodb.net/datainyourself"
-PORT = "3000"
-# JWT_SECRET = "your_jwt_secret_here"
-# ADMIN_USERNAME = "admin"
-# ADMIN_PASSWORD = "admin123"
+compatibility_date = "2025-07-10"
 
-# Uncomment and configure the following as needed
-# [triggers]
-# crons = ["0 0 * * *"]
-
-# [env.production.vars]
-# MONGODB_URI = "mongodb+srv://username:password@cluster.mongodb.net/datainyourself" 
+# KV namespace is configured in wrangler.jsonc
+# Add custom environment variables below if needed
+# [vars]
+# MY_CUSTOM_VAR = "value" 
