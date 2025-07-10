@@ -296,27 +296,27 @@ const AboutUs = () => {
                   value={formData.course}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white text-gray-800"
                 >
-                  <option value="">Select a course</option>
-                  <option value="Data Analyst">Data Analyst</option>
-                  <option value="Business Analyst">Business Analyst</option>
-                  <option value="Data Science">Data Science</option>
-                  <option value="SQL Analyst">SQL Analyst</option>
-                  <option value="Machine Learning">Machine Learning</option>
-                  <option value="Python for Beginners">Python for Beginners</option>
-                  <option value="Power BI / Tableau">Power BI / Tableau</option>
-                  <option value="Digital Marketing">Digital Marketing</option>
-                  <option value="Placement Ready">Placement Ready</option>
-                  <option value="Web Developer">Web Developer</option>
-                  <option value="Cyber Security">Cyber Security</option>
-                  <option value="Cloud Engineer">Cloud Engineer</option>
-                  <option value="Prompt Engineer">Prompt Engineer</option>
-                  <option value="Product Management">Product Management</option>
-                  <option value="Finance Analyst">Finance Analyst</option>
-                  <option value="AutoCAD AutoDesk">AutoCAD AutoDesk</option>
-                  <option value="Autodesk Revit">Autodesk Revit</option>
-                  <option value="STAAD Pro">STAAD Pro</option>
+                  <option value="" className="text-gray-800">Select a course</option>
+                  <option value="Data Analyst" className="text-gray-800">Data Analyst</option>
+                  <option value="Business Analyst" className="text-gray-800">Business Analyst</option>
+                  <option value="Data Science" className="text-gray-800">Data Science</option>
+                  <option value="SQL Analyst" className="text-gray-800">SQL Analyst</option>
+                  <option value="Machine Learning" className="text-gray-800">Machine Learning</option>
+                  <option value="Python for Beginners" className="text-gray-800">Python for Beginners</option>
+                  <option value="Power BI / Tableau" className="text-gray-800">Power BI / Tableau</option>
+                  <option value="Digital Marketing" className="text-gray-800">Digital Marketing</option>
+                  <option value="Placement Ready" className="text-gray-800">Placement Ready</option>
+                  <option value="Web Developer" className="text-gray-800">Web Developer</option>
+                  <option value="Cyber Security" className="text-gray-800">Cyber Security</option>
+                  <option value="Cloud Engineer" className="text-gray-800">Cloud Engineer</option>
+                  <option value="Prompt Engineer" className="text-gray-800">Prompt Engineer</option>
+                  <option value="Product Management" className="text-gray-800">Product Management</option>
+                  <option value="Finance Analyst" className="text-gray-800">Finance Analyst</option>
+                  <option value="AutoCAD AutoDesk" className="text-gray-800">AutoCAD AutoDesk</option>
+                  <option value="Autodesk Revit" className="text-gray-800">Autodesk Revit</option>
+                  <option value="STAAD Pro" className="text-gray-800">STAAD Pro</option>
                 </select>
               </div>
               

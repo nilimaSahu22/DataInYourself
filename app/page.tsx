@@ -446,28 +446,28 @@ export default function Home() {
                   <select
                     id="course"
                     name="course"
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 bg-white"
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-gray-800 bg-white"
                     suppressHydrationWarning
                   >
-                    <option value="">Select a course</option>
-                    <option value="data-analyst">Data Analyst</option>
-                    <option value="business-analyst">Business Analyst</option>
-                    <option value="data-science">Data Science</option>
-                    <option value="sql-analyst">SQL Analyst</option>
-                    <option value="machine-learning">Machine Learning</option>
-                    <option value="python-beginners">Python for Beginners</option>
-                    <option value="power-bi-tableau">Power BI / Tableau Mastery</option>
-                    <option value="digital-marketing">Digital Marketing</option>
-                    <option value="placement-ready">Placement Ready</option>
-                    <option value="web-developer">Web Developer</option>
-                    <option value="cyber-security">Cyber Security</option>
-                    <option value="cloud-engineer">Cloud Engineer</option>
-                    <option value="prompt-engineer">Prompt Engineer</option>
-                    <option value="product-management">Product Management</option>
-                    <option value="finance-analyst">Finance Analyst</option>
-                    <option value="autocad">AutoCAD AutoDesk</option>
-                    <option value="revit">Autodesk Revit</option>
-                    <option value="staad-pro">STAAD Pro</option>
+                    <option value="" className="text-gray-800">Select a course</option>
+                    <option value="data-analyst" className="text-gray-800">Data Analyst</option>
+                    <option value="business-analyst" className="text-gray-800">Business Analyst</option>
+                    <option value="data-science" className="text-gray-800">Data Science</option>
+                    <option value="sql-analyst" className="text-gray-800">SQL Analyst</option>
+                    <option value="machine-learning" className="text-gray-800">Machine Learning</option>
+                    <option value="python-beginners" className="text-gray-800">Python for Beginners</option>
+                    <option value="power-bi-tableau" className="text-gray-800">Power BI / Tableau Mastery</option>
+                    <option value="digital-marketing" className="text-gray-800">Digital Marketing</option>
+                    <option value="placement-ready" className="text-gray-800">Placement Ready</option>
+                    <option value="web-developer" className="text-gray-800">Web Developer</option>
+                    <option value="cyber-security" className="text-gray-800">Cyber Security</option>
+                    <option value="cloud-engineer" className="text-gray-800">Cloud Engineer</option>
+                    <option value="prompt-engineer" className="text-gray-800">Prompt Engineer</option>
+                    <option value="product-management" className="text-gray-800">Product Management</option>
+                    <option value="finance-analyst" className="text-gray-800">Finance Analyst</option>
+                    <option value="autocad" className="text-gray-800">AutoCAD AutoDesk</option>
+                    <option value="revit" className="text-gray-800">Autodesk Revit</option>
+                    <option value="staad-pro" className="text-gray-800">STAAD Pro</option>
                   </select>
                 </div>
 
