@@ -11,7 +11,13 @@ export default function CourseDetail() {
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmissionModalOpen, setIsAdmissionModalOpen] = useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+  const [downloadFormData, setDownloadFormData] = useState({
     name: '',
     email: '',
     phone: ''
@@ -45,6 +51,14 @@ export default function CourseDetail() {
     }));
   };
 
+  const handleDownloadInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setDownloadFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleAdmissionSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you can add logic to handle form submission
@@ -54,9 +68,34 @@ export default function CourseDetail() {
     setFormData({ name: '', email: '', phone: '' });
   };
 
+  const handleDownloadSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you can add logic to handle download form submission
+    console.log('Download form submitted for course:', course?.title, downloadFormData);
+    
+    // Trigger the actual download
+    if (course?.pdfSrc) {
+      const link = document.createElement('a');
+      link.href = course.pdfSrc;
+      link.download = `${course.title} Syllabus.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    alert(`Thank you! The syllabus for ${course?.title} is being downloaded.`);
+    setIsDownloadModalOpen(false);
+    setDownloadFormData({ name: '', email: '', phone: '' });
+  };
+
   const handleEnrollClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsAdmissionModalOpen(true);
+  };
+
+  const handleDownloadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsDownloadModalOpen(true);
   };
 
   if (loading) {
@@ -128,13 +167,12 @@ export default function CourseDetail() {
                   </div>
                   <div className="text-center p-4 bg-orange-50 rounded-xl">
                     {course.pdfSrc ? (
-                      <a 
-                        href={course.pdfSrc}
-                        download
+                      <button 
+                        onClick={handleDownloadClick}
                         className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-block text-center"
                       >
                         Download Syllabus
-                      </a>
+                      </button>
                     ) : (
                       <button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                         Download Syllabus
@@ -292,6 +330,80 @@ export default function CourseDetail() {
                 className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Submit Enrollment
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Download Form Modal */}
+      {isDownloadModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Download Syllabus for {course.title}</h3>
+              <button 
+                onClick={() => setIsDownloadModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleDownloadSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="downloadName" className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="downloadName"
+                  name="name"
+                  value={downloadFormData.name}
+                  onChange={handleDownloadInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your full name"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="downloadEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="downloadEmail"
+                  name="email"
+                  value={downloadFormData.email}
+                  onChange={handleDownloadInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your email address"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="downloadPhone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  id="downloadPhone"
+                  name="phone"
+                  value={downloadFormData.phone}
+                  onChange={handleDownloadInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Download Syllabus
               </button>
             </form>
           </div>
