@@ -1,0 +1,10 @@
+# wrangler.toml
+name = "datainyourself-server"
+type = "javascript"
+
+compatibility_date = "2025-07-10"
+
+# KV namespace is configured in wrangler.jsonc
+# Add custom environment variables below if needed
+# [vars]
+# MY_CUSTOM_VAR = "value" 
