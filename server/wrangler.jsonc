@@ -3,10 +3,11 @@
   "name": "server",
   "main": "src/index.ts",
   "compatibility_date": "2025-07-10",
+  // Add this to your wrangler.jsonc
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "your-kv-namespace-id-here"
+      "id": "48f39d441369476188564b0f5902609d",
     }
   ]
   // "compatibility_flags": [
