@@ -9,4 +9,5 @@ export interface Course {
   level?: string;
   badge?: string;
   rating?: number;
+  pdfSrc?: string;
 } 
