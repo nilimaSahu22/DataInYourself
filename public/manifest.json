@@ -1,0 +1,27 @@
+{
+  "name": "DataInYourself - Computer Training Platform",
+  "short_name": "DataInYourself",
+  "description": "India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FFA500",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon_assets/diy.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon_assets/diy.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "en",
+  "dir": "ltr"
+} 

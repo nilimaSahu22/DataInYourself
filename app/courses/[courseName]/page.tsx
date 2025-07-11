@@ -111,14 +111,9 @@ export default function CourseDetail() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
               {/* Course Info */}
               <div className="lg:col-span-2">
-                <div className="flex items-center mb-6">
-                  <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mr-4">
-                    <img src={course.iconSrc} alt={course.iconAlt} className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-orange-900">{course.title}</h1>
-                    <p className="text-orange-600 font-medium">{course.level}</p>
-                  </div>
+                <div className="mb-6">
+                  <h1 className="text-3xl sm:text-4xl font-bold text-orange-900 mb-2">{course.title}</h1>
+                  <p className="text-orange-600 font-medium">{course.level}</p>
                 </div>
                 
                 <p className="text-lg text-orange-700 mb-6 leading-relaxed">
@@ -132,9 +127,19 @@ export default function CourseDetail() {
                     <div className="text-sm text-orange-700">Duration</div>
                   </div>
                   <div className="text-center p-4 bg-orange-50 rounded-xl">
-                    <button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
-                      Download Syllabus
-                    </button>
+                    {course.pdfSrc ? (
+                      <a 
+                        href={course.pdfSrc}
+                        download
+                        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 inline-block text-center"
+                      >
+                        Download Syllabus
+                      </a>
+                    ) : (
+                      <button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                        Download Syllabus
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

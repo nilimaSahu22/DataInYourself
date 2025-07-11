@@ -67,7 +67,6 @@ export const metadata: Metadata = {
   },
   // Additional metadata for better favicon support
   manifest: '/manifest.json',
-  themeColor: '#FFA500',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -80,6 +79,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: '#FFA500',
 };
 
 export default function RootLayout({
