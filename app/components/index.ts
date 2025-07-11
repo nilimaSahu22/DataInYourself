@@ -8,3 +8,4 @@ export { default as Franchise } from './features/Franchise';
 
 // UI components
 export { default as PlacementCourseCard } from './ui/PlacementCourseCard';
+export { default as VideoBackground } from './ui/VideoBackground';

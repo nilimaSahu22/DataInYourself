@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import PlacementCourseCard from "./components/ui/PlacementCourseCard";
+import VideoBackground from "./components/ui/VideoBackground";
 import { coursesData } from "./data/courses";
 
 export default function Home() {
@@ -89,19 +90,23 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-4 sm:pb-6 md:pb-8 lg:pb-10 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-50 to-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-orange-900 mb-4 sm:mb-6">
+      <VideoBackground
+        desktopVideo="/media_assets/hero_laptop.MP4"
+        mobileVideo="/media_assets/hero_mob.MP4"
+        className="pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-4 sm:pb-6 md:pb-8 lg:pb-10 px-4 sm:px-6 md:px-8 lg:px-8 min-h-screen flex items-center justify-center"
+      >
+        <div className="max-w-7xl mx-auto text-center w-full flex flex-col items-center justify-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-orange-900 mb-4 sm:mb-6 text-center">
             Welcome to <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">DataInYourself</span>
           </h1>
-          <p className="text-base sm:text-lg text-orange-600 font-medium mb-3 sm:mb-4">
+          <p className="text-base sm:text-lg text-orange-600 font-medium mb-3 sm:mb-4 text-center">
             by Rudriva Technology
           </p>
-          <p className="text-lg sm:text-xl text-orange-800 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
+          <p className="text-lg sm:text-xl text-orange-800 mb-6 sm:mb-8 max-w-3xl mx-auto px-4 text-center">
             India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.
           </p>
         </div>
-      </section>
+      </VideoBackground>
 
       {/* Placement Courses Section */}
       <section className="py-4 sm:py-6 md:py-8 lg:py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-white">
