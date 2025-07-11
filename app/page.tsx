@@ -71,12 +71,18 @@ export default function Home() {
     { src: '/icon_assets/tech-mahindra.png', alt: 'Tech Mahindra' },
   ];
 
-  // Carousel state for mobile
-  const [currentLogo, setCurrentLogo] = useState(0);
+  // Carousel state for mobile - continuous scrolling
+  const [scrollPosition, setScrollPosition] = useState(0);
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentLogo((prev) => (prev + 1) % companyLogos.length);
-    }, 2000);
+      setScrollPosition((prev) => {
+        const logoWidth = 160; // 140px width + 20px gap
+        const totalWidth = logoWidth * companyLogos.length;
+        const newPosition = prev + 4; // Increased from 1 to 2 for faster scrolling
+        // Reset to start when we've scrolled through all logos
+        return newPosition >= totalWidth ? 0 : newPosition;
+      });
+    }, 50); // Reduced from 50ms to 30ms for faster animation
     return () => clearInterval(interval);
   }, [companyLogos.length]);
 
@@ -228,18 +234,40 @@ export default function Home() {
       {/* Company Logos Section */}
       <section className="bg-gradient-to-r from-orange-100 to-orange-200 py-6 sm:py-8 border-t border-b border-orange-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-8">
-          {/* Mobile: Carousel, show one logo at a time */}
-          <div className="flex justify-center items-center sm:hidden" style={{ minHeight: 80 }}>
-            <div className="relative h-20 w-[140px] flex items-center justify-center">
-              <Image
-                key={companyLogos[currentLogo].alt}
-                src={companyLogos[currentLogo].src}
-                alt={companyLogos[currentLogo].alt}
-                fill
-                sizes="140px"
-                className="object-contain"
-                priority
-              />
+          {/* Mobile: Continuous scrolling carousel */}
+          <div className="flex justify-center items-center sm:hidden overflow-hidden" style={{ minHeight: 80 }}>
+            <div 
+              className="flex items-center gap-5 transition-transform duration-1000 ease-linear"
+              style={{ 
+                transform: `translateX(-${scrollPosition}px)`,
+                width: `${companyLogos.length * 160}px` // 140px logo + 20px gap
+              }}
+            >
+              {companyLogos.map((logo, index) => (
+                <div key={`${logo.alt}-${index}`} className="relative h-20 w-[140px] flex items-center justify-center flex-shrink-0">
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    fill
+                    sizes="140px"
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              ))}
+              {/* Duplicate logos for seamless loop */}
+              {companyLogos.map((logo, index) => (
+                <div key={`${logo.alt}-duplicate-${index}`} className="relative h-20 w-[140px] flex items-center justify-center flex-shrink-0">
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    fill
+                    sizes="140px"
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              ))}
             </div>
           </div>
           {/* Tablet: Show 3-4 logos in a row */}
