@@ -28,7 +28,7 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
     <Link href={`/courses/${courseSlug}`} className="block w-full h-full group">
       <article className="relative w-full h-full bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-orange-200">
         {/* Main Image Container */}
-        <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96 bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-start justify-center px-6 sm:px-8 pt-6 sm:pt-8 pb-0">
+        <div className="relative w-full bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-start justify-center px-6 sm:px-8 pt-6 sm:pt-8 pb-0">
           {/* Image */}
           <div className="relative w-full h-full flex items-center justify-center">
             <img 
@@ -52,6 +52,13 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
           
           {/* Subtle corner accent */}
           <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400/10 to-transparent rounded-bl-full"></div>
+        </div>
+        
+        {/* Course Title Section */}
+        <div className="px-4 sm:px-5 py-3 sm:py-4 bg-white">
+          <h3 className="text-lg sm:text-xl font-bold text-orange-900 text-center leading-tight group-hover:text-orange-700 transition-colors duration-300">
+            {title}
+          </h3>
         </div>
         
         {/* Duration Section */}
