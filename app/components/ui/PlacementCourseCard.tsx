@@ -12,76 +12,56 @@ interface PlacementCourseCardProps {
   rating?: number; // out of 5
 }
 
-const defaultRating = 4;
-
 export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   id,
   iconSrc,
   iconAlt,
   title,
-  duration,
-  rating = defaultRating,
+  // duration,
+  // rating = 4,
 }) => {
   const courseSlug = generateCourseSlug(title);
-  
+
   return (
     <Link href={`/courses/${courseSlug}`} className="block w-full h-full group">
-      <article className="relative w-full h-full bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-orange-200">
-        {/* Main Image Container */}
-        <div className="relative w-full bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-start justify-center px-6 sm:px-8 pt-6 sm:pt-8 pb-0">
-          {/* Image */}
-          <div className="relative w-full h-full flex items-center justify-center">
-            <img 
-              src={iconSrc} 
-              alt={iconAlt} 
-              className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
-          
-          {/* Rating Badge */}
-          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 bg-white/95 backdrop-blur-md rounded-2xl px-4 py-2 shadow-lg border border-white/40">
-            <div className="flex items-center space-x-2">
-              <span className="text-orange-600 text-lg sm:text-xl font-bold">{rating}</span>
-              <div className="flex items-center">
-                <span className="text-yellow-500 text-lg sm:text-xl">★</span>
-                <span className="text-gray-500 text-xs ml-1 font-medium">/5</span>
-              </div>
-            </div>
-          </div>
-          
-          {/* Subtle corner accent */}
-          <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-orange-400/10 to-transparent rounded-bl-full"></div>
+      <article className="relative w-full h-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+        {/* Image Section */}
+        <div className="w-full h-40 sm:h-48 bg-[#0a1a3a] flex items-center justify-center p-4">
+          <img
+            src={iconSrc}
+            alt={iconAlt}
+            className="h-full object-contain drop-shadow-lg"
+            loading="lazy"
+          />
         </div>
-        
-        {/* Course Title Section */}
-        <div className="px-4 sm:px-5 py-3 sm:py-4 bg-white">
-          <h3 className="text-lg sm:text-xl font-bold text-orange-900 text-center leading-tight group-hover:text-orange-700 transition-colors duration-300">
+        {/* Title */}
+        <div className="px-4 pt-4 pb-2 bg-white">
+          <h3 className="text-lg sm:text-2xl text-center text-[#222]  mb-2">
             {title}
           </h3>
-        </div>
-        
-        {/* Duration Section */}
-        <div className="relative p-4 sm:p-5 bg-gradient-to-r from-orange-500 to-orange-600">
-          {/* Subtle pattern overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-transparent to-white/5"></div>
-          
-          <div className="relative flex justify-between items-center text-white">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              <span className="text-sm sm:text-base font-semibold tracking-wide">Duration</span>
-            </div>
-            <span className="text-sm sm:text-base font-bold bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
-              {duration}
-            </span>
+          {/* Stars */}
+          <div className="flex items-center justify-start mb-2">
+            {[...Array(4)].map((_, i) => (
+              <svg
+                key={i}
+                className="w-5 h-5 text-yellow-400 mr-1"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+            {/* 5th star as outline for 4/5 rating */}
+            <svg
+              className="w-5 h-5 text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
           </div>
-          
-          {/* Bottom accent line */}
-          <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
         </div>
-        
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-400/5 via-transparent to-orange-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
       </article>
     </Link>
   );
