@@ -60,8 +60,8 @@ app.get('/', (c) => {
 // Create Inquiry
 app.post('/inquiry', async (c) => {
   try {
-    const { name, phoneNumber, emailId, subject } = await c.req.json()
-    if (!name || !phoneNumber || !emailId || !subject) {
+    const { name, phoneNumber, emailId, subject, dateTime } = await c.req.json()
+    if (!name || !phoneNumber || !emailId || !subject || !dateTime) {
       return c.json({ error: 'Missing required fields' }, 400)
     }
     const id = generateUUID()
@@ -73,6 +73,7 @@ app.post('/inquiry', async (c) => {
       subject,
       called: false,
       description: '',
+      dateTime,
     }
     await c.env.KV.put(`inquiry:${id}`, JSON.stringify(inquiry))
     return c.json({ message: 'Inquiry saved successfully', id }, 201)

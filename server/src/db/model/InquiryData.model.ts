@@ -7,4 +7,5 @@ export interface IInquiryData {
   subject: string
   called: boolean
   description: string
+  dateTime: string
 } 
