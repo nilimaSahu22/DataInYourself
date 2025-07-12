@@ -143,7 +143,9 @@ app.post('/contact', async (c) => {
     const id = generateUUID()
     const fullName = `${firstName} ${lastName}`.trim()
     const subject = course ? `Contact Form - ${course}` : 'Contact Form Inquiry'
-    const description = message || `Interested in: ${course || 'General inquiry'}`
+    const description = message 
+      ? `User Message: ${message}` 
+      : `Interested in: ${course || 'General inquiry'}`
     
     const inquiry: IInquiryData = {
       id,
