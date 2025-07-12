@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import PlacementCourseCard from "./components/ui/PlacementCourseCard";
 import VideoBackground from "./components/ui/VideoBackground";
 import { coursesData } from "./data/courses";
@@ -9,11 +10,26 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState(coursesData);
   const [isClient, setIsClient] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0); // Add animation trigger key
+  const pathname = usePathname();
 
   // Handle hydration
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Trigger animation when user navigates to homepage or on initial load
+  useEffect(() => {
+    if (isClient && pathname === '/') {
+      // Reset animation key to trigger re-animation
+      setAnimationKey(0);
+      // Increment after a short delay to ensure the reset is processed
+      const timer = setTimeout(() => {
+        setAnimationKey(prev => prev + 1);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isClient, pathname]);
 
   // Handle hash navigation for testimonials
   useEffect(() => {
@@ -164,14 +180,16 @@ export default function Home() {
           )}
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
-            {filteredCourses.map((course) => (
+            {filteredCourses.map((course, index) => (
               <PlacementCourseCard
-                key={course.id}
+                key={`${course.id}-${animationKey}`}
                 id={course.id}
                 iconSrc={course.iconSrc}
                 iconAlt={course.iconAlt}
                 title={course.title}
                 duration={course.duration}
+                index={index}
+                animationKey={animationKey}
               />
             ))}
           </div>
