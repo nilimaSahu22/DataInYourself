@@ -22,8 +22,8 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   iconSrc,
   iconAlt,
   title,
-  // duration,
-  // rating = 4,
+  duration,
+  rating = 4,
   index = 0,
   animationKey = 0,
   shouldAnimate = false,
@@ -34,11 +34,13 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   // Calculate delay based on index for staggered animation
   const animationDelay = index * 500; // 500ms delay between each card for slower animation
 
-  // Reset and trigger animation when animationKey changes and shouldAnimate is true
+  // Single animation control effect
   useEffect(() => {
     if (shouldAnimate) {
+      // Reset visibility first
       setIsVisible(false);
       
+      // Then trigger animation after delay
       const timer = setTimeout(() => {
         setIsVisible(true);
       }, animationDelay);
@@ -48,14 +50,7 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
       // If not animating, show immediately
       setIsVisible(true);
     }
-  }, [animationKey, animationDelay, shouldAnimate]);
-
-  // Reset visibility when animationKey changes
-  useEffect(() => {
-    if (shouldAnimate) {
-      setIsVisible(false);
-    }
-  }, [animationKey, shouldAnimate]);
+  }, [shouldAnimate, animationDelay]);
 
   return (
     <Link href={`/courses/${courseSlug}`} className="block w-full h-full group">
@@ -77,6 +72,16 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
           />
           {/* Subtle overlay for better text contrast */}
           <div className="absolute inset-0 bg-black/10"></div>
+          
+          {/* Rating Badge - Top Right Corner */}
+          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 shadow-lg">
+            <div className="flex items-center space-x-1">
+              <span className="text-xs font-semibold text-orange-600">{rating}</span>
+              <svg className="w-3 h-3 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            </div>
+          </div>
         </div>
         
         {/* Content Section - Fixed height for consistency */}
@@ -88,27 +93,14 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
             </h3>
           </div>
           
-          {/* Star Rating - Fixed position at bottom */}
-          <div className="flex items-center justify-center space-x-1">
-            {[...Array(4)].map((_, i) => (
-              <svg
-                key={i}
-                className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          {/* Course Duration - Fixed position at bottom */}
+          <div className="flex items-center justify-center">
+            <div className="flex items-center space-x-1 bg-orange-50 rounded-full px-3 py-1">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            ))}
-            {/* 5th star as outline for 4/5 rating */}
-            <svg
-              className="w-3 h-3 sm:w-4 sm:h-4 text-gray-300 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
+              <span className="text-xs sm:text-sm font-medium text-orange-700">{duration}</span>
+            </div>
           </div>
         </div>
       </article>
