@@ -12,6 +12,9 @@ const AboutUs = () => {
     phone: '',
     course: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const handleContactClick = useContactNavigation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -22,13 +25,51 @@ const AboutUs = () => {
     }));
   };
 
-  const handleAdmissionSubmit = (e: React.FormEvent) => {
+  const handleAdmissionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you can add logic to handle form submission
-    console.log('Admission form submitted:', formData);
-    alert('Thank you for your interest! We will contact you soon to discuss your admission.');
-    setIsAdmissionModalOpen(false);
-    setFormData({ name: '', email: '', phone: '', course: '' });
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      
+      // Map form data to backend API structure
+      const inquiryData = {
+        name: formData.name,
+        phoneNumber: formData.phone,
+        emailId: formData.email,
+        subject: formData.course,
+        dateTime: new Date().toISOString()
+      };
+
+      const response = await fetch(`${serverUrl}/inquiry`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inquiryData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: '', email: '', phone: '', course: '' });
+        // Close modal after a short delay to show success message
+        setTimeout(() => {
+          setIsAdmissionModalOpen(false);
+          setSubmitSuccess(false);
+        }, 2000);
+      } else {
+        setSubmitError(result.error || 'Failed to submit inquiry. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting inquiry:', error);
+      setSubmitError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleAdmissionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -237,96 +278,134 @@ const AboutUs = () => {
               </button>
             </div>
             
-            <form onSubmit={handleAdmissionSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your full name"
-                />
+            {submitSuccess ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Application Submitted!</h3>
+                <p className="text-gray-600">Thank you for your interest! We will contact you soon to discuss your admission.</p>
               </div>
-              
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your email address"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your phone number"
-                />
-              </div>
+            ) : (
+              <form onSubmit={handleAdmissionSubmit} className="space-y-6">
+                {submitError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex">
+                      <svg className="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="ml-3 text-sm text-red-700">{submitError}</p>
+                    </div>
+                  </div>
+                )}
 
-              <div>
-                <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-2">
-                  Interested Course *
-                </label>
-                <select
-                  id="course"
-                  name="course"
-                  value={formData.course}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white text-gray-800"
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    placeholder="Enter your email address"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="course" className="block text-sm font-medium text-gray-700 mb-2">
+                    Interested Course *
+                  </label>
+                  <select
+                    id="course"
+                    name="course"
+                    value={formData.course}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white text-gray-800 disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="" className="text-gray-800">Select a course</option>
+                    <option value="Data Analyst" className="text-gray-800">Data Analyst</option>
+                    <option value="Business Analyst" className="text-gray-800">Business Analyst</option>
+                    <option value="Data Science" className="text-gray-800">Data Science</option>
+                    <option value="SQL Analyst" className="text-gray-800">SQL Analyst</option>
+                    <option value="Machine Learning" className="text-gray-800">Machine Learning</option>
+                    <option value="Python for Beginners" className="text-gray-800">Python for Beginners</option>
+                    <option value="Power BI / Tableau" className="text-gray-800">Power BI / Tableau</option>
+                    <option value="Digital Marketing" className="text-gray-800">Digital Marketing</option>
+                    <option value="Placement Ready" className="text-gray-800">Placement Ready</option>
+                    <option value="Web Developer" className="text-gray-800">Web Developer</option>
+                    <option value="Cyber Security" className="text-gray-800">Cyber Security</option>
+                    <option value="Cloud Engineer" className="text-gray-800">Cloud Engineer</option>
+                    <option value="Prompt Engineer" className="text-gray-800">Prompt Engineer</option>
+                    <option value="Product Management" className="text-gray-800">Product Management</option>
+                    <option value="Finance Analyst" className="text-gray-800">Finance Analyst</option>
+                    <option value="AutoCAD AutoDesk" className="text-gray-800">AutoCAD AutoDesk</option>
+                    <option value="Autodesk Revit" className="text-gray-800">Autodesk Revit</option>
+                    <option value="STAAD Pro" className="text-gray-800">STAAD Pro</option>
+                  </select>
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  <option value="" className="text-gray-800">Select a course</option>
-                  <option value="Data Analyst" className="text-gray-800">Data Analyst</option>
-                  <option value="Business Analyst" className="text-gray-800">Business Analyst</option>
-                  <option value="Data Science" className="text-gray-800">Data Science</option>
-                  <option value="SQL Analyst" className="text-gray-800">SQL Analyst</option>
-                  <option value="Machine Learning" className="text-gray-800">Machine Learning</option>
-                  <option value="Python for Beginners" className="text-gray-800">Python for Beginners</option>
-                  <option value="Power BI / Tableau" className="text-gray-800">Power BI / Tableau</option>
-                  <option value="Digital Marketing" className="text-gray-800">Digital Marketing</option>
-                  <option value="Placement Ready" className="text-gray-800">Placement Ready</option>
-                  <option value="Web Developer" className="text-gray-800">Web Developer</option>
-                  <option value="Cyber Security" className="text-gray-800">Cyber Security</option>
-                  <option value="Cloud Engineer" className="text-gray-800">Cloud Engineer</option>
-                  <option value="Prompt Engineer" className="text-gray-800">Prompt Engineer</option>
-                  <option value="Product Management" className="text-gray-800">Product Management</option>
-                  <option value="Finance Analyst" className="text-gray-800">Finance Analyst</option>
-                  <option value="AutoCAD AutoDesk" className="text-gray-800">AutoCAD AutoDesk</option>
-                  <option value="Autodesk Revit" className="text-gray-800">Autodesk Revit</option>
-                  <option value="STAAD Pro" className="text-gray-800">STAAD Pro</option>
-                </select>
-              </div>
-              
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Submit Application
-              </button>
-            </form>
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Application'
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}

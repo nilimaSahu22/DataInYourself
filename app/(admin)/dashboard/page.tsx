@@ -1,13 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
 import AdminTable from "../../components/AdminTable";
+import { clearAuthData } from "../../utils/authUtils";
 
 export default function DashboardPage() {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("adminLoggedIn");
-    localStorage.removeItem("adminUsername");
+    clearAuthData();
     router.push("/");
   };
 

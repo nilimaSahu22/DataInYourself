@@ -12,7 +12,8 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+    const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+    console.log(serverUrl);
     fetch(`${serverUrl}/login`, {
       method: "POST",
       headers: {
@@ -25,8 +26,11 @@ export default function LoginPage() {
         if (data.error) {
           setError(data.error);
         } else {
+          // Store JWT token and admin data
           localStorage.setItem("adminLoggedIn", "true");
           localStorage.setItem("adminUsername", data.admin.username);
+          localStorage.setItem("adminToken", data.token);
+          localStorage.setItem("adminData", JSON.stringify(data.admin));
           router.push("/dashboard");
         }
       })

@@ -23,6 +23,9 @@ export default function CourseDetail() {
     email: '',
     phone: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
     const courseSlug = decodeURIComponent(params.courseName as string);
@@ -60,13 +63,42 @@ export default function CourseDetail() {
     }));
   };
 
-  const handleAdmissionSubmit = (e: React.FormEvent) => {
+  const handleAdmissionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you can add logic to handle form submission
-    console.log('Admission form submitted for course:', course?.title, formData);
-    alert(`Thank you for your interest in the ${course?.title} course! We will contact you soon to discuss your admission.`);
-    setIsAdmissionModalOpen(false);
-    setFormData({ name: '', email: '', phone: '' });
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      const inquiryData = {
+        name: formData.name,
+        phoneNumber: formData.phone,
+        emailId: formData.email,
+        subject: course.title,
+        dateTime: new Date().toISOString()
+      };
+      const response = await fetch(`${serverUrl}/inquiry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inquiryData),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: '', email: '', phone: '' });
+        setTimeout(() => {
+          setIsAdmissionModalOpen(false);
+          setSubmitSuccess(false);
+        }, 2000);
+      } else {
+        setSubmitError(result.error || 'Failed to submit enrollment. Please try again.');
+      }
+    } catch (error) {
+      setSubmitError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleDownloadSubmit = (e: React.FormEvent) => {
@@ -240,12 +272,6 @@ export default function CourseDetail() {
               Contact us today to enroll in the {course.title} course and take the first step towards your career goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={handleEnrollClick}
-                className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
-              >
-                Enroll Now
-              </button>
               <a 
                 href="tel:+919558092200"
                 className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
@@ -265,7 +291,7 @@ export default function CourseDetail() {
 
       {/* Admission Form Modal */}
       {isAdmissionModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed text-black inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-gray-900">Enroll in {course.title}</h3>

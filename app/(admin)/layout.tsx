@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { clearAuthData } from "../utils/authUtils";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -10,21 +11,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     // Check authentication on component mount
-    const checkAuth = () => {
+    const checkAuth = async () => {
+      const adminToken = localStorage.getItem("adminToken");
       const adminLoggedIn = localStorage.getItem("adminLoggedIn");
       const adminUsername = localStorage.getItem("adminUsername");
       
-      // Check if user is logged in and has the correct username
-      const expectedUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin@datainyourself";
-      if (adminLoggedIn === "true" && adminUsername === expectedUsername) {
-        setIsAuthenticated(true);
-      } else {
+      if (!adminToken || adminLoggedIn !== "true" || !adminUsername) {
         // Clear any invalid auth data
-        localStorage.removeItem("adminLoggedIn");
-        localStorage.removeItem("adminUsername");
-        // Redirect to login
+        clearAuthData();
+        router.push("/login");
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate JWT token with backend
+      try {
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+        const response = await fetch(`${serverUrl}/verify-token`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${adminToken}`
+          }
+        });
+
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
+          // Token is invalid, clear auth data and redirect
+          clearAuthData();
+          router.push("/login");
+        }
+      } catch (error) {
+        // Network error or other issues, clear auth data and redirect
+        clearAuthData();
         router.push("/login");
       }
+      
       setIsLoading(false);
     };
 
