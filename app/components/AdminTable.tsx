@@ -62,11 +62,11 @@ const getColumnWidthClass = (columnKey: string): string => {
     case "phone":
       return "w-32 min-w-[8rem]"; // Fixed width for phone
     case "email":
-      return "w-40 min-w-[10rem] max-w-[12rem]"; // Flexible email width
+      return "w-36 min-w-[9rem] max-w-[9rem]"; // Shrunk email width
     case "subject":
-      return "w-36 min-w-[9rem] max-w-[10rem]"; // Fixed width for subject
+      return "w-32 min-w-[8rem] max-w-[8rem]"; // Shrunk subject width
     case "timestamp":
-      return "w-40 min-w-[10rem]"; // Fixed width for timestamp
+      return "w-36 min-w-[9rem]"; // Fixed width for timestamp
     case "description":
       return "min-w-[12rem] flex-1"; // Flexible width, takes remaining space
     case "called":
