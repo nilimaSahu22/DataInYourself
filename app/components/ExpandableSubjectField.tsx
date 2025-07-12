@@ -1,85 +1,55 @@
 "use client"
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from "react";
+import EditPopup from "./EditPopup";
 
 interface ExpandableSubjectFieldProps {
   value: string;
   rowId: string;
   onChange: (newValue: string) => void;
   disabled?: boolean;
-  placeholder?: string;
 }
 
 export default function ExpandableSubjectField({
   value,
   rowId,
   onChange,
-  disabled = false,
-  placeholder = "Enter subject..."
+  disabled = false
 }: ExpandableSubjectFieldProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(value);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setEditValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (isEditing && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [isEditing]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleDoubleClick = () => {
     if (!disabled) {
-      setIsEditing(true);
+      setIsPopupOpen(true);
     }
   };
 
-  const handleBlur = () => {
-    setIsEditing(false);
-    if (editValue.trim() !== value) {
-      onChange(editValue.trim());
-    }
+  const handleSave = (newValue: string) => {
+    onChange(newValue);
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      setIsEditing(false);
-      if (editValue.trim() !== value) {
-        onChange(editValue.trim());
-      }
-    } else if (e.key === 'Escape') {
-      setIsEditing(false);
-      setEditValue(value);
-    }
-  };
-
-  if (isEditing) {
-    return (
-      <input
-        ref={inputRef}
-        type="text"
-        value={editValue}
-        onChange={(e) => setEditValue(e.target.value)}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        className="w-full px-2 py-1 border border-orange-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm"
-        placeholder={placeholder}
-      />
-    );
-  }
 
   return (
-    <div
-      onDoubleClick={handleDoubleClick}
-      className={`cursor-pointer hover:bg-orange-50 px-2 py-1 rounded transition-colors truncate ${
-        disabled ? 'cursor-not-allowed opacity-50' : ''
-      }`}
-      title={value || placeholder}
-    >
-      {value || <span className="text-gray-400 italic">{placeholder}</span>}
+    <div className="relative w-full">
+      <div
+        onDoubleClick={handleDoubleClick}
+        className={`cursor-pointer hover:bg-orange-50 px-2 py-1 rounded transition-colors break-words ${
+          disabled ? 'cursor-not-allowed opacity-50' : ''
+        }`}
+        title={disabled ? '' : `Double-click to edit: ${value || 'N/A'}`}
+      >
+        {value || 'N/A'}
+      </div>
+      
+      {isPopupOpen && (
+        <EditPopup
+          isOpen={isPopupOpen}
+          onClose={() => setIsPopupOpen(false)}
+          onSave={handleSave}
+          initialValue={value}
+          title="Edit Subject"
+          placeholder="Enter subject..."
+          disabled={disabled}
+        />
+      )}
     </div>
   );
 } 
