@@ -19,6 +19,7 @@ interface InquiryData {
   description: string;
   called: boolean;
   dateTime: string;
+  serialNumber?: number; // Add serial number field for sorting
 }
 
 // Column configuration with width classes
@@ -84,8 +85,8 @@ const sortInquiries = (inquiries: InquiryData[], sortColumn: string, sortDirecti
 
     switch (sortColumn) {
       case "id":
-        aValue = a.id;
-        bValue = b.id;
+        aValue = a.serialNumber || 0;
+        bValue = b.serialNumber || 0;
         break;
       case "name":
         aValue = a.name.toLowerCase();
@@ -254,8 +255,14 @@ export default function AdminTable() {
       });
     }
 
+    // Add serial numbers to filtered data
+    const withSerialNumbers = filtered.map((inq, index) => ({
+      ...inq,
+      serialNumber: index + 1
+    }));
+
     // Then sort
-    return sortInquiries(filtered, sortConfig.column, sortConfig.direction);
+    return sortInquiries(withSerialNumbers, sortConfig.column, sortConfig.direction);
   }, [inquiries, searchTerm, dateRange, sortConfig]);
 
   const handleCalledChange = async (id: string) => {
@@ -347,7 +354,7 @@ export default function AdminTable() {
       case "id":
         return (
           <td key={columnKey} className={`px-3 py-4 font-semibold text-gray-800 ${widthClass}`}>
-            {idx + 1}
+            {inq.serialNumber || 1}
           </td>
         );
       case "name":

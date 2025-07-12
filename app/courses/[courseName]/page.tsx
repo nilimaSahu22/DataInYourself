@@ -420,7 +420,7 @@ export default function CourseDetail() {
                     onClick={handleEnrollClick}
                     className="w-full bg-white text-orange-600 py-3 px-6 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
                   >
-                    Enroll Now
+                    Request Info
                   </button>
                 </div>
               </div>
@@ -456,7 +456,7 @@ export default function CourseDetail() {
           <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-6 sm:p-8 text-white text-center">
             <h2 className="text-2xl font-bold mb-4">Ready to Start Your Journey?</h2>
             <p className="text-lg mb-6 opacity-90">
-              Contact us today to enroll in the {course.title} course and take the first step towards your career goals.
+              Contact us today to get started with the {course.title} course and take the first step towards your career goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
@@ -481,7 +481,7 @@ export default function CourseDetail() {
         <div className="fixed text-black inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Enroll in {course.title}</h3>
+              <h3 className="text-2xl font-bold text-gray-900">Know more about {course.title} course</h3>
               <button 
                 onClick={() => setIsAdmissionModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 text-2xl font-bold"

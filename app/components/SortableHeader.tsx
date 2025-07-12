@@ -35,7 +35,12 @@ export default function SortableHeader({
       newDirection = null;
     }
     
-    onSort(columnKey, newDirection);
+    // If removing sort, also clear the column
+    if (newDirection === null) {
+      onSort("", null);
+    } else {
+      onSort(columnKey, newDirection);
+    }
   };
 
   const getSortIcon = () => {
