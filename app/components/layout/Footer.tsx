@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useContactNavigation } from '../../utils/contactNavigation';
+import { useRouter } from 'next/navigation';
 
 
 export default function Footer() {
   const handleContactClick = useContactNavigation();
+  const router = useRouter();
   
   return (
     <footer className="bg-gray-900 text-white">
@@ -81,6 +83,7 @@ export default function Footer() {
               <li><Link href="/about" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">About Us</Link></li>
               <li><a href="#contact" onClick={handleContactClick} className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base cursor-pointer">Contact Us</a></li>
               <li><Link href="/career" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Career</Link></li>
+                              <li><button onClick={() => router.push('/login')} className="ml-4 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600" suppressHydrationWarning>Login for admin</button></li>
             </ul>
           </div>
 
