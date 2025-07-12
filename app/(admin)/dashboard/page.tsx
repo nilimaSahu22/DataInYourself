@@ -7,6 +7,7 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     localStorage.removeItem("adminLoggedIn");
+    localStorage.removeItem("adminUsername");
     router.push("/");
   };
 
