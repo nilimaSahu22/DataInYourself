@@ -133,6 +133,47 @@ const sortInquiries = (inquiries: InquiryData[], sortColumn: string, sortDirecti
   });
 };
 
+// Function to convert data to CSV and download as Excel
+const downloadAsExcel = (inquiries: InquiryData[]) => {
+  // Define headers for the CSV
+  const headers = [
+    'Sr.',
+    'Name',
+    'Phone Number',
+    'Email',
+    'Subject',
+    'Date & Time',
+    'Description',
+    'Called'
+  ];
+
+  // Convert data to CSV format
+  const csvContent = [
+    headers.join(','),
+    ...inquiries.map((inq, index) => [
+      index + 1, // Serial number
+      `"${inq.name.replace(/"/g, '""')}"`, // Escape quotes in name
+      inq.phoneNumber,
+      inq.emailId,
+      `"${inq.subject.replace(/"/g, '""')}"`, // Escape quotes in subject
+      formatDateTime(inq.dateTime),
+      `"${inq.description.replace(/"/g, '""')}"`, // Escape quotes in description
+      inq.called ? 'Yes' : 'No'
+    ].join(','))
+  ].join('\n');
+
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', `inquiries_${new Date().toISOString().split('T')[0]}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 export default function AdminTable() {
   const [inquiries, setInquiries] = useState<InquiryData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -526,15 +567,27 @@ export default function AdminTable() {
     <div className="w-full">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Inquiry Management</h2>
-        <button
-          onClick={fetchInquiries}
-          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center"
-        >
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Refresh
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => downloadAsExcel(processedInquiries)}
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center"
+            title="Download as Excel"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export as Excel sheet
+          </button>
+          <button
+            onClick={fetchInquiries}
+            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh
+          </button>
+        </div>
       </div>
       
       {/* Search, Count, and Filters Section */}
