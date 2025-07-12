@@ -7,4 +7,6 @@ compatibility_date = "2025-07-10"
 # KV namespace is configured in wrangler.jsonc
 # Add custom environment variables below if needed
 [vars]
-JWT_SECRET = "0c979b3c8e36a6fb80396e71639c442b011717fb1a876d684bb20bc18747ab08661bdb3c896059bb03aa2a15c4122f64e44d1b502957c79e15c739a58fab728a" 
+JWT_SECRET = "0c979b3c8e36a6fb80396e71639c442b011717fb1a876d684bb20bc18747ab08661bdb3c896059bb03aa2a15c4122f64e44d1b502957c79e15c739a58fab728a"
+PLUNK_API_KEY = "sk_922f1f925d84101d1775a0ee6154501a046f24496c411275"
+NOTIFICATION_EMAIL = "info@datainyourself.com" 

@@ -9,6 +9,19 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState(coursesData);
   const [isClient, setIsClient] = useState(false);
+  
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    course: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Handle hydration
   useEffect(() => {
@@ -55,6 +68,81 @@ export default function Home() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearchClick();
+    }
+  };
+
+  // Handle contact form input changes
+  const handleContactInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle contact form submission
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate required fields
+    if (!contactForm.firstName || !contactForm.lastName || !contactForm.email || !contactForm.phone) {
+      setSubmitError('Please fill in all required fields');
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactForm.email)) {
+      setSubmitError('Please enter a valid email address');
+      return;
+    }
+
+    // Basic phone validation (10 digits)
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(contactForm.phone)) {
+      setSubmitError('Please enter a valid 10-digit phone number');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setSubmitError('');
+
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      const response = await fetch(`${serverUrl}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit form');
+      }
+
+      setSubmitSuccess(true);
+      setContactForm({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        course: '',
+        message: ''
+      });
+
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitSuccess(false);
+      }, 5000);
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while submitting the form';
+      setSubmitError(errorMessage);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -616,30 +704,61 @@ export default function Home() {
               <h3 className="text-xl sm:text-2xl font-semibold text-orange-900 mb-6 sm:mb-8">
                 Send us a Message
               </h3>
-              <form className="space-y-4 sm:space-y-6">
+              <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-6">
+                {/* Success/Error Messages */}
+                {submitSuccess && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex">
+                      <svg className="w-5 h-5 text-green-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <p className="ml-3 text-sm text-green-700">Thank you! Your message has been sent successfully. We'll get back to you soon.</p>
+                    </div>
+                  </div>
+                )}
+
+                {submitError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex">
+                      <svg className="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="ml-3 text-sm text-red-700">{submitError}</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label htmlFor="firstName" className="block text-sm font-medium text-orange-900 mb-2">
-                      First Name
+                      First Name *
                     </label>
                     <input
                       type="text"
                       id="firstName"
                       name="firstName"
-                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
+                      value={contactForm.firstName}
+                      onChange={handleContactInputChange}
+                      required
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400 disabled:bg-gray-50 disabled:cursor-not-allowed"
                       placeholder="Enter your first name"
                       suppressHydrationWarning
                     />
                   </div>
                   <div>
                     <label htmlFor="lastName" className="block text-sm font-medium text-orange-900 mb-2">
-                      Last Name
+                      Last Name *
                     </label>
                     <input
                       type="text"
                       id="lastName"
                       name="lastName"
-                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
+                      value={contactForm.lastName}
+                      onChange={handleContactInputChange}
+                      required
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400 disabled:bg-gray-50 disabled:cursor-not-allowed"
                       placeholder="Enter your last name"
                       suppressHydrationWarning
                     />
@@ -648,13 +767,17 @@ export default function Home() {
                 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-orange-900 mb-2">
-                    Email Address
+                    Email Address *
                   </label>
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
+                    value={contactForm.email}
+                    onChange={handleContactInputChange}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400 disabled:bg-gray-50 disabled:cursor-not-allowed"
                     placeholder="Enter your email address"
                     suppressHydrationWarning
                   />
@@ -662,14 +785,19 @@ export default function Home() {
 
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-orange-900 mb-2">
-                    Phone Number
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
                     id="phone"
                     name="phone"
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400"
-                    placeholder="Enter your phone number"
+                    value={contactForm.phone}
+                    onChange={handleContactInputChange}
+                    required
+                    disabled={isSubmitting}
+                    maxLength={10}
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400 disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    placeholder="Enter 10-digit phone number"
                     suppressHydrationWarning
                   />
                 </div>
@@ -681,7 +809,10 @@ export default function Home() {
                   <select
                     id="course"
                     name="course"
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-gray-800 bg-white"
+                    value={contactForm.course}
+                    onChange={handleContactInputChange}
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-gray-800 bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
                     suppressHydrationWarning
                   >
                     <option value="" className="text-gray-800">Select a course</option>
@@ -713,8 +844,11 @@ export default function Home() {
                   <textarea
                     id="message"
                     name="message"
+                    value={contactForm.message}
+                    onChange={handleContactInputChange}
                     rows={4}
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400 resize-none"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-900 placeholder-orange-400 resize-none disabled:bg-gray-50 disabled:cursor-not-allowed"
                     placeholder="Tell us about your requirements..."
                     suppressHydrationWarning
                   ></textarea>
@@ -722,10 +856,21 @@ export default function Home() {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 sm:py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 sm:py-4 px-6 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   suppressHydrationWarning
                 >
-                  Send Message
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Message'
+                  )}
                 </button>
               </form>
             </div>

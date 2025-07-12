@@ -10,6 +10,8 @@ import { authenticateJWT } from './middleware/authMiddleware'
 type Bindings = {
   KV: any // Cloudflare KVNamespace
   JWT_SECRET: string
+  PLUNK_API_KEY: string
+  NOTIFICATION_EMAIL: string
 }
 
 // Extend Hono context to include user property
@@ -88,10 +90,121 @@ app.post('/inquiry', async (c) => {
       dateTime,
     }
     await c.env.KV.put(`inquiry:${id}`, JSON.stringify(inquiry))
+    
+    // Send email notification
+    try {
+      const emailBody = `
+        New Course Inquiry Received
+        
+        Student Details:
+        - Name: ${name}
+        - Phone: ${phoneNumber}
+        - Email: ${emailId}
+        - Subject: ${subject}
+        - Date: ${new Date(dateTime).toLocaleString('en-IN')}
+        
+        Please contact the student as soon as possible.
+      `;
+      
+      await fetch('https://api.useplunk.com/v1/send', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${c.env.PLUNK_API_KEY}`
+        },
+        body: JSON.stringify({
+          "to": c.env.NOTIFICATION_EMAIL,
+          "subject": `New Course Inquiry: ${subject}`,
+          "body": emailBody
+        })
+      });
+    } catch (emailError) {
+      console.error('Failed to send email notification:', emailError);
+      // Don't fail the request if email fails
+    }
+    
     return c.json({ message: 'Inquiry saved successfully', id }, 201)
   } catch (err) {
     const error = err as Error
     return c.json({ error: 'Failed to save inquiry', details: error.message }, 500)
+  }
+})
+
+// Create Contact Form Inquiry
+app.post('/contact', async (c) => {
+  try {
+    const { firstName, lastName, email, phone, course, message } = await c.req.json()
+    
+    // Validate required fields
+    if (!firstName || !lastName || !email || !phone) {
+      return c.json({ error: 'Missing required fields: firstName, lastName, email, phone' }, 400)
+    }
+    
+    const id = generateUUID()
+    const fullName = `${firstName} ${lastName}`.trim()
+    const subject = course ? `Contact Form - ${course}` : 'Contact Form Inquiry'
+    const description = message || `Interested in: ${course || 'General inquiry'}`
+    
+    const inquiry: IInquiryData = {
+      id,
+      name: fullName,
+      phoneNumber: phone,
+      emailId: email,
+      subject,
+      called: false,
+      description,
+      dateTime: new Date().toISOString(),
+    }
+    
+    await c.env.KV.put(`inquiry:${id}`, JSON.stringify(inquiry))
+    
+    // Send email notification
+    try {
+      const emailBody = `
+        New Contact Form Submission
+        
+        User Details:
+        - Name: ${fullName}
+        - Phone: ${phone}
+        - Email: ${email}
+        - Interested Course: ${course || 'Not specified'}
+        - Message: ${message || 'No message provided'}
+        - Date: ${new Date().toLocaleString('en-IN')}
+        
+        Please contact the user as soon as possible.
+      `;
+      
+      await fetch('https://api.useplunk.com/v1/send', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${c.env.PLUNK_API_KEY}`
+        },
+        body: JSON.stringify({
+          "to": c.env.NOTIFICATION_EMAIL,
+          "subject": `New Contact Form: ${fullName} - ${course || 'General Inquiry'}`,
+          "body": emailBody
+        })
+      });
+    } catch (emailError) {
+      console.error('Failed to send email notification:', emailError);
+      // Don't fail the request if email fails
+    }
+    
+    return c.json({ 
+      message: 'Contact form submitted successfully', 
+      id,
+      inquiry: {
+        name: fullName,
+        email,
+        phone,
+        course,
+        message
+      }
+    }, 201)
+  } catch (err) {
+    const error = err as Error
+    return c.json({ error: 'Failed to submit contact form', details: error.message }, 500)
   }
 })
 
