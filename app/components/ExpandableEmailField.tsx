@@ -74,10 +74,10 @@ export default function ExpandableEmailField({
   return (
     <div
       onDoubleClick={handleDoubleClick}
-      className={`cursor-pointer hover:bg-orange-50 px-2 py-1 rounded transition-colors ${
+      className={`cursor-pointer hover:bg-orange-50 px-2 py-1 rounded transition-colors truncate ${
         disabled ? 'cursor-not-allowed opacity-50' : ''
       }`}
-      title={disabled ? '' : 'Double-click to edit'}
+      title={value || placeholder}
     >
       {value || <span className="text-gray-400 italic">{placeholder}</span>}
     </div>
