@@ -18,3 +18,4 @@ export { default as SortableHeader } from './SortableHeader';
 export { default as DateRangeFilter } from './DateRangeFilter';
 export { default as ExpandableDescriptionField } from './ExpandableDescriptionField';
 export { default as ExpandableNameField } from './ExpandableNameField';
+export { default as ConfirmationModal } from './ConfirmationModal';
