@@ -2,6 +2,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import ExpandableDescriptionField from "./ExpandableDescriptionField";
 import ExpandableNameField from "./ExpandableNameField";
+import ExpandablePhoneField from "./ExpandablePhoneField";
+import ExpandableEmailField from "./ExpandableEmailField";
+import ExpandableSubjectField from "./ExpandableSubjectField";
 import SearchBar from "./SearchBar";
 import ColumnSelector, { ColumnOption } from "./ColumnSelector";
 import SortableHeader, { SortDirection } from "./SortableHeader";
@@ -296,6 +299,33 @@ export default function AdminTable() {
     }
   };
 
+  const handlePhoneChange = async (id: string, newPhone: string) => {
+    try {
+      await updateInquiry(id, { phoneNumber: newPhone });
+    } catch (err) {
+      console.error('Error updating phone:', err);
+      // Optionally show error message to user
+    }
+  };
+
+  const handleEmailChange = async (id: string, newEmail: string) => {
+    try {
+      await updateInquiry(id, { emailId: newEmail });
+    } catch (err) {
+      console.error('Error updating email:', err);
+      // Optionally show error message to user
+    }
+  };
+
+  const handleSubjectChange = async (id: string, newSubject: string) => {
+    try {
+      await updateInquiry(id, { subject: newSubject });
+    } catch (err) {
+      console.error('Error updating subject:', err);
+      // Optionally show error message to user
+    }
+  };
+
   const handleDeleteInquiry = async (id: string) => {
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
@@ -371,23 +401,34 @@ export default function AdminTable() {
       case "phone":
         return (
           <td key={columnKey} className={`px-3 py-4 font-mono text-gray-800 font-medium ${widthClass}`}>
-            {inq.phoneNumber}
+            <ExpandablePhoneField
+              value={inq.phoneNumber}
+              rowId={inq.id}
+              onChange={(newPhone) => handlePhoneChange(inq.id, newPhone)}
+              disabled={isUpdating}
+            />
           </td>
         );
       case "email":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`} title={inq.emailId}>
-            <div className="truncate">
-              {inq.emailId}
-            </div>
+          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`}>
+            <ExpandableEmailField
+              value={inq.emailId}
+              rowId={inq.id}
+              onChange={(newEmail) => handleEmailChange(inq.id, newEmail)}
+              disabled={isUpdating}
+            />
           </td>
         );
       case "subject":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`} title={inq.subject}>
-            <div className="truncate">
-              {inq.subject}
-            </div>
+          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`}>
+            <ExpandableSubjectField
+              value={inq.subject}
+              rowId={inq.id}
+              onChange={(newSubject) => handleSubjectChange(inq.id, newSubject)}
+              disabled={isUpdating}
+            />
           </td>
         );
       case "timestamp":
