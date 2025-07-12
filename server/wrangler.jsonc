@@ -9,13 +9,13 @@
       "binding": "KV",
       "id": "48f39d441369476188564b0f5902609d",
     }
-  ]
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
+  ],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "vars": {
+    "JWT_SECRET": "0c979b3c8e36a6fb80396e71639c442b011717fb1a876d684bb20bc18747ab08661bdb3c896059bb03aa2a15c4122f64e44d1b502957c79e15c739a58fab728a"
+  },
   // "r2_buckets": [
   //   {
   //     "binding": "MY_BUCKET",

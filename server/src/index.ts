@@ -2,7 +2,6 @@ import { Hono } from 'hono'
 import { IInquiryData } from './db/model/InquiryData.model'
 import { IAdmin } from './db/model/Admin.model'
 import { initializeDefaultAdmin } from './setup/initAdmin'
-import { validateAdminData } from './utils/adminUtils'
 import { generateJWT } from './utils/jwtUtils'
 import { authenticateJWT } from './middleware/authMiddleware'
 
@@ -106,29 +105,38 @@ app.post('/login', async (c) => {
     
     const adminStr = await c.env.KV.get(`admin:${username}`)
     if (!adminStr) {
-      return c.json({ error: 'Admin not found' }, 404)
+      console.log('Admin not found for username:', username)
+      return c.json({ error: 'Admin not found. Please initialize the default admin first by calling /admin/init endpoint.' }, 404)
     }
     
+    console.log('Admin data found, parsing...')
     const admin: IAdmin = JSON.parse(adminStr)
+    console.log('Admin parsed successfully:', { username: admin.username, role: admin.role, isActive: admin.isActive })
     
     // Check if admin is active
     if (admin.isActive === false) {
       return c.json({ error: 'Account is deactivated' }, 403)
     }
     
+    console.log('Checking password...')
     if (admin.password !== password) {
+      console.log('Password mismatch')
       return c.json({ error: 'Invalid password' }, 401)
     }
+    console.log('Password verified successfully')
     
     // Update lastLogin timestamp
     admin.lastLogin = new Date().toISOString()
     await c.env.KV.put(`admin:${username}`, JSON.stringify(admin))
     
     // Generate JWT token
+    console.log('Generating JWT for user:', admin.username)
+    console.log('JWT_SECRET length:', c.env.JWT_SECRET?.length || 0)
     const token = await generateJWT({
       username: admin.username,
       role: admin.role || 'admin'
     }, c.env.JWT_SECRET)
+    console.log('JWT token generated successfully')
     
     // Return admin data without password and JWT token
     const { password: _, ...adminData } = admin
@@ -139,6 +147,8 @@ app.post('/login', async (c) => {
     })
   } catch (err) {
     const error = err as Error
+    console.error('Login error:', error)
+    console.error('Error stack:', error.stack)
     return c.json({ error: 'Login failed', details: error.message }, 500)
   }
 })
@@ -364,6 +374,33 @@ app.patch('/admin/update/:id', authenticateJWT, async (c) => {
   } catch (err) {
     const error = err as Error
     return c.json({ error: 'Failed to update inquiry', details: error.message }, 500)
+  }
+})
+
+// Delete inquiry by id (protected with JWT)
+app.delete('/admin/delete/:id', authenticateJWT, async (c) => {
+  try {
+    const { id } = c.req.param()
+    
+    // Check if inquiry exists before deleting
+    const inquiryStr = await c.env.KV.get(`inquiry:${id}`)
+    if (!inquiryStr) {
+      return c.json({ error: 'Inquiry not found' }, 404)
+    }
+    
+    // Get the inquiry data to return in response
+    const inquiry: IInquiryData = JSON.parse(inquiryStr)
+    
+    // Delete the inquiry from KV
+    await c.env.KV.delete(`inquiry:${id}`)
+    
+    return c.json({ 
+      message: 'Inquiry deleted successfully', 
+      deletedInquiry: inquiry 
+    })
+  } catch (err) {
+    const error = err as Error
+    return c.json({ error: 'Failed to delete inquiry', details: error.message }, 500)
   }
 })
 
