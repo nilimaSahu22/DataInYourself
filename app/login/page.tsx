@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
@@ -11,15 +11,24 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
-    // Fake login logic - replace with real authentication later
-    if (email === "admin@example.com" && password === "admin123") {
-      // Set some session state (you can use localStorage or cookies)
-      localStorage.setItem("adminLoggedIn", "true");
-      router.push("/dashboard");
-    } else {
-      setError("Invalid email or password");
-    }
+    fetch("https://server.mukulsharma1602.workers.dev/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          localStorage.setItem("adminLoggedIn", "true");
+          localStorage.setItem("adminUsername", data.username);
+          router.push("/dashboard");
+        }
+      })
+      .catch((err) => setError("An error occurred"));
   };
 
   return (
@@ -33,15 +42,15 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-3">
-              Email Address
+              Username
             </label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="username"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-gray-800 placeholder-gray-500"
-              placeholder="admin@example.com"
+              placeholder="admin"
               required
               suppressHydrationWarning
             />
@@ -77,12 +86,6 @@ export default function LoginPage() {
             Sign In
           </button>
         </form>
-
-        <div className="mt-8 text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <p className="text-sm text-gray-700 font-medium">
-            Demo credentials: <span className="text-orange-600">admin@example.com</span> / <span className="text-orange-600">admin123</span>
-          </p>
-        </div>
       </div>
     </div>
   );
