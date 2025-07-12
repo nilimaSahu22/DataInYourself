@@ -153,7 +153,7 @@ app.post('/inquiry', async (c) => {
             </div>
             <div class="footer">
               <p>This inquiry was automatically generated from the DataInYourself website.</p>
-              <p>© 2024 DataInYourself - Rudriva Technology</p>
+              <p>© ${new Date().getFullYear()} DataInYourself - Rudriva Technology</p>
             </div>
           </div>
         </body>
@@ -292,7 +292,7 @@ app.post('/contact', async (c) => {
             </div>
             <div class="footer">
               <p>This contact form submission was automatically generated from the DataInYourself website.</p>
-              <p>© 2024 DataInYourself - Rudriva Technology</p>
+              <p>© ${new Date().getFullYear()} DataInYourself - Rudriva Technology</p>
             </div>
           </div>
         </body>
