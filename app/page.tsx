@@ -12,6 +12,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [animationKey, setAnimationKey] = useState(0); // Add animation trigger key
   const pathname = usePathname();
+  const [hasAnimated, setHasAnimated] = useState(false); // Track if animation has already played
   
   // Contact form state
   const [contactForm, setContactForm] = useState({
@@ -31,16 +32,53 @@ export default function Home() {
     setIsClient(true);
   }, []);
 
-  // Trigger animation when user navigates to homepage or on initial load
+  // Check if this is the first visit or a page refresh
   useEffect(() => {
     if (isClient && pathname === '/') {
-      // Reset animation key to trigger re-animation
-      setAnimationKey(0);
-      // Increment after a short delay to ensure the reset is processed
-      const timer = setTimeout(() => {
-        setAnimationKey(prev => prev + 1);
-      }, 100);
-      return () => clearTimeout(timer);
+      // Check if this is a page refresh or first visit
+      const hasVisitedBefore = sessionStorage.getItem('hasVisitedHome');
+      const navigationEntry = performance.getEntriesByType('navigation')[0] as any;
+      const isRefresh = !hasVisitedBefore || 
+                       (navigationEntry && navigationEntry.type === 'reload') ||
+                       (performance.navigation && performance.navigation.type === 1);
+      
+      if (isRefresh) {
+        // This is a refresh or first visit, trigger animation
+        console.log('Triggering flip animation - refresh detected');
+        setAnimationKey(0);
+        const timer = setTimeout(() => {
+          setAnimationKey(prev => prev + 1);
+        }, 200); // Increased delay to ensure proper initialization
+        
+        // Mark that we've visited the home page
+        sessionStorage.setItem('hasVisitedHome', 'true');
+        setHasAnimated(true);
+        
+        return () => clearTimeout(timer);
+      } else {
+        // This is navigation from another page, don't trigger animation
+        console.log('Skipping animation - navigation from other page');
+        setHasAnimated(true);
+      }
+    }
+  }, [isClient, pathname]);
+
+  // Force animation on page refresh (F5 or Ctrl+R)
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem('hasVisitedHome');
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+
+
+  // Clear session storage when user navigates away from home page
+  useEffect(() => {
+    if (isClient && pathname !== '/') {
+      sessionStorage.removeItem('hasVisitedHome');
     }
   }, [isClient, pathname]);
 
@@ -278,6 +316,7 @@ export default function Home() {
                 duration={course.duration}
                 index={index}
                 animationKey={animationKey}
+                shouldAnimate={hasAnimated && animationKey > 0}
               />
             ))}
           </div>

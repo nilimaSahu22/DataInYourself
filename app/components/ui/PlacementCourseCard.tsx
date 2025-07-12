@@ -14,6 +14,7 @@ interface PlacementCourseCardProps {
   rating?: number; // out of 5
   index?: number; // Add index for staggered animation
   animationKey?: number; // Add animation key prop
+  shouldAnimate?: boolean; // Control whether animation should play
 }
 
 export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
@@ -25,29 +26,42 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   // rating = 4,
   index = 0,
   animationKey = 0,
+  shouldAnimate = false,
 }) => {
   const courseSlug = generateCourseSlug(title);
   const [isVisible, setIsVisible] = useState(false);
   
   // Calculate delay based on index for staggered animation
-  const animationDelay = index * 150; // 150ms delay between each card
+  const animationDelay = index * 500; // 500ms delay between each card for slower animation
 
-  // Reset and trigger animation when animationKey changes
+  // Reset and trigger animation when animationKey changes and shouldAnimate is true
   useEffect(() => {
-    setIsVisible(false);
-    
-    const timer = setTimeout(() => {
+    if (shouldAnimate) {
+      setIsVisible(false);
+      
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+      }, animationDelay);
+      
+      return () => clearTimeout(timer);
+    } else {
+      // If not animating, show immediately
       setIsVisible(true);
-    }, animationDelay);
-    
-    return () => clearTimeout(timer);
-  }, [animationKey, animationDelay]);
+    }
+  }, [animationKey, animationDelay, shouldAnimate]);
+
+  // Reset visibility when animationKey changes
+  useEffect(() => {
+    if (shouldAnimate) {
+      setIsVisible(false);
+    }
+  }, [animationKey, shouldAnimate]);
 
   return (
     <Link href={`/courses/${courseSlug}`} className="block w-full h-full group">
       <article 
-        className={`relative w-full h-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col ${
-          isVisible ? 'animate-fadeInUp' : 'opacity-0 translate-y-8'
+        className={`relative w-full h-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col flip-card-hover ${
+          isVisible ? 'animate-flipInRotate' : 'flip-initial'
         }`}
         style={{
           animationDelay: `${animationDelay}ms`,
