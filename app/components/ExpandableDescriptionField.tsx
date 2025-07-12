@@ -4,15 +4,17 @@ import { useState, useRef, useEffect } from "react";
 interface ExpandableDescriptionFieldProps {
   value: string;
   onChange: (value: string) => void;
-  rowId: number;
+  rowId: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export default function ExpandableDescriptionField({
   value,
   onChange,
   rowId,
-  placeholder = "Enter description..."
+  placeholder = "Enter description...",
+  disabled = false
 }: ExpandableDescriptionFieldProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localValue, setLocalValue] = useState(value);
@@ -24,6 +26,7 @@ export default function ExpandableDescriptionField({
   }, [value]);
 
   const handleFocus = () => {
+    if (disabled) return;
     setIsExpanded(true);
     // Focus the textarea after expansion
     setTimeout(() => {
@@ -65,8 +68,12 @@ export default function ExpandableDescriptionField({
         // Collapsed state - preview
         <div
           onClick={handleFocus}
-          className="min-h-[40px] px-3 py-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-orange-300 transition-all duration-200 text-sm bg-gray-50 hover:bg-white w-full"
-          tabIndex={0}
+          className={`min-h-[40px] px-3 py-2 border-2 rounded-lg transition-all duration-200 text-sm w-full ${
+            disabled
+              ? 'border-gray-200 bg-gray-100 cursor-not-allowed text-gray-400'
+              : 'border-gray-200 bg-gray-50 hover:bg-white hover:border-orange-300 cursor-pointer text-gray-700'
+          }`}
+          tabIndex={disabled ? -1 : 0}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
@@ -74,9 +81,9 @@ export default function ExpandableDescriptionField({
             }
           }}
           role="textbox"
-          aria-label={`Description for row ${rowId}. Click to edit.`}
+          aria-label={`Description for row ${rowId}. ${disabled ? 'Disabled' : 'Click to edit'}.`}
         >
-          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-gray-700 w-full">
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap w-full">
             {getPreviewText()}
           </div>
         </div>
@@ -89,7 +96,10 @@ export default function ExpandableDescriptionField({
             onChange={(e) => setLocalValue(e.target.value)}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            className="w-full min-h-[80px] p-3 text-sm text-gray-800 bg-white rounded-lg resize-none focus:outline-none"
+            disabled={disabled}
+            className={`w-full min-h-[80px] p-3 text-sm text-gray-800 bg-white rounded-lg resize-none focus:outline-none ${
+              disabled ? 'cursor-not-allowed opacity-50' : ''
+            }`}
             placeholder={placeholder}
             rows={3}
             aria-label={`Editing description for row ${rowId}. Press Ctrl+Enter to save, Escape to cancel.`}
@@ -109,7 +119,12 @@ export default function ExpandableDescriptionField({
                 onChange(localValue);
                 setIsExpanded(false);
               }}
-              className="px-3 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+              disabled={disabled}
+              className={`px-3 py-1 text-xs rounded transition-colors ${
+                disabled
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-orange-500 text-white hover:bg-orange-600'
+              }`}
             >
               Save
             </button>

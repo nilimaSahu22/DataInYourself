@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -7,11 +7,61 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(false);
   const router = useRouter();
+
+  // Check for existing valid token on component mount
+  useEffect(() => {
+    const checkExistingAuth = async () => {
+      const adminToken = localStorage.getItem("adminToken");
+      const adminLoggedIn = localStorage.getItem("adminLoggedIn");
+      const adminUsername = localStorage.getItem("adminUsername");
+      
+      if (!adminToken || adminLoggedIn !== "true" || !adminUsername) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate JWT token with backend
+      try {
+        const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+        const response = await fetch(`${serverUrl}/verify-token`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${adminToken}`
+          }
+        });
+
+        if (response.ok) {
+          // Token is valid, redirect to dashboard
+          router.push("/dashboard");
+        } else {
+          // Token is invalid, clear auth data
+          localStorage.removeItem("adminLoggedIn");
+          localStorage.removeItem("adminUsername");
+          localStorage.removeItem("adminToken");
+          localStorage.removeItem("adminData");
+        }
+      } catch (error) {
+        // Network error, clear auth data
+        localStorage.removeItem("adminLoggedIn");
+        localStorage.removeItem("adminUsername");
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminData");
+      }
+      
+      setIsLoading(false);
+    };
+
+    checkExistingAuth();
+  }, [router]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsCheckingAuth(true);
+    
     const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
     console.log(serverUrl);
     fetch(`${serverUrl}/login`, {
@@ -34,12 +84,25 @@ export default function LoginPage() {
           router.push("/dashboard");
         }
       })
-      .catch((err) => setError("An error occurred"));
+      .catch((err) => setError("An error occurred"))
+      .finally(() => setIsCheckingAuth(false));
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center px-4 py-8">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center px-4 py-8">
@@ -62,6 +125,7 @@ export default function LoginPage() {
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-gray-800 placeholder-gray-500"
               placeholder="admin"
               required
+              disabled={isCheckingAuth}
               suppressHydrationWarning
             />
           </div>
@@ -76,15 +140,17 @@ export default function LoginPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-gray-800 placeholder-gray-500"
+                className="w-full px-4 py-3 pr-12 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 text-gray-800 placeholder-gray-500 disabled:bg-gray-50 disabled:cursor-not-allowed"
                 placeholder="Enter your password"
                 required
+                disabled={isCheckingAuth}
                 suppressHydrationWarning
               />
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 transition-colors duration-200"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 transition-colors duration-200 disabled:cursor-not-allowed"
+                disabled={isCheckingAuth}
                 suppressHydrationWarning
               >
                 {showPassword ? (
@@ -109,10 +175,21 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full bg-orange-500 text-white py-3 px-6 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 font-semibold text-base shadow-lg hover:shadow-xl"
+            disabled={isCheckingAuth}
+            className="w-full bg-orange-500 text-white py-3 px-6 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 font-semibold text-base shadow-lg hover:shadow-xl disabled:bg-orange-400 disabled:cursor-not-allowed flex items-center justify-center"
             suppressHydrationWarning
           >
-            Sign In
+            {isCheckingAuth ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Signing In...
+              </>
+            ) : (
+              'Sign In'
+            )}
           </button>
         </form>
       </div>

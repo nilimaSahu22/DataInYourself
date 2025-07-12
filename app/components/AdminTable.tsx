@@ -6,74 +6,23 @@ import SearchBar from "./SearchBar";
 import ColumnSelector, { ColumnOption } from "./ColumnSelector";
 import SortableHeader, { SortDirection } from "./SortableHeader";
 import DateRangeFilter from "./DateRangeFilter";
+import { getAuthHeaders } from "../utils/authUtils";
 
-// Enhanced mock data with timestamps
-const mockInquiries = [
-  {
-    id: 1,
-    name: "Johnathan Smith",
-    phone: "9876543210",
-    email: "john@example.com",
-    subject: "Course Inquiry",
-    description: "I would like to know more about the data science course. Can you please provide details about the curriculum, duration, and placement assistance?",
-    called: false,
-    timestamp: new Date("2024-01-15T10:30:00"),
-  },
-  {
-    id: 2,
-    name: "Priya Patel",
-    phone: "9123456789",
-    email: "priya@example.com",
-    subject: "Franchise",
-    description: "Interested in franchise opportunities. Looking for investment details and territory availability.",
-    called: true,
-    timestamp: new Date("2024-01-14T14:45:00"),
-  },
-  {
-    id: 3,
-    name: "Amit Kumar",
-    phone: "9988776655",
-    email: "amit@example.com",
-    subject: "Placement Assistance",
-    description: "How does placement support work? What companies do you partner with?",
-    called: false,
-    timestamp: new Date("2024-01-13T09:15:00"),
-  },
-  {
-    id: 4,
-    name: "Sarah Johnson",
-    phone: "9871234560",
-    email: "sarah@example.com",
-    subject: "Python Course",
-    description: "",
-    called: false,
-    timestamp: new Date("2024-01-12T16:20:00"),
-  },
-  {
-    id: 5,
-    name: "Michael Chen",
-    phone: "8765432109",
-    email: "michael@example.com",
-    subject: "Data Analyst Course",
-    description: "Interested in the data analyst program. What are the prerequisites and job prospects?",
-    called: true,
-    timestamp: new Date("2024-01-11T11:30:00"),
-  },
-  {
-    id: 6,
-    name: "Emily Davis",
-    phone: "7654321098",
-    email: "emily@example.com",
-    subject: "Web Development",
-    description: "Looking for information about the web development course and internship opportunities.",
-    called: false,
-    timestamp: new Date("2024-01-10T13:45:00"),
-  },
-];
+// Interface for inquiry data from backend
+interface InquiryData {
+  id: string;
+  name: string;
+  phoneNumber: string;
+  emailId: string;
+  subject: string;
+  description: string;
+  called: boolean;
+  dateTime: string;
+}
 
 // Column configuration with width classes
 const columnOptions: ColumnOption[] = [
-  { key: "id", label: "Serial Number", defaultVisible: true },
+  { key: "id", label: "Sr.", defaultVisible: true },
   { key: "name", label: "Name", defaultVisible: true },
   { key: "phone", label: "Phone Number", defaultVisible: true },
   { key: "email", label: "Email", defaultVisible: true },
@@ -84,7 +33,8 @@ const columnOptions: ColumnOption[] = [
 ];
 
 // Helper function to format date
-const formatDateTime = (date: Date): string => {
+const formatDateTime = (dateString: string): string => {
+  const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear();
@@ -121,7 +71,7 @@ const getColumnWidthClass = (columnKey: string): string => {
 };
 
 // Sorting function
-const sortInquiries = (inquiries: any[], sortColumn: string, sortDirection: SortDirection) => {
+const sortInquiries = (inquiries: InquiryData[], sortColumn: string, sortDirection: SortDirection) => {
   if (!sortDirection) return inquiries;
 
   return [...inquiries].sort((a, b) => {
@@ -138,20 +88,20 @@ const sortInquiries = (inquiries: any[], sortColumn: string, sortDirection: Sort
         bValue = b.name.toLowerCase();
         break;
       case "phone":
-        aValue = a.phone;
-        bValue = b.phone;
+        aValue = a.phoneNumber;
+        bValue = b.phoneNumber;
         break;
       case "email":
-        aValue = a.email.toLowerCase();
-        bValue = b.email.toLowerCase();
+        aValue = a.emailId.toLowerCase();
+        bValue = b.emailId.toLowerCase();
         break;
       case "subject":
         aValue = a.subject.toLowerCase();
         bValue = b.subject.toLowerCase();
         break;
       case "timestamp":
-        aValue = a.timestamp.getTime();
-        bValue = b.timestamp.getTime();
+        aValue = new Date(a.dateTime).getTime();
+        bValue = new Date(b.dateTime).getTime();
         break;
       case "description":
         aValue = a.description.toLowerCase();
@@ -176,7 +126,10 @@ const sortInquiries = (inquiries: any[], sortColumn: string, sortDirection: Sort
 };
 
 export default function AdminTable() {
-  const [inquiries, setInquiries] = useState(mockInquiries);
+  const [inquiries, setInquiries] = useState<InquiryData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleColumns, setVisibleColumns] = useState<string[]>(
     columnOptions.filter(col => col.defaultVisible).map(col => col.key)
@@ -190,6 +143,73 @@ export default function AdminTable() {
     to: null
   });
 
+  // Fetch inquiries from backend
+  const fetchInquiries = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      const response = await fetch(`${serverUrl}/admin/getall`, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch inquiries');
+      }
+
+      const data = await response.json();
+      setInquiries(data.inquiries || []);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while fetching inquiries';
+      setError(errorMessage);
+      console.error('Error fetching inquiries:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Update inquiry in backend
+  const updateInquiry = useCallback(async (id: string, updateFields: Partial<InquiryData>) => {
+    try {
+      setUpdatingId(id);
+      
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      const response = await fetch(`${serverUrl}/admin/update/${id}`, {
+        method: 'PATCH',
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updateFields),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update inquiry');
+      }
+
+      const data = await response.json();
+      
+      // Update local state with the updated inquiry
+      setInquiries(prev => 
+        prev.map(inq => 
+          inq.id === id ? { ...inq, ...updateFields } : inq
+        )
+      );
+
+      return data;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while updating inquiry';
+      console.error('Error updating inquiry:', err);
+      throw new Error(errorMessage);
+    } finally {
+      setUpdatingId(null);
+    }
+  }, []);
+
+  // Load inquiries on component mount
+  useEffect(() => {
+    fetchInquiries();
+  }, [fetchInquiries]);
+
   // Filter and sort inquiries
   const processedInquiries = useMemo(() => {
     // First filter by search term
@@ -198,13 +218,13 @@ export default function AdminTable() {
       const searchLower = searchTerm.toLowerCase();
       filtered = inquiries.filter((inq) => {
         return (
-          inq.id.toString().includes(searchLower) ||
+          inq.id.toLowerCase().includes(searchLower) ||
           inq.name.toLowerCase().includes(searchLower) ||
-          inq.phone.includes(searchLower) ||
-          inq.email.toLowerCase().includes(searchLower) ||
+          inq.phoneNumber.includes(searchLower) ||
+          inq.emailId.toLowerCase().includes(searchLower) ||
           inq.subject.toLowerCase().includes(searchLower) ||
           inq.description.toLowerCase().includes(searchLower) ||
-          formatDateTime(inq.timestamp).toLowerCase().includes(searchLower) ||
+          formatDateTime(inq.dateTime).toLowerCase().includes(searchLower) ||
           (searchLower === 'true' && inq.called) ||
           (searchLower === 'false' && !inq.called)
         );
@@ -214,7 +234,7 @@ export default function AdminTable() {
     // Then filter by date range
     if (dateRange.from || dateRange.to) {
       filtered = filtered.filter((inq) => {
-        const inquiryDate = inq.timestamp;
+        const inquiryDate = new Date(inq.dateTime);
         
         if (dateRange.from && inquiryDate < dateRange.from) {
           return false;
@@ -232,20 +252,35 @@ export default function AdminTable() {
     return sortInquiries(filtered, sortConfig.column, sortConfig.direction);
   }, [inquiries, searchTerm, dateRange, sortConfig]);
 
-  const handleCalledChange = (id: number) => {
-    setInquiries((prev) =>
-      prev.map((inq) =>
-        inq.id === id ? { ...inq, called: !inq.called } : inq
-      )
-    );
+  const handleCalledChange = async (id: string) => {
+    try {
+      const inquiry = inquiries.find(inq => inq.id === id);
+      if (!inquiry) return;
+
+      const newCalledValue = !inquiry.called;
+      await updateInquiry(id, { called: newCalledValue });
+    } catch (err) {
+      console.error('Error updating called status:', err);
+      // Optionally show error message to user
+    }
   };
 
-  const handleDescriptionChange = (id: number, newDescription: string) => {
-    setInquiries((prev) =>
-      prev.map((inq) =>
-        inq.id === id ? { ...inq, description: newDescription } : inq
-      )
-    );
+  const handleDescriptionChange = async (id: string, newDescription: string) => {
+    try {
+      await updateInquiry(id, { description: newDescription });
+    } catch (err) {
+      console.error('Error updating description:', err);
+      // Optionally show error message to user
+    }
+  };
+
+  const handleNameChange = async (id: string, newName: string) => {
+    try {
+      await updateInquiry(id, { name: newName });
+    } catch (err) {
+      console.error('Error updating name:', err);
+      // Optionally show error message to user
+    }
   };
 
   const handleColumnsChange = useCallback((newVisibleColumns: string[]) => {
@@ -261,14 +296,15 @@ export default function AdminTable() {
   }, []);
 
   // Render table cell based on column key
-  const renderCell = (inq: any, columnKey: string, idx: number) => {
+  const renderCell = (inq: InquiryData, columnKey: string, idx: number) => {
     const widthClass = getColumnWidthClass(columnKey);
+    const isUpdating = updatingId === inq.id;
     
     switch (columnKey) {
       case "id":
         return (
           <td key={columnKey} className={`px-3 py-4 font-semibold text-gray-800 ${widthClass}`}>
-            {inq.id}
+            {idx + 1}
           </td>
         );
       case "name":
@@ -277,20 +313,22 @@ export default function AdminTable() {
             <ExpandableNameField
               value={inq.name}
               rowId={inq.id}
+              onChange={(newName) => handleNameChange(inq.id, newName)}
+              disabled={isUpdating}
             />
           </td>
         );
       case "phone":
         return (
           <td key={columnKey} className={`px-3 py-4 font-mono text-gray-800 font-medium ${widthClass}`}>
-            {inq.phone}
+            {inq.phoneNumber}
           </td>
         );
       case "email":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`} title={inq.email}>
+          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`} title={inq.emailId}>
             <div className="truncate">
-              {inq.email}
+              {inq.emailId}
             </div>
           </td>
         );
@@ -305,7 +343,7 @@ export default function AdminTable() {
       case "timestamp":
         return (
           <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium font-mono text-xs ${widthClass}`}>
-            {formatDateTime(inq.timestamp)}
+            {formatDateTime(inq.dateTime)}
           </td>
         );
       case "description":
@@ -316,6 +354,7 @@ export default function AdminTable() {
               onChange={(newDescription) => handleDescriptionChange(inq.id, newDescription)}
               rowId={inq.id}
               placeholder="Enter description..."
+              disabled={isUpdating}
             />
           </td>
         );
@@ -326,7 +365,8 @@ export default function AdminTable() {
               type="checkbox"
               checked={inq.called}
               onChange={() => handleCalledChange(inq.id)}
-              className="accent-orange-500 w-5 h-5 cursor-pointer"
+              disabled={isUpdating}
+              className="accent-orange-500 w-5 h-5 cursor-pointer disabled:cursor-not-allowed"
             />
           </td>
         );
@@ -335,9 +375,61 @@ export default function AdminTable() {
     }
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="w-full">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Inquiry Management</h2>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading inquiries...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="w-full">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Inquiry Management</h2>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <div className="flex items-center">
+            <svg className="w-6 h-6 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h3 className="text-lg font-semibold text-red-800">Error Loading Inquiries</h3>
+              <p className="text-red-700 mt-1">{error}</p>
+              <button
+                onClick={fetchInquiries}
+                className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Inquiry Management</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Inquiry Management</h2>
+        <button
+          onClick={fetchInquiries}
+          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh
+        </button>
+      </div>
       
       {/* Search, Count, and Filters Section */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
