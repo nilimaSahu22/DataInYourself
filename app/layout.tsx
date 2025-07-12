@@ -20,25 +20,25 @@ export const metadata: Metadata = {
     // Standard favicon sizes
     icon: [
       {
-        url: '/icon_assets/diy.png',
+        url: '/favicon/favicon-16x16.png',
         sizes: '16x16',
         type: 'image/png',
       },
       {
-        url: '/icon_assets/diy.png',
+        url: '/favicon/favicon-32x32.png',
         sizes: '32x32',
         type: 'image/png',
       },
       {
-        url: '/icon_assets/diy.png',
-        sizes: '48x48',
-        type: 'image/png',
+        url: '/favicon/favicon.ico',
+        sizes: 'any',
+        type: 'image/x-icon',
       },
     ],
     // Apple Touch Icons for iOS devices
     apple: [
       {
-        url: '/icon_assets/diy.png',
+        url: '/favicon/apple-touch-icon.png',
         sizes: '180x180',
         type: 'image/png',
       },
@@ -47,25 +47,25 @@ export const metadata: Metadata = {
     other: [
       {
         rel: 'icon',
-        url: '/icon_assets/diy.png',
+        url: '/favicon/android-chrome-192x192.png',
         sizes: '192x192',
         type: 'image/png',
       },
       {
         rel: 'icon',
-        url: '/icon_assets/diy.png',
+        url: '/favicon/android-chrome-512x512.png',
         sizes: '512x512',
         type: 'image/png',
       },
       {
         rel: 'mask-icon',
-        url: '/icon_assets/diy.png',
+        url: '/favicon/android-chrome-192x192.png',
         color: '#FFA500',
       },
     ],
   },
   // Additional metadata for better favicon support
-  manifest: '/manifest.json',
+  manifest: '/favicon/site.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
