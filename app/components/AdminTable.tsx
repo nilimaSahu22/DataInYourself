@@ -2,10 +2,14 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import ExpandableDescriptionField from "./ExpandableDescriptionField";
 import ExpandableNameField from "./ExpandableNameField";
+import ExpandablePhoneField from "./ExpandablePhoneField";
+import ExpandableEmailField from "./ExpandableEmailField";
+import ExpandableSubjectField from "./ExpandableSubjectField";
 import SearchBar from "./SearchBar";
 import ColumnSelector, { ColumnOption } from "./ColumnSelector";
 import SortableHeader, { SortDirection } from "./SortableHeader";
 import DateRangeFilter from "./DateRangeFilter";
+import ConfirmationModal from "./ConfirmationModal";
 import { getAuthHeaders } from "../utils/authUtils";
 
 // Interface for inquiry data from backend
@@ -18,6 +22,7 @@ interface InquiryData {
   description: string;
   called: boolean;
   dateTime: string;
+  serialNumber?: number; // Add serial number field for sorting
 }
 
 // Column configuration with width classes
@@ -30,6 +35,7 @@ const columnOptions: ColumnOption[] = [
   { key: "timestamp", label: "Date & Time", defaultVisible: true },
   { key: "description", label: "Description", defaultVisible: true },
   { key: "called", label: "Called", defaultVisible: true },
+  { key: "actions", label: "Actions", defaultVisible: true },
 ];
 
 // Helper function to format date
@@ -56,15 +62,17 @@ const getColumnWidthClass = (columnKey: string): string => {
     case "phone":
       return "w-32 min-w-[8rem]"; // Fixed width for phone
     case "email":
-      return "w-40 min-w-[10rem] max-w-[12rem]"; // Flexible email width
+      return "w-36 min-w-[9rem] max-w-[9rem]"; // Shrunk email width
     case "subject":
-      return "w-36 min-w-[9rem] max-w-[10rem]"; // Fixed width for subject
+      return "w-32 min-w-[8rem] max-w-[8rem]"; // Shrunk subject width
     case "timestamp":
-      return "w-40 min-w-[10rem]"; // Fixed width for timestamp
+      return "w-36 min-w-[9rem]"; // Fixed width for timestamp
     case "description":
       return "min-w-[12rem] flex-1"; // Flexible width, takes remaining space
     case "called":
       return "w-16 min-w-[4rem] text-center"; // Fixed width for checkbox
+    case "actions":
+      return "w-20 min-w-[5rem] text-center"; // Fixed width for actions
     default:
       return "min-w-[8rem]";
   }
@@ -80,8 +88,8 @@ const sortInquiries = (inquiries: InquiryData[], sortColumn: string, sortDirecti
 
     switch (sortColumn) {
       case "id":
-        aValue = a.id;
-        bValue = b.id;
+        aValue = a.serialNumber || 0;
+        bValue = b.serialNumber || 0;
         break;
       case "name":
         aValue = a.name.toLowerCase();
@@ -142,6 +150,8 @@ export default function AdminTable() {
     from: null,
     to: null
   });
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [inquiryToDelete, setInquiryToDelete] = useState<InquiryData | null>(null);
 
   // Fetch inquiries from backend
   const fetchInquiries = useCallback(async () => {
@@ -248,8 +258,14 @@ export default function AdminTable() {
       });
     }
 
+    // Add serial numbers to filtered data
+    const withSerialNumbers = filtered.map((inq, index) => ({
+      ...inq,
+      serialNumber: index + 1
+    }));
+
     // Then sort
-    return sortInquiries(filtered, sortConfig.column, sortConfig.direction);
+    return sortInquiries(withSerialNumbers, sortConfig.column, sortConfig.direction);
   }, [inquiries, searchTerm, dateRange, sortConfig]);
 
   const handleCalledChange = async (id: string) => {
@@ -283,6 +299,70 @@ export default function AdminTable() {
     }
   };
 
+  const handlePhoneChange = async (id: string, newPhone: string) => {
+    try {
+      await updateInquiry(id, { phoneNumber: newPhone });
+    } catch (err) {
+      console.error('Error updating phone:', err);
+      // Optionally show error message to user
+    }
+  };
+
+  const handleEmailChange = async (id: string, newEmail: string) => {
+    try {
+      await updateInquiry(id, { emailId: newEmail });
+    } catch (err) {
+      console.error('Error updating email:', err);
+      // Optionally show error message to user
+    }
+  };
+
+  const handleSubjectChange = async (id: string, newSubject: string) => {
+    try {
+      await updateInquiry(id, { subject: newSubject });
+    } catch (err) {
+      console.error('Error updating subject:', err);
+      // Optionally show error message to user
+    }
+  };
+
+  const handleDeleteInquiry = async (id: string) => {
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      const response = await fetch(`${serverUrl}/admin/delete/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete inquiry');
+      }
+
+      // Remove the inquiry from local state
+      setInquiries(prev => prev.filter(inq => inq.id !== id));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while deleting inquiry';
+      console.error('Error deleting inquiry:', err);
+      // Optionally show error message to user
+    }
+  };
+
+  const openDeleteModal = (inquiry: InquiryData) => {
+    setInquiryToDelete(inquiry);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setInquiryToDelete(null);
+  };
+
+  const confirmDelete = () => {
+    if (inquiryToDelete) {
+      handleDeleteInquiry(inquiryToDelete.id);
+    }
+  };
+
   const handleColumnsChange = useCallback((newVisibleColumns: string[]) => {
     setVisibleColumns(newVisibleColumns);
   }, []);
@@ -304,7 +384,7 @@ export default function AdminTable() {
       case "id":
         return (
           <td key={columnKey} className={`px-3 py-4 font-semibold text-gray-800 ${widthClass}`}>
-            {idx + 1}
+            {inq.serialNumber || 1}
           </td>
         );
       case "name":
@@ -321,23 +401,34 @@ export default function AdminTable() {
       case "phone":
         return (
           <td key={columnKey} className={`px-3 py-4 font-mono text-gray-800 font-medium ${widthClass}`}>
-            {inq.phoneNumber}
+            <ExpandablePhoneField
+              value={inq.phoneNumber}
+              rowId={inq.id}
+              onChange={(newPhone) => handlePhoneChange(inq.id, newPhone)}
+              disabled={isUpdating}
+            />
           </td>
         );
       case "email":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`} title={inq.emailId}>
-            <div className="truncate">
-              {inq.emailId}
-            </div>
+          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`}>
+            <ExpandableEmailField
+              value={inq.emailId}
+              rowId={inq.id}
+              onChange={(newEmail) => handleEmailChange(inq.id, newEmail)}
+              disabled={isUpdating}
+            />
           </td>
         );
       case "subject":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`} title={inq.subject}>
-            <div className="truncate">
-              {inq.subject}
-            </div>
+          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`}>
+            <ExpandableSubjectField
+              value={inq.subject}
+              rowId={inq.id}
+              onChange={(newSubject) => handleSubjectChange(inq.id, newSubject)}
+              disabled={isUpdating}
+            />
           </td>
         );
       case "timestamp":
@@ -368,6 +459,21 @@ export default function AdminTable() {
               disabled={isUpdating}
               className="accent-orange-500 w-5 h-5 cursor-pointer disabled:cursor-not-allowed"
             />
+          </td>
+        );
+      case "actions":
+        return (
+          <td key={columnKey} className={`px-3 py-4 text-center ${widthClass}`}>
+            <button
+              onClick={() => openDeleteModal(inq)}
+              disabled={isUpdating}
+              className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Delete inquiry"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
           </td>
         );
       default:
@@ -491,6 +597,18 @@ export default function AdminTable() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        title="Delete Inquiry"
+        message={`Are you sure you want to delete the inquiry from "${inquiryToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmButtonClass="bg-red-500 hover:bg-red-600"
+      />
     </div>
   );
 } 
