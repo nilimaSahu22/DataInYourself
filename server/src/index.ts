@@ -114,6 +114,7 @@ app.post('/inquiry', async (c) => {
         },
         body: JSON.stringify({
           "to": c.env.NOTIFICATION_EMAIL,
+          "name": "Data In Yourself",
           "subject": `New Course Inquiry: ${subject}`,
           "body": emailBody
         })
