@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import ExpandableDescriptionField from "./ExpandableDescriptionField";
 import ExpandableNameField from "./ExpandableNameField";

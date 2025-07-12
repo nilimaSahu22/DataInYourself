@@ -23,6 +23,68 @@ export default function CourseDetail() {
     email: '',
     phone: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [isDownloadSubmitting, setIsDownloadSubmitting] = useState(false);
+  const [downloadError, setDownloadError] = useState('');
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+  
+  // Validation states for enrollment form
+  const [validationErrors, setValidationErrors] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+  
+  // Validation states for download form
+  const [downloadValidationErrors, setDownloadValidationErrors] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+
+  // Email validation function
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Phone validation function
+  const isValidPhone = (phone: string) => {
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateField = (name: string, value: string) => {
+    let error = '';
+    
+    switch (name) {
+      case 'name':
+        if (!value.trim()) {
+          error = 'Name is required';
+        } else if (value.trim().length < 2) {
+          error = 'Name must be at least 2 characters';
+        }
+        break;
+      case 'email':
+        if (!value.trim()) {
+          error = 'Email is required';
+        } else if (!isValidEmail(value)) {
+          error = 'Please enter a valid email address';
+        }
+        break;
+      case 'phone':
+        if (!value.trim()) {
+          error = 'Phone number is required';
+        } else if (!isValidPhone(value)) {
+          error = 'Please enter a valid phone number';
+        }
+        break;
+    }
+    
+    return error;
+  };
 
   useEffect(() => {
     const courseSlug = decodeURIComponent(params.courseName as string);
@@ -46,47 +108,204 @@ export default function CourseDetail() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // For phone number, only allow digits
+    if (name === 'phone') {
+      const numericValue = value.replace(/\D/g, '');
+      // Limit to 10 digits
+      const limitedValue = numericValue.slice(0, 10);
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: limitedValue
+      }));
+      
+      // Validate the field
+      const fieldError = validateField(name, limitedValue);
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: fieldError
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      
+      // Validate the field
+      const fieldError = validateField(name, value);
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: fieldError
+      }));
+    }
   };
 
   const handleDownloadInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setDownloadFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleAdmissionSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you can add logic to handle form submission
-    console.log('Admission form submitted for course:', course?.title, formData);
-    alert(`Thank you for your interest in the ${course?.title} course! We will contact you soon to discuss your admission.`);
-    setIsAdmissionModalOpen(false);
-    setFormData({ name: '', email: '', phone: '' });
-  };
-
-  const handleDownloadSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you can add logic to handle download form submission
-    console.log('Download form submitted for course:', course?.title, downloadFormData);
     
-    // Trigger the actual download
-    if (course?.pdfSrc) {
-      const link = document.createElement('a');
-      link.href = course.pdfSrc;
-      link.download = `${course.title} Syllabus.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    // For phone number, only allow digits
+    if (name === 'phone') {
+      const numericValue = value.replace(/\D/g, '');
+      // Limit to 10 digits
+      const limitedValue = numericValue.slice(0, 10);
+      
+      setDownloadFormData(prev => ({
+        ...prev,
+        [name]: limitedValue
+      }));
+      
+      // Validate the field
+      const fieldError = validateField(name, limitedValue);
+      setDownloadValidationErrors(prev => ({
+        ...prev,
+        [name]: fieldError
+      }));
+    } else {
+      setDownloadFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+      
+      // Validate the field
+      const fieldError = validateField(name, value);
+      setDownloadValidationErrors(prev => ({
+        ...prev,
+        [name]: fieldError
+      }));
+    }
+  };
+
+  const handleAdmissionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate all fields
+    const nameError = validateField('name', formData.name);
+    const emailError = validateField('email', formData.email);
+    const phoneError = validateField('phone', formData.phone);
+    
+    setValidationErrors({
+      name: nameError,
+      email: emailError,
+      phone: phoneError
+    });
+    
+    // Check if there are any validation errors
+    if (nameError || emailError || phoneError) {
+      return;
     }
     
-    alert(`Thank you! The syllabus for ${course?.title} is being downloaded.`);
-    setIsDownloadModalOpen(false);
-    setDownloadFormData({ name: '', email: '', phone: '' });
+    setIsSubmitting(true);
+    setSubmitError('');
+    setSubmitSuccess(false);
+
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      const inquiryData = {
+        name: formData.name,
+        phoneNumber: formData.phone,
+        emailId: formData.email,
+        subject: course.title,
+        dateTime: new Date().toISOString()
+      };
+      const response = await fetch(`${serverUrl}/inquiry`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inquiryData),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: '', email: '', phone: '' });
+        setValidationErrors({ name: '', email: '', phone: '' });
+        setTimeout(() => {
+          setIsAdmissionModalOpen(false);
+          setSubmitSuccess(false);
+        }, 2000);
+      } else {
+        setSubmitError(result.error || 'Failed to submit enrollment. Please try again.');
+      }
+    } catch (error) {
+      setSubmitError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDownloadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate all fields
+    const nameError = validateField('name', downloadFormData.name);
+    const emailError = validateField('email', downloadFormData.email);
+    const phoneError = validateField('phone', downloadFormData.phone);
+    
+    setDownloadValidationErrors({
+      name: nameError,
+      email: emailError,
+      phone: phoneError
+    });
+    
+    // Check if there are any validation errors
+    if (nameError || emailError || phoneError) {
+      return;
+    }
+    
+    setIsDownloadSubmitting(true);
+    setDownloadError('');
+    setDownloadSuccess(false);
+
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      
+      // Map form data to backend API structure for download tracking
+      const inquiryData = {
+        name: downloadFormData.name,
+        phoneNumber: downloadFormData.phone,
+        emailId: downloadFormData.email,
+        subject: `${course.title} - Syllabus Download`,
+        dateTime: new Date().toISOString()
+      };
+
+      const response = await fetch(`${serverUrl}/inquiry`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inquiryData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setDownloadSuccess(true);
+        setDownloadFormData({ name: '', email: '', phone: '' });
+        setDownloadValidationErrors({ name: '', email: '', phone: '' });
+        
+        // Trigger the actual download only after successful backend storage
+        if (course?.pdfSrc) {
+          const link = document.createElement('a');
+          link.href = course.pdfSrc;
+          link.download = `${course.title} Syllabus.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        
+        // Close modal after a short delay to show success message
+        setTimeout(() => {
+          setIsDownloadModalOpen(false);
+          setDownloadSuccess(false);
+        }, 2000);
+      } else {
+        setDownloadError(result.error || 'Failed to submit download request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting download request:', error);
+      setDownloadError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsDownloadSubmitting(false);
+    }
   };
 
   const handleEnrollClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -240,12 +459,6 @@ export default function CourseDetail() {
               Contact us today to enroll in the {course.title} course and take the first step towards your career goals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={handleEnrollClick}
-                className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
-              >
-                Enroll Now
-              </button>
               <a 
                 href="tel:+919558092200"
                 className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
@@ -265,7 +478,7 @@ export default function CourseDetail() {
 
       {/* Admission Form Modal */}
       {isAdmissionModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed text-black inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-gray-900">Enroll in {course.title}</h3>
@@ -277,69 +490,122 @@ export default function CourseDetail() {
               </button>
             </div>
             
-            <form onSubmit={handleAdmissionSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your full name"
-                />
+            {submitSuccess ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Enrollment Submitted!</h3>
+                <p className="text-gray-600">Thank you for your interest in the {course.title} course! We will contact you soon to discuss your admission.</p>
               </div>
-              
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your email address"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your phone number"
-                />
-              </div>
-              
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Submit Enrollment
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleAdmissionSubmit} className="space-y-6">
+                {submitError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex">
+                      <svg className="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="ml-3 text-sm text-red-700">{submitError}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      validationErrors.name ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter your full name"
+                  />
+                  {validationErrors.name && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.name}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      validationErrors.email ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter your email address"
+                  />
+                  {validationErrors.email && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    disabled={isSubmitting}
+                    maxLength={10}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      validationErrors.phone ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter 10-digit phone number"
+                  />
+                  {validationErrors.phone && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.phone}</p>
+                  )}
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Enrollment'
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}
 
       {/* Download Form Modal */}
       {isDownloadModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed text-black inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-bold text-gray-900">Download Syllabus for {course.title}</h3>
@@ -351,62 +617,116 @@ export default function CourseDetail() {
               </button>
             </div>
             
-            <form onSubmit={handleDownloadSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="downloadName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="downloadName"
-                  name="name"
-                  value={downloadFormData.name}
-                  onChange={handleDownloadInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your full name"
-                />
+            {downloadSuccess ? (
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Download Started!</h3>
+                <p className="text-gray-600">Your syllabus download has been initiated. The file should start downloading automatically.</p>
               </div>
-              
-              <div>
-                <label htmlFor="downloadEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="downloadEmail"
-                  name="email"
-                  value={downloadFormData.email}
-                  onChange={handleDownloadInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your email address"
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="downloadPhone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  id="downloadPhone"
-                  name="phone"
-                  value={downloadFormData.phone}
-                  onChange={handleDownloadInputChange}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                  placeholder="Enter your phone number"
-                />
-              </div>
-              
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Download Syllabus
-              </button>
-            </form>
+            ) : (
+              <form onSubmit={handleDownloadSubmit} className="space-y-6">
+                {downloadError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex">
+                      <svg className="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="ml-3 text-sm text-red-700">{downloadError}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label htmlFor="downloadName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="downloadName"
+                    name="name"
+                    value={downloadFormData.name}
+                    onChange={handleDownloadInputChange}
+                    required
+                    disabled={isDownloadSubmitting}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      downloadValidationErrors.name ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter your full name"
+                  />
+                  {downloadValidationErrors.name && (
+                    <p className="mt-1 text-sm text-red-600">{downloadValidationErrors.name}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="downloadEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="downloadEmail"
+                    name="email"
+                    value={downloadFormData.email}
+                    onChange={handleDownloadInputChange}
+                    required
+                    disabled={isDownloadSubmitting}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      downloadValidationErrors.email ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter your email address"
+                  />
+                  {downloadValidationErrors.email && (
+                    <p className="mt-1 text-sm text-red-600">{downloadValidationErrors.email}</p>
+                  )}
+                </div>
+                
+                <div>
+                  <label htmlFor="downloadPhone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="downloadPhone"
+                    name="phone"
+                    value={downloadFormData.phone}
+                    onChange={handleDownloadInputChange}
+                    required
+                    disabled={isDownloadSubmitting}
+                    maxLength={10}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                      downloadValidationErrors.phone ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Enter 10-digit phone number"
+                  />
+                  {downloadValidationErrors.phone && (
+                    <p className="mt-1 text-sm text-red-600">{downloadValidationErrors.phone}</p>
+                  )}
+                  
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={isDownloadSubmitting}
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isDownloadSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Downloading...
+                    </>
+                  ) : (
+                    'Download Syllabus'
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}
