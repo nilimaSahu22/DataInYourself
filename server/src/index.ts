@@ -94,16 +94,70 @@ app.post('/inquiry', async (c) => {
     // Send email notification
     try {
       const emailBody = `
-        New Course Inquiry Received
-        
-        Student Details:
-        - Name: ${name}
-        - Phone: ${phoneNumber}
-        - Email: ${emailId}
-        - Subject: ${subject}
-        - Date: ${new Date(dateTime).toLocaleString('en-IN')}
-        
-        Please contact the student as soon as possible.
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Course Inquiry</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
+            .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .header { background: linear-gradient(135deg, #ff6b35, #f7931e); color: white; padding: 30px; text-align: center; }
+            .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+            .content { padding: 30px; }
+            .section { margin-bottom: 25px; }
+            .section h2 { color: #ff6b35; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #ff6b35; padding-bottom: 5px; }
+            .detail-row { display: flex; margin-bottom: 10px; align-items: center; }
+            .label { font-weight: bold; min-width: 80px; color: #555; }
+            .value { flex: 1; color: #333; }
+            .highlight { background-color: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ff6b35; margin: 20px 0; }
+            .footer { background-color: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+            .urgent { color: #dc3545; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🎓 New Course Inquiry Received</h1>
+            </div>
+            <div class="content">
+              <div class="section">
+                <h2>📋 Student Details</h2>
+                <div class="detail-row">
+                  <span class="label">Name:</span>
+                  <span class="value"><strong>${name}</strong></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Phone:</span>
+                  <span class="value"><a href="tel:${phoneNumber}" style="color: #ff6b35; text-decoration: none;">${phoneNumber}</a></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Email:</span>
+                  <span class="value"><a href="mailto:${emailId}" style="color: #ff6b35; text-decoration: none;">${emailId}</a></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Course:</span>
+                  <span class="value"><strong>${subject}</strong></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Date:</span>
+                  <span class="value">${new Date(dateTime).toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+              
+              <div class="highlight">
+                <p class="urgent">⚠️ Action Required</p>
+                <p>Please contact this student as soon as possible to discuss their interest in the <strong>${subject}</strong> course.</p>
+              </div>
+            </div>
+            <div class="footer">
+              <p>This inquiry was automatically generated from the DataInYourself website.</p>
+              <p>© 2024 DataInYourself - Rudriva Technology</p>
+            </div>
+          </div>
+        </body>
+        </html>
       `;
       
       await fetch('https://api.useplunk.com/v1/send', {
@@ -164,17 +218,85 @@ app.post('/contact', async (c) => {
     // Send email notification
     try {
       const emailBody = `
-        New Contact Form Submission
-        
-        User Details:
-        - Name: ${fullName}
-        - Phone: ${phone}
-        - Email: ${email}
-        - Interested Course: ${course || 'Not specified'}
-        - Message: ${message || 'No message provided'}
-        - Date: ${new Date().toLocaleString('en-IN')}
-        
-        Please contact the user as soon as possible.
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Contact Form Submission</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
+            .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .header { background: linear-gradient(135deg, #ff6b35, #f7931e); color: white; padding: 30px; text-align: center; }
+            .header h1 { margin: 0; font-size: 24px; font-weight: bold; }
+            .content { padding: 30px; }
+            .section { margin-bottom: 25px; }
+            .section h2 { color: #ff6b35; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #ff6b35; padding-bottom: 5px; }
+            .detail-row { display: flex; margin-bottom: 10px; align-items: center; }
+            .label { font-weight: bold; min-width: 100px; color: #555; }
+            .value { flex: 1; color: #333; }
+            .message-box { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 15px; margin: 15px 0; }
+            .message-box p { margin: 0; font-style: italic; color: #666; }
+            .highlight { background-color: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ff6b35; margin: 20px 0; }
+            .footer { background-color: #f8f9fa; padding: 20px; text-align: center; color: #666; font-size: 14px; }
+            .urgent { color: #dc3545; font-weight: bold; }
+            .course-badge { background-color: #ff6b35; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>📧 New Contact Form Submission</h1>
+            </div>
+            <div class="content">
+              <div class="section">
+                <h2>👤 User Details</h2>
+                <div class="detail-row">
+                  <span class="label">Name:</span>
+                  <span class="value"><strong>${fullName}</strong></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Phone:</span>
+                  <span class="value"><a href="tel:${phone}" style="color: #ff6b35; text-decoration: none;">${phone}</a></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Email:</span>
+                  <span class="value"><a href="mailto:${email}" style="color: #ff6b35; text-decoration: none;">${email}</a></span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Course:</span>
+                  <span class="value">
+                    ${course ? `<span class="course-badge">${course}</span>` : '<em>Not specified</em>'}
+                  </span>
+                </div>
+                <div class="detail-row">
+                  <span class="label">Date:</span>
+                  <span class="value">${new Date().toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+              
+              ${message ? `
+              <div class="section">
+                <h2>💬 User Message</h2>
+                <div class="message-box">
+                  <p>"${message}"</p>
+                </div>
+              </div>
+              ` : ''}
+              
+              <div class="highlight">
+                <p class="urgent">⚠️ Action Required</p>
+                <p>Please contact <strong>${fullName}</strong> as soon as possible to discuss their inquiry.</p>
+                ${course ? `<p>They are interested in the <strong>${course}</strong> course.</p>` : ''}
+              </div>
+            </div>
+            <div class="footer">
+              <p>This contact form submission was automatically generated from the DataInYourself website.</p>
+              <p>© 2024 DataInYourself - Rudriva Technology</p>
+            </div>
+          </div>
+        </body>
+        </html>
       `;
       
       await fetch('https://api.useplunk.com/v1/send', {
