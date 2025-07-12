@@ -184,6 +184,7 @@ app.post('/contact', async (c) => {
         },
         body: JSON.stringify({
           "to": c.env.NOTIFICATION_EMAIL,
+          "name": "Data In Yourself",
           "subject": `New Contact Form: ${fullName} - ${course || 'General Inquiry'}`,
           "body": emailBody
         })
