@@ -3,11 +3,24 @@ import { IInquiryData } from './db/model/InquiryData.model'
 import { IAdmin } from './db/model/Admin.model'
 import { initializeDefaultAdmin } from './setup/initAdmin'
 import { validateAdminData } from './utils/adminUtils'
+import { generateJWT } from './utils/jwtUtils'
+import { authenticateJWT } from './middleware/authMiddleware'
 
 // Define environment variable and KV types
 // Use 'any' for KVNamespace for now, or use generated CloudflareBindings if available
 type Bindings = {
   KV: any // Cloudflare KVNamespace
+  JWT_SECRET: string
+}
+
+// Extend Hono context to include user property
+type Variables = {
+  user: {
+    username: string
+    role: string
+    iat: number
+    exp: number
+  }
 }
 
 function generateUUID() {
@@ -20,7 +33,7 @@ function generateUUID() {
   return Math.random().toString(36).substr(2, 9)
 }
 
-const app = new Hono<{ Bindings: Bindings }>()
+const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
 // CORS middleware
 app.use('*', async (c, next) => {
@@ -83,7 +96,7 @@ app.post('/inquiry', async (c) => {
   }
 })
 
-// Enhanced Admin login with lastLogin tracking
+// Enhanced Admin login with JWT token generation
 app.post('/login', async (c) => {
   try {
     const { username, password } = await c.req.json()
@@ -111,11 +124,18 @@ app.post('/login', async (c) => {
     admin.lastLogin = new Date().toISOString()
     await c.env.KV.put(`admin:${username}`, JSON.stringify(admin))
     
-    // Return admin data without password
+    // Generate JWT token
+    const token = await generateJWT({
+      username: admin.username,
+      role: admin.role || 'admin'
+    }, c.env.JWT_SECRET)
+    
+    // Return admin data without password and JWT token
     const { password: _, ...adminData } = admin
     return c.json({ 
       message: 'Login successful', 
-      admin: adminData 
+      admin: adminData,
+      token
     })
   } catch (err) {
     const error = err as Error
@@ -306,8 +326,8 @@ app.post('/admin/init', async (c) => {
 //   }
 // })
 
-// Get all inquiries
-app.get('/admin/getall', async (c) => {
+// Get all inquiries (protected with JWT)
+app.get('/admin/getall', authenticateJWT, async (c) => {
   try {
     // List all keys with prefix 'inquiry:'
     const list = await c.env.KV.list({ prefix: 'inquiry:' })
@@ -323,8 +343,8 @@ app.get('/admin/getall', async (c) => {
   }
 })
 
-// Update inquiry by id
-app.patch('/admin/update/:id', async (c) => {
+// Update inquiry by id (protected with JWT)
+app.patch('/admin/update/:id', authenticateJWT, async (c) => {
   try {
     const { id } = c.req.param()
     const updateFields = await c.req.json()
@@ -345,6 +365,18 @@ app.patch('/admin/update/:id', async (c) => {
     const error = err as Error
     return c.json({ error: 'Failed to update inquiry', details: error.message }, 500)
   }
+})
+
+// Verify JWT token endpoint
+app.get('/verify-token', authenticateJWT, async (c) => {
+  const user = c.get('user')
+  return c.json({ 
+    message: 'Token is valid', 
+    user: {
+      username: user.username,
+      role: user.role
+    }
+  })
 })
 
 export default app
