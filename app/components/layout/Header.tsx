@@ -138,11 +138,11 @@ export default function Header() {
 
       {/* Mobile Sidebar */}
       <div 
-        className={`fixed top-0 right-0 max-h-screen w-64 sm:w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 h-full w-64 sm:w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex flex-col">
+        <div className="flex flex-col h-full">
           {/* Sidebar Header */}
           <div className="flex items-center justify-between py-3 px-4 border-b border-gray-200 bg-orange-50">
             <h2 className="text-base sm:text-lg font-semibold text-gray-800">Menu</h2>
@@ -159,7 +159,7 @@ export default function Header() {
           </div>
 
           {/* Sidebar Navigation */}
-          <nav className="px-4 py-4" aria-label="Mobile navigation">
+          <nav className="flex-1 px-4 py-4" aria-label="Mobile navigation">
             <div className="space-y-2">
               {navigationLinks.map((link) => (
                 <div key={link.name}>
@@ -200,7 +200,7 @@ export default function Header() {
           <div className="py-3 px-4 border-t border-gray-200 bg-orange-50">
             <div className="text-center">
               <p className="text-sm text-gray-500">DataInYourself</p>
-              <p className="text-xs text-gray-400 mt-1">© 2024 All rights reserved</p>
+              <p className="text-xs text-gray-400 mt-1">© {new Date().getFullYear()} All rights reserved</p>
             </div>
           </div>
         </div>
