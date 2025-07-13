@@ -47,7 +47,7 @@ export default function SortableHeader({
     if (!isCurrentSort) {
       return (
         <svg
-          className="w-4 h-4 text-gray-400 opacity-70 hover:opacity-100 transition-opacity"
+          className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -66,7 +66,7 @@ export default function SortableHeader({
     if (currentDirection === "asc") {
       return (
         <svg
-          className="w-4 h-4 text-orange-500"
+          className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -85,7 +85,7 @@ export default function SortableHeader({
     if (currentDirection === "desc") {
       return (
         <svg
-          className="w-4 h-4 text-orange-500"
+          className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -104,7 +104,7 @@ export default function SortableHeader({
     // This case should never be reached, but keeping for safety
     return (
       <svg
-        className="w-4 h-4 text-gray-400 opacity-70 hover:opacity-100 transition-opacity"
+        className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -122,7 +122,7 @@ export default function SortableHeader({
 
   return (
     <th
-      className={`px-3 py-4 font-semibold text-base cursor-pointer hover:bg-gray-600 transition-colors duration-200 select-none ${className}`}
+      className={`px-2 sm:px-3 py-3 sm:py-4 font-semibold text-xs sm:text-base cursor-pointer hover:bg-gray-600 transition-colors duration-200 select-none ${className}`}
       onClick={handleClick}
       tabIndex={0}
       onKeyDown={(e) => {
@@ -134,8 +134,8 @@ export default function SortableHeader({
       role="button"
       aria-label={`Sort by ${label} ${currentDirection === "asc" ? "descending" : currentDirection === "desc" ? "remove sort" : "ascending"}`}
     >
-      <div className="flex items-center gap-2">
-        <span>{label}</span>
+      <div className="flex items-center gap-1 sm:gap-2">
+        <span className="whitespace-nowrap">{label}</span>
         {getSortIcon()}
       </div>
     </th>

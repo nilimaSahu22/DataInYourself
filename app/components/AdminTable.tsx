@@ -29,10 +29,10 @@ interface InquiryData {
 const columnOptions: ColumnOption[] = [
   { key: "id", label: "Sr.", defaultVisible: true },
   { key: "name", label: "Name", defaultVisible: true },
-  { key: "phone", label: "Phone Number", defaultVisible: true },
+  { key: "phone", label: "Phone", defaultVisible: true },
   { key: "email", label: "Email", defaultVisible: true },
   { key: "subject", label: "Subject", defaultVisible: true },
-  { key: "timestamp", label: "Date & Time", defaultVisible: true },
+  { key: "timestamp", label: "Date", defaultVisible: true },
   { key: "description", label: "Description", defaultVisible: true },
   { key: "called", label: "Called", defaultVisible: true },
   { key: "actions", label: "Actions", defaultVisible: true },
@@ -56,25 +56,25 @@ const formatDateTime = (dateString: string): string => {
 const getColumnWidthClass = (columnKey: string): string => {
   switch (columnKey) {
     case "id":
-      return "w-16 min-w-[4rem]"; // Fixed width for ID
+      return "w-12 sm:w-16 min-w-[3rem] sm:min-w-[4rem]"; // Fixed width for ID
     case "name":
-      return "w-32 min-w-[8rem] max-w-[8rem]"; // Fixed width for name
+      return "w-24 sm:w-32 min-w-[6rem] sm:min-w-[8rem] max-w-[6rem] sm:max-w-[8rem]"; // Fixed width for name
     case "phone":
-      return "w-32 min-w-[8rem]"; // Fixed width for phone
+      return "w-28 sm:w-32 min-w-[7rem] sm:min-w-[8rem]"; // Fixed width for phone
     case "email":
-      return "w-40 min-w-[10rem] max-w-[10rem]"; // Increased email width
+      return "w-32 sm:w-40 min-w-[8rem] sm:min-w-[10rem] max-w-[8rem] sm:max-w-[10rem]"; // Email width
     case "subject":
-      return "w-36 min-w-[9rem] max-w-[9rem]"; // Increased subject width
+      return "w-28 sm:w-36 min-w-[7rem] sm:min-w-[9rem] max-w-[7rem] sm:max-w-[9rem]"; // Subject width
     case "timestamp":
-      return "w-36 min-w-[9rem]"; // Fixed width for timestamp
+      return "w-32 sm:w-36 min-w-[8rem] sm:min-w-[9rem]"; // Fixed width for timestamp
     case "description":
-      return "min-w-[12rem] flex-1"; // Flexible width, takes remaining space
+      return "min-w-[12rem] sm:min-w-[15rem] flex-1"; // Increased minimum width for description
     case "called":
-      return "w-16 min-w-[4rem] text-center"; // Fixed width for checkbox
+      return "w-16 sm:w-24 min-w-[4rem] sm:min-w-[5rem] text-center"; // Increased width for checkbox
     case "actions":
-      return "w-20 min-w-[5rem] text-center"; // Fixed width for actions
+      return "w-20 sm:w-24 min-w-[5rem] sm:min-w-[6rem] text-center"; // Increased width for actions
     default:
-      return "min-w-[8rem]";
+      return "min-w-[6rem] sm:min-w-[8rem]";
   }
 };
 
@@ -424,13 +424,13 @@ export default function AdminTable() {
     switch (columnKey) {
       case "id":
         return (
-          <td key={columnKey} className={`px-3 py-4 font-semibold text-gray-800 ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 font-semibold text-gray-800 ${widthClass}`}>
             {inq.serialNumber || 1}
           </td>
         );
       case "name":
         return (
-          <td key={columnKey} className={`px-3 py-4 font-medium text-gray-700 ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 font-medium text-gray-700 ${widthClass}`}>
             <ExpandableNameField
               value={inq.name}
               rowId={inq.id}
@@ -441,7 +441,7 @@ export default function AdminTable() {
         );
       case "phone":
         return (
-          <td key={columnKey} className={`px-3 py-4 font-mono text-gray-800 font-medium ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 font-mono text-gray-800 font-medium ${widthClass}`}>
             <ExpandablePhoneField
               value={inq.phoneNumber}
               rowId={inq.id}
@@ -452,7 +452,7 @@ export default function AdminTable() {
         );
       case "email":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 text-gray-700 font-medium ${widthClass}`}>
             <ExpandableEmailField
               value={inq.emailId}
               rowId={inq.id}
@@ -463,7 +463,7 @@ export default function AdminTable() {
         );
       case "subject":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 text-gray-700 font-medium ${widthClass}`}>
             <ExpandableSubjectField
               value={inq.subject}
               rowId={inq.id}
@@ -474,13 +474,13 @@ export default function AdminTable() {
         );
       case "timestamp":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-gray-700 font-medium font-mono text-xs ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 text-gray-700 font-medium font-mono text-xs ${widthClass}`}>
             {formatDateTime(inq.dateTime)}
           </td>
         );
       case "description":
         return (
-          <td key={columnKey} className={`px-3 py-4 ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 ${widthClass}`}>
             <ExpandableDescriptionField
               value={inq.description}
               onChange={(newDescription) => handleDescriptionChange(inq.id, newDescription)}
@@ -492,26 +492,26 @@ export default function AdminTable() {
         );
       case "called":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-center ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 text-center ${widthClass}`}>
             <input
               type="checkbox"
               checked={inq.called}
               onChange={() => handleCalledChange(inq.id)}
               disabled={isUpdating}
-              className="accent-orange-500 w-5 h-5 cursor-pointer disabled:cursor-not-allowed"
+              className="accent-orange-500 w-4 h-4 sm:w-5 sm:h-5 cursor-pointer disabled:cursor-not-allowed"
             />
           </td>
         );
       case "actions":
         return (
-          <td key={columnKey} className={`px-3 py-4 text-center ${widthClass}`}>
+          <td key={columnKey} className={`px-2 sm:px-3 py-3 sm:py-4 text-center ${widthClass}`}>
             <button
               onClick={() => openDeleteModal(inq)}
               disabled={isUpdating}
-              className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+              className="p-1 sm:p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
               title="Delete inquiry"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
@@ -526,11 +526,11 @@ export default function AdminTable() {
   if (loading) {
     return (
       <div className="w-full">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Inquiry Management</h2>
-        <div className="flex items-center justify-center py-12">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center sm:text-left">Inquiry Management</h2>
+        <div className="flex items-center justify-center py-8 sm:py-12">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading inquiries...</p>
+            <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+            <p className="text-gray-600 text-sm sm:text-base">Loading inquiries...</p>
           </div>
         </div>
       </div>
@@ -541,18 +541,18 @@ export default function AdminTable() {
   if (error) {
     return (
       <div className="w-full">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Inquiry Management</h2>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center">
-            <svg className="w-6 h-6 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center sm:text-left">Enquiry Management</h2>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
+            <svg className="w-6 h-6 text-red-400 mx-auto sm:mr-3 sm:ml-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <div>
-              <h3 className="text-lg font-semibold text-red-800">Error Loading Inquiries</h3>
-              <p className="text-red-700 mt-1">{error}</p>
+            <div className="text-center sm:text-left">
+              <h3 className="text-base sm:text-lg font-semibold text-red-800">Error Loading Inquiries</h3>
+              <p className="text-red-700 mt-1 text-sm sm:text-base">{error}</p>
               <button
                 onClick={fetchInquiries}
-                className="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="mt-3 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
               >
                 Try Again
               </button>
@@ -565,22 +565,23 @@ export default function AdminTable() {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Inquiry Management</h2>
-        <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center sm:text-left">Enquiry Management</h2>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <button
             onClick={() => downloadAsExcel(processedInquiries)}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center"
+            className="px-3 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center text-sm sm:text-base"
             title="Download as Excel"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Export as Excel sheet
+            <span className="hidden sm:inline">Export as Excel sheet</span>
+            <span className="sm:hidden">Export</span>
           </button>
           <button
             onClick={fetchInquiries}
-            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center"
+            className="px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center text-sm sm:text-base"
           >
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -591,11 +592,14 @@ export default function AdminTable() {
       </div>
       
       {/* Search, Count, and Filters Section */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-        <div className="flex items-center gap-4">
-          <span className="text-lg font-semibold text-gray-700">
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <span className="text-base sm:text-lg font-semibold text-gray-700 text-center sm:text-left">
             Total Inquiries: {processedInquiries.length}
           </span>
+          <SearchBar onSearch={setSearchTerm} />
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
           <ColumnSelector
             columns={columnOptions}
             visibleColumns={visibleColumns}
@@ -603,12 +607,11 @@ export default function AdminTable() {
           />
           <DateRangeFilter onDateRangeChange={handleDateRangeChange} />
         </div>
-        <SearchBar onSearch={setSearchTerm} />
       </div>
 
       {/* Table Container */}
       <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-lg">
-        <table className="w-full text-sm text-left table-fixed">
+        <table className="w-full text-xs sm:text-sm text-left table-fixed min-w-[900px]">
           <thead className="bg-gradient-to-r from-gray-800 to-gray-700 text-white">
             <tr>
               {columnOptions.map((column) => 
@@ -645,8 +648,8 @@ export default function AdminTable() {
         
         {/* No results message */}
         {processedInquiries.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <p className="text-lg">No inquiries found matching your criteria.</p>
+          <div className="text-center py-6 sm:py-8 text-gray-500">
+            <p className="text-base sm:text-lg">No inquiries found matching your criteria.</p>
           </div>
         )}
       </div>
@@ -657,7 +660,7 @@ export default function AdminTable() {
         onClose={closeDeleteModal}
         onConfirm={confirmDelete}
         title="Delete Inquiry"
-        message={`Are you sure you want to delete the inquiry from "${inquiryToDelete?.name}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete the enquiry from "${inquiryToDelete?.name}"? This action cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"
         confirmButtonClass="bg-red-500 hover:bg-red-600"
