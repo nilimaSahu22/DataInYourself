@@ -13,8 +13,8 @@ import ConfirmationModal from "./ConfirmationModal";
 import { getAuthHeaders } from "../utils/authUtils";
 import { TrashIcon, ExclamationIcon, DownloadIcon, SpinnerIcon, RefreshIcon } from "./ui/Icons";
 
-// Interface for inquiry data from backend
-interface InquiryData {
+// Interface for enquiry data from backend
+interface EnquiryData {
   id: string;
   name: string;
   phoneNumber: string;
@@ -80,7 +80,7 @@ const getColumnWidthClass = (columnKey: string): string => {
 };
 
 // Sorting function
-const sortInquiries = (inquiries: InquiryData[], sortColumn: string, sortDirection: SortDirection) => {
+const sortInquiries = (inquiries: EnquiryData[], sortColumn: string, sortDirection: SortDirection) => {
   if (!sortDirection) return inquiries;
 
   return [...inquiries].sort((a, b) => {
@@ -135,7 +135,7 @@ const sortInquiries = (inquiries: InquiryData[], sortColumn: string, sortDirecti
 };
 
 // Function to convert data to CSV and download as Excel
-const downloadAsExcel = (inquiries: InquiryData[]) => {
+const downloadAsExcel = (inquiries: EnquiryData[]) => {
   // Define headers for the CSV
   const headers = [
     'Sr.',
@@ -176,7 +176,7 @@ const downloadAsExcel = (inquiries: InquiryData[]) => {
 };
 
 export default function AdminTable() {
-  const [inquiries, setInquiries] = useState<InquiryData[]>([]);
+  const [inquiries, setInquiries] = useState<EnquiryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -193,7 +193,7 @@ export default function AdminTable() {
     to: null
   });
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [inquiryToDelete, setInquiryToDelete] = useState<InquiryData | null>(null);
+  const [enquiryToDelete, setEnquiryToDelete] = useState<EnquiryData | null>(null);
 
   // Fetch inquiries from backend
   const fetchInquiries = useCallback(async () => {
@@ -222,8 +222,8 @@ export default function AdminTable() {
     }
   }, []);
 
-  // Update inquiry in backend
-  const updateInquiry = useCallback(async (id: string, updateFields: Partial<InquiryData>) => {
+  // Update enquiry in backend
+  const updateEnquiry = useCallback(async (id: string, updateFields: Partial<EnquiryData>) => {
     try {
       setUpdatingId(id);
       
@@ -235,12 +235,12 @@ export default function AdminTable() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update inquiry');
+        throw new Error('Failed to update enquiry');
       }
 
       const data = await response.json();
       
-      // Update local state with the updated inquiry
+      // Update local state with the updated enquiry
       setInquiries(prev => 
         prev.map(inq => 
           inq.id === id ? { ...inq, ...updateFields } : inq
@@ -249,8 +249,8 @@ export default function AdminTable() {
 
       return data;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred while updating inquiry';
-      console.error('Error updating inquiry:', err);
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while updating enquiry';
+      console.error('Error updating enquiry:', err);
       throw new Error(errorMessage);
     } finally {
       setUpdatingId(null);
@@ -286,13 +286,13 @@ export default function AdminTable() {
     // Then filter by date range
     if (dateRange.from || dateRange.to) {
       filtered = filtered.filter((inq) => {
-        const inquiryDate = new Date(inq.dateTime);
+        const enquiryDate = new Date(inq.dateTime);
         
-        if (dateRange.from && inquiryDate < dateRange.from) {
+        if (dateRange.from && enquiryDate < dateRange.from) {
           return false;
         }
         
-        if (dateRange.to && inquiryDate > dateRange.to) {
+        if (dateRange.to && enquiryDate > dateRange.to) {
           return false;
         }
         
@@ -312,11 +312,11 @@ export default function AdminTable() {
 
   const handleCalledChange = async (id: string) => {
     try {
-      const inquiry = inquiries.find(inq => inq.id === id);
-      if (!inquiry) return;
+      const enquiry = inquiries.find(inq => inq.id === id);
+      if (!enquiry) return;
 
-      const newCalledValue = !inquiry.called;
-      await updateInquiry(id, { called: newCalledValue });
+      const newCalledValue = !enquiry.called;
+      await updateEnquiry(id, { called: newCalledValue });
     } catch (err) {
       console.error('Error updating called status:', err);
       // Optionally show error message to user
@@ -325,7 +325,7 @@ export default function AdminTable() {
 
   const handleDescriptionChange = async (id: string, newDescription: string) => {
     try {
-      await updateInquiry(id, { description: newDescription });
+      await updateEnquiry(id, { description: newDescription });
     } catch (err) {
       console.error('Error updating description:', err);
       // Optionally show error message to user
@@ -334,7 +334,7 @@ export default function AdminTable() {
 
   const handleNameChange = async (id: string, newName: string) => {
     try {
-      await updateInquiry(id, { name: newName });
+      await updateEnquiry(id, { name: newName });
     } catch (err) {
       console.error('Error updating name:', err);
       // Optionally show error message to user
@@ -343,7 +343,7 @@ export default function AdminTable() {
 
   const handlePhoneChange = async (id: string, newPhone: string) => {
     try {
-      await updateInquiry(id, { phoneNumber: newPhone });
+      await updateEnquiry(id, { phoneNumber: newPhone });
     } catch (err) {
       console.error('Error updating phone:', err);
       // Optionally show error message to user
@@ -352,7 +352,7 @@ export default function AdminTable() {
 
   const handleEmailChange = async (id: string, newEmail: string) => {
     try {
-      await updateInquiry(id, { emailId: newEmail });
+      await updateEnquiry(id, { emailId: newEmail });
     } catch (err) {
       console.error('Error updating email:', err);
       // Optionally show error message to user
@@ -361,14 +361,14 @@ export default function AdminTable() {
 
   const handleSubjectChange = async (id: string, newSubject: string) => {
     try {
-      await updateInquiry(id, { subject: newSubject });
+      await updateEnquiry(id, { subject: newSubject });
     } catch (err) {
       console.error('Error updating subject:', err);
       // Optionally show error message to user
     }
   };
 
-  const handleDeleteInquiry = async (id: string) => {
+  const handleDeleteEnquiry = async (id: string) => {
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
       const response = await fetch(`${serverUrl}/admin/delete/${id}`, {
@@ -377,31 +377,31 @@ export default function AdminTable() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete inquiry');
+        throw new Error('Failed to delete enquiry');
       }
 
-      // Remove the inquiry from local state
+      // Remove the enquiry from local state
       setInquiries(prev => prev.filter(inq => inq.id !== id));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred while deleting inquiry';
-      console.error('Error deleting inquiry:', err);
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while deleting enquiry';
+      console.error('Error deleting enquiry:', err);
       // Optionally show error message to user
     }
   };
 
-  const openDeleteModal = (inquiry: InquiryData) => {
-    setInquiryToDelete(inquiry);
+  const openDeleteModal = (enquiry: EnquiryData) => {
+    setEnquiryToDelete(enquiry);
     setDeleteModalOpen(true);
   };
 
   const closeDeleteModal = () => {
     setDeleteModalOpen(false);
-    setInquiryToDelete(null);
+    setEnquiryToDelete(null);
   };
 
   const confirmDelete = () => {
-    if (inquiryToDelete) {
-      handleDeleteInquiry(inquiryToDelete.id);
+    if (enquiryToDelete) {
+      handleDeleteEnquiry(enquiryToDelete.id);
     }
   };
 
@@ -418,7 +418,7 @@ export default function AdminTable() {
   }, []);
 
   // Render table cell based on column key
-  const renderCell = (inq: InquiryData, columnKey: string, idx: number) => {
+  const renderCell = (inq: EnquiryData, columnKey: string, idx: number) => {
     const widthClass = getColumnWidthClass(columnKey);
     const isUpdating = updatingId === inq.id;
     
@@ -510,7 +510,7 @@ export default function AdminTable() {
               onClick={() => openDeleteModal(inq)}
               disabled={isUpdating}
               className="p-1 sm:p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
-              title="Delete inquiry"
+              title="Delete enquiry"
             >
               <TrashIcon size="sm" color="currentColor" />
             </button>
@@ -525,7 +525,7 @@ export default function AdminTable() {
   if (loading) {
     return (
       <div className="w-full">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center sm:text-left">Inquiry Management</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center sm:text-left">Enquiry Management</h2>
         <div className="flex items-center justify-center py-8 sm:py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
@@ -652,8 +652,8 @@ export default function AdminTable() {
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={confirmDelete}
-        title="Delete Inquiry"
-        message={`Are you sure you want to delete the enquiry from "${inquiryToDelete?.name}"? This action cannot be undone.`}
+        title="Delete Enquiry"
+        message={`Are you sure you want to delete the enquiry from "${enquiryToDelete?.name}"? This action cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"
         confirmButtonClass="bg-red-500 hover:bg-red-600"

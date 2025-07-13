@@ -8,6 +8,64 @@ import { coursesData } from "../../data/courses";
 import { findCourseBySlug } from "../../utils/courseUtils";
 import { BriefcaseIcon, CheckIcon, ExclamationIcon, SpinnerIcon, ChevronLeftIcon } from "../../components/ui/Icons";
 
+// Utility function to detect mobile devices
+const isMobileDevice = () => {
+  if (typeof window === 'undefined') return false;
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+// Utility function to handle PDF download with mobile fallback
+const downloadPDF = async (pdfSrc: string, fileName: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    // First, try to fetch the PDF to ensure it exists
+    const pdfResponse = await fetch(pdfSrc);
+    if (!pdfResponse.ok) {
+      throw new Error('PDF not found');
+    }
+    
+    const pdfBlob = await pdfResponse.blob();
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    
+    // Create download link
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = fileName;
+    link.style.display = 'none';
+    
+    // Add to DOM and trigger download
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(pdfUrl);
+    }, 100);
+    
+    return { success: true, message: 'Download initiated successfully' };
+    
+  } catch (error) {
+    console.error('Download error:', error);
+    
+    // Check if it's a network error or file not found
+    if (error instanceof Error && error.message === 'PDF not found') {
+      return { success: false, message: 'Syllabus PDF not available at the moment. Please try again later.' };
+    }
+    
+    // Fallback for mobile: open in new tab
+    if (isMobileDevice()) {
+      try {
+        window.open(pdfSrc, '_blank');
+        return { success: true, message: 'PDF opened in new tab for mobile device' };
+      } catch (fallbackError) {
+        return { success: false, message: 'Unable to open PDF. Please check your internet connection.' };
+      }
+    }
+    
+    return { success: false, message: 'Failed to download file. Please check your internet connection.' };
+  }
+};
+
 export default function CourseDetail() {
   const params = useParams();
   const [course, setCourse] = useState<any>(null);
@@ -30,6 +88,7 @@ export default function CourseDetail() {
   const [isDownloadSubmitting, setIsDownloadSubmitting] = useState(false);
   const [downloadError, setDownloadError] = useState('');
   const [downloadSuccess, setDownloadSuccess] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   
   // Validation states for enrollment form
   const [validationErrors, setValidationErrors] = useState({
@@ -202,17 +261,17 @@ export default function CourseDetail() {
 
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
-      const inquiryData = {
+      const enquiryData = {
         name: formData.name,
         phoneNumber: formData.phone,
         emailId: formData.email,
         subject: course.title,
         dateTime: new Date().toISOString()
       };
-      const response = await fetch(`${serverUrl}/inquiry`, {
+      const response = await fetch(`${serverUrl}/enquiry`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(inquiryData),
+        body: JSON.stringify(enquiryData),
       });
       const result = await response.json();
       if (response.ok) {
@@ -260,7 +319,7 @@ export default function CourseDetail() {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
       
       // Map form data to backend API structure for download tracking
-      const inquiryData = {
+      const enquiryData = {
         name: downloadFormData.name,
         phoneNumber: downloadFormData.phone,
         emailId: downloadFormData.email,
@@ -268,12 +327,12 @@ export default function CourseDetail() {
         dateTime: new Date().toISOString()
       };
 
-      const response = await fetch(`${serverUrl}/inquiry`, {
+      const response = await fetch(`${serverUrl}/enquiry`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(inquiryData),
+        body: JSON.stringify(enquiryData),
       });
 
       const result = await response.json();
@@ -283,21 +342,28 @@ export default function CourseDetail() {
         setDownloadFormData({ name: '', email: '', phone: '' });
         setDownloadValidationErrors({ name: '', email: '', phone: '' });
         
-        // Trigger the actual download only after successful backend storage
+                // Trigger the actual download only after successful backend storage
         if (course?.pdfSrc) {
-          const link = document.createElement('a');
-          link.href = course.pdfSrc;
-          link.download = `${course.title} Syllabus.pdf`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+          setIsDownloading(true);
+          try {
+            const downloadResult = await downloadPDF(course.pdfSrc, `${course.title} Syllabus.pdf`);
+            if (downloadResult.success) {
+              setDownloadSuccess(true);
+              setDownloadError(''); // Clear previous errors
+              
+              // Longer delay for mobile to read instructions
+              const delay = isMobileDevice() ? 4000 : 2000;
+              setTimeout(() => {
+                setIsDownloadModalOpen(false);
+                setDownloadSuccess(false);
+              }, delay);
+            } else {
+              setDownloadError(downloadResult.message);
+            }
+          } finally {
+            setIsDownloading(false);
+          }
         }
-        
-        // Close modal after a short delay to show success message
-        setTimeout(() => {
-          setIsDownloadModalOpen(false);
-          setDownloadSuccess(false);
-        }, 2000);
       } else {
         setDownloadError(result.error || 'Failed to submit download request. Please try again.');
       }
@@ -613,7 +679,12 @@ export default function CourseDetail() {
                   <CheckIcon size="xl" color="rgb(22 163 74)" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Download Started!</h3>
-                <p className="text-gray-600">Your syllabus download has been initiated. The file should start downloading automatically.</p>
+                <p className="text-gray-600">
+                  {isMobileDevice() 
+                    ? "Your syllabus has been opened in a new tab. You can save it from there, or check your downloads folder if it was automatically saved."
+                    : "Your syllabus download has been initiated. The file should start downloading automatically."
+                  }
+                </p>
               </div>
             ) : (
               <form onSubmit={handleDownloadSubmit} className="space-y-6">
@@ -696,13 +767,13 @@ export default function CourseDetail() {
                 
                 <button
                   type="submit"
-                  disabled={isDownloadSubmitting}
+                  disabled={isDownloadSubmitting || isDownloading}
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  {isDownloadSubmitting ? (
+                  {isDownloadSubmitting || isDownloading ? (
                     <>
                       <SpinnerIcon size="md" color="white" className="-ml-1 mr-3" />
-                      Downloading...
+                      {isDownloading ? 'Processing Download...' : 'Downloading...'}
                     </>
                   ) : (
                     'Download Syllabus'

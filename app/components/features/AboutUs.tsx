@@ -35,7 +35,7 @@ const AboutUs = () => {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
       
       // Map form data to backend API structure
-      const inquiryData = {
+      const enquiryData = {
         name: formData.name,
         phoneNumber: formData.phone,
         emailId: formData.email,
@@ -43,12 +43,12 @@ const AboutUs = () => {
         dateTime: new Date().toISOString()
       };
 
-      const response = await fetch(`${serverUrl}/inquiry`, {
+      const response = await fetch(`${serverUrl}/enquiry`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(inquiryData),
+        body: JSON.stringify(enquiryData),
       });
 
       const result = await response.json();
@@ -62,10 +62,10 @@ const AboutUs = () => {
           setSubmitSuccess(false);
         }, 2000);
       } else {
-        setSubmitError(result.error || 'Failed to submit inquiry. Please try again.');
+        setSubmitError(result.error || 'Failed to submit enquiry. Please try again.');
       }
     } catch (error) {
-      console.error('Error submitting inquiry:', error);
+      console.error('Error submitting enquiry:', error);
       setSubmitError('Network error. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);

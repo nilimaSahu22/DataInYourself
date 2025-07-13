@@ -120,7 +120,7 @@ const Franchise = () => {
 
     try {
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
-      const response = await fetch(`${serverUrl}/inquiry`, {
+      const response = await fetch(`${serverUrl}/enquiry`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ const Franchise = () => {
           name: formData.name,
           phoneNumber: formData.phone,
           emailId: formData.email,
-          subject: 'Franchise Inquiry',
+          subject: 'Franchise Enquiry',
           dateTime: new Date().toISOString()
         }),
       });
@@ -357,7 +357,7 @@ const Franchise = () => {
             </h3>
             
             <p className="text-gray-700 mb-6 leading-relaxed">
-              Your franchise inquiry has been successfully submitted. We'll notify you as soon as our franchise program launches with exclusive early access opportunities.
+              Your franchise enquiry has been successfully submitted. We'll notify you as soon as our franchise program launches with exclusive early access opportunities.
             </p>
             
             <button
