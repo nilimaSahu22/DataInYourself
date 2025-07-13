@@ -29,10 +29,80 @@ export default function Home() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
+  // Statistics animation state
+  const [statsVisible, setStatsVisible] = useState(false);
+  const [animatedStats, setAnimatedStats] = useState({
+    studentsLearned: 0,
+    certificatesIssued: 0,
+    coursesProvided: 0,
+    placements: 0
+  });
+
+  // Statistics data
+  const finalStats = {
+    studentsLearned: 5000,
+    certificatesIssued: 4800,
+    coursesProvided: 20,
+    placements: 3200
+  };
+
   // Handle hydration
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Statistics animation effect
+  useEffect(() => {
+    if (!isClient) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !statsVisible) {
+            setStatsVisible(true);
+            animateStats();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    const statsSection = document.getElementById('stats-section');
+    if (statsSection) {
+      observer.observe(statsSection);
+    }
+
+    return () => {
+      if (statsSection) {
+        observer.unobserve(statsSection);
+      }
+    };
+  }, [isClient, statsVisible]);
+
+  // Animate statistics
+  const animateStats = () => {
+    const duration = 2000; // 2 seconds
+    const steps = 60;
+    const stepDuration = duration / steps;
+
+    let currentStep = 0;
+    const interval = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+
+      setAnimatedStats({
+        studentsLearned: Math.floor(finalStats.studentsLearned * progress),
+        certificatesIssued: Math.floor(finalStats.certificatesIssued * progress),
+        coursesProvided: Math.floor(finalStats.coursesProvided * progress),
+        placements: Math.floor(finalStats.placements * progress)
+      });
+
+      if (currentStep >= steps) {
+        clearInterval(interval);
+        setAnimatedStats(finalStats);
+      }
+    }, stepDuration);
+  };
 
   // Track navigation away from home page
   useEffect(() => {
@@ -219,16 +289,17 @@ export default function Home() {
 
   // Company logos data
   const companyLogos = [
-    { src: '/icon_assets/accenture.png', alt: 'Accenture' },
-    { src: '/icon_assets/amazon.png', alt: 'Amazon' },
-    { src: '/icon_assets/Cognizant.png', alt: 'Cognizant' },
-    { src: '/icon_assets/ericsson.png', alt: 'Ericsson' },
-    { src: '/icon_assets/HCL.png', alt: 'HCL' },
-    { src: '/icon_assets/infosys.png', alt: 'Infosys' },
-    { src: '/icon_assets/microland.png', alt: 'Microland' },
-    { src: '/icon_assets/microsoft-80658_1920.png', alt: 'Microsoft' },
-    { src: '/icon_assets/tcs.png', alt: 'TCS' },
-    { src: '/icon_assets/tech-mahindra.png', alt: 'Tech Mahindra' },
+    { src: '/icon_assets/accenture.png', alt: 'Accenture logo' },
+    { src: '/icon_assets/amazon.png', alt: 'Amazon logo' },
+    { src: '/icon_assets/Cognizant.png', alt: 'Cognizant logo' },
+    { src: '/icon_assets/ericsson.png', alt: 'Ericsson logo' },
+    { src: '/icon_assets/HCL.png', alt: 'HCL logo' },
+    { src: '/icon_assets/infosys.png', alt: 'Infosys logo' },
+    { src: '/icon_assets/meta.png', alt: 'Meta logo' },
+    { src: '/icon_assets/microland.png', alt: 'Microland logo' },
+    { src: '/icon_assets/microsoft-80658_1920.png', alt: 'Microsoft logo' },
+    { src: '/icon_assets/tcs.png', alt: 'TCS logo' },
+    { src: '/icon_assets/tech-mahindra.png', alt: 'Tech Mahindra logo' },
   ];
 
   // Carousel state for mobile - continuous scrolling
@@ -360,6 +431,68 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Statistics Section */}
+      <section id="stats-section" className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-600 to-orange-700">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-8 sm:mb-12 md:mb-16">
+            Our Impact in Numbers
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
+            {/* Students Learned */}
+            <div className="text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
+                {isClient ? animatedStats.studentsLearned.toLocaleString() : '0'}
+              </div>
+              <p className="text-sm sm:text-base text-orange-100 font-medium">Students Learned</p>
+            </div>
+
+            {/* Certificates Issued */}
+            <div className="text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
+                {isClient ? animatedStats.certificatesIssued.toLocaleString() : '0'}
+              </div>
+              <p className="text-sm sm:text-base text-orange-100 font-medium">Certificates Issued</p>
+            </div>
+
+            {/* Courses Provided */}
+            <div className="text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
+                {isClient ? animatedStats.coursesProvided : '0'}
+              </div>
+              <p className="text-sm sm:text-base text-orange-100 font-medium">Courses Provided</p>
+            </div>
+
+            {/* Placements */}
+            <div className="text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">
+                {isClient ? animatedStats.placements.toLocaleString() : '0'}
+              </div>
+              <p className="text-sm sm:text-base text-orange-100 font-medium">Successful Placements</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-50 to-white">
         <div className="max-w-7xl mx-auto">
@@ -401,6 +534,9 @@ export default function Home() {
       {/* Company Logos Section */}
       <section className="bg-gradient-to-r from-orange-100 to-orange-200 py-6 sm:py-8 border-t border-b border-orange-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-900 mb-6 sm:mb-8">
+            Trusted Partners
+          </h2>
           {/* Mobile: Continuous scrolling carousel */}
           <div className="flex justify-center items-center sm:hidden overflow-hidden" style={{ minHeight: 80 }}>
             <div 
@@ -460,7 +596,7 @@ export default function Home() {
                   src={logo.src}
                   alt={logo.alt}
                   fill
-                  sizes="140px"
+                  sizes="180px"
                   className="object-contain"
                   priority
                 />
