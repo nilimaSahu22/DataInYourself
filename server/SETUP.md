@@ -57,11 +57,11 @@ curl -X POST http://localhost:8787/login \
   -d '{"username": "admin", "password": "admin123"}'
 ```
 
-### Test Inquiry Creation:
+### Test Enquiry Creation:
 ```bash
-curl -X POST http://localhost:8787/inquiry \
+curl -X POST http://localhost:8787/enquiry \
   -H "Content-Type: application/json" \
-  -d '{"name": "John Doe", "phoneNumber": "1234567890", "emailId": "john@example.com", "subject": "Course Inquiry"}'
+  -d '{"name": "John Doe", "phoneNumber": "1234567890", "emailId": "john@example.com", "subject": "Course Enquiry"}'
 ```
 
 ### Test Getting All Inquiries:

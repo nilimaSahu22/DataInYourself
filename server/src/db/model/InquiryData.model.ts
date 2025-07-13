@@ -1,5 +1,5 @@
 // Remove Mongoose imports and schema, keep only TypeScript interface
-export interface IInquiryData {
+export interface IEnquiryData {
   id: string
   name: string
   phoneNumber: string

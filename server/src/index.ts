@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { IInquiryData } from './db/model/InquiryData.model'
+import { IEnquiryData } from './db/model/EnquiryData.model'
 import { IAdmin } from './db/model/Admin.model'
 import { initializeDefaultAdmin } from './setup/initAdmin'
 import { generateJWT } from './utils/jwtUtils'
@@ -71,15 +71,15 @@ app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
 
-// Create Inquiry
-app.post('/inquiry', async (c) => {
+// Create Enquiry
+app.post('/enquiry', async (c) => {
   try {
     const { name, phoneNumber, emailId, subject, dateTime } = await c.req.json()
     if (!name || !phoneNumber || !emailId || !subject || !dateTime) {
       return c.json({ error: 'Missing required fields' }, 400)
     }
     const id = generateUUID()
-    const inquiry: IInquiryData = {
+    const enquiry: IEnquiryData = {
       id,
       name,
       phoneNumber,
@@ -89,7 +89,7 @@ app.post('/inquiry', async (c) => {
       description: '',
       dateTime,
     }
-    await c.env.KV.put(`inquiry:${id}`, JSON.stringify(inquiry))
+    await c.env.KV.put(`enquiry:${id}`, JSON.stringify(enquiry))
     
     // Send email notification
     try {
@@ -99,7 +99,7 @@ app.post('/inquiry', async (c) => {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>New Course Inquiry</title>
+          <title>New Course Enquiry</title>
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
             .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -119,7 +119,7 @@ app.post('/inquiry', async (c) => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🎓 New Course Inquiry Received</h1>
+              <h1>🎓 New Course Enquiry Received</h1>
             </div>
             <div class="content">
               <div class="section">
@@ -152,7 +152,7 @@ app.post('/inquiry', async (c) => {
               </div>
             </div>
             <div class="footer">
-              <p>This inquiry was automatically generated from the DataInYourself website.</p>
+              <p>This enquiry was automatically generated from the DataInYourself website.</p>
               <p>© ${new Date().getFullYear()} DataInYourself - Rudriva Technology</p>
             </div>
           </div>
@@ -169,7 +169,7 @@ app.post('/inquiry', async (c) => {
         body: JSON.stringify({
           "to": c.env.NOTIFICATION_EMAIL,
           "name": "Data In Yourself",
-          "subject": `New Course Inquiry: ${subject}`,
+          "subject": `New Course Enquiry: ${subject}`,
           "body": emailBody
         })
       });
@@ -178,14 +178,14 @@ app.post('/inquiry', async (c) => {
       // Don't fail the request if email fails
     }
     
-    return c.json({ message: 'Inquiry saved successfully', id }, 201)
+    return c.json({ message: 'Enquiry saved successfully', id }, 201)
   } catch (err) {
     const error = err as Error
-    return c.json({ error: 'Failed to save inquiry', details: error.message }, 500)
+    return c.json({ error: 'Failed to save enquiry', details: error.message }, 500)
   }
 })
 
-// Create Contact Form Inquiry
+// Create Contact Form Enquiry
 app.post('/contact', async (c) => {
   try {
     const { firstName, lastName, email, phone, course, message } = await c.req.json()
@@ -197,12 +197,12 @@ app.post('/contact', async (c) => {
     
     const id = generateUUID()
     const fullName = `${firstName} ${lastName}`.trim()
-    const subject = course ? `Contact Form - ${course}` : 'Contact Form Inquiry'
+    const subject = course ? `Contact Form - ${course}` : 'Contact Form Enquiry'
     const description = message 
       ? `User Message: ${message}` 
-      : `Interested in: ${course || 'General inquiry'}`
+      : `Interested in: ${course || 'General enquiry'}`
     
-    const inquiry: IInquiryData = {
+    const enquiry: IEnquiryData = {
       id,
       name: fullName,
       phoneNumber: phone,
@@ -213,7 +213,7 @@ app.post('/contact', async (c) => {
       dateTime: new Date().toISOString(),
     }
     
-    await c.env.KV.put(`inquiry:${id}`, JSON.stringify(inquiry))
+    await c.env.KV.put(`enquiry:${id}`, JSON.stringify(enquiry))
     
     // Send email notification
     try {
@@ -286,7 +286,7 @@ app.post('/contact', async (c) => {
               
               <div class="highlight">
                 <p class="urgent">⚠️ Action Required</p>
-                <p>Please contact <strong>${fullName}</strong> as soon as possible to discuss their inquiry.</p>
+                <p>Please contact <strong>${fullName}</strong> as soon as possible to discuss their enquiry.</p>
                 ${course ? `<p>They are interested in the <strong>${course}</strong> course.</p>` : ''}
               </div>
             </div>
@@ -308,7 +308,7 @@ app.post('/contact', async (c) => {
         body: JSON.stringify({
           "to": c.env.NOTIFICATION_EMAIL,
           "name": "Data In Yourself",
-          "subject": `New Contact Form: ${fullName} - ${course || 'General Inquiry'}`,
+          "subject": `New Contact Form: ${fullName} - ${course || 'General Enquiry'}`,
           "body": emailBody
         })
       });
@@ -320,7 +320,7 @@ app.post('/contact', async (c) => {
     return c.json({ 
       message: 'Contact form submitted successfully', 
       id,
-      inquiry: {
+      enquiry: {
         name: fullName,
         email,
         phone,
@@ -578,9 +578,9 @@ app.post('/admin/init', async (c) => {
 // Get all inquiries (protected with JWT)
 app.get('/admin/getall', authenticateJWT, async (c) => {
   try {
-    // List all keys with prefix 'inquiry:'
-    const list = await c.env.KV.list({ prefix: 'inquiry:' })
-    const inquiries: IInquiryData[] = []
+    // List all keys with prefix 'enquiry:'
+    const list = await c.env.KV.list({ prefix: 'enquiry:' })
+    const inquiries: IEnquiryData[] = []
     for (const key of list.keys) {
       const value = await c.env.KV.get(key.name)
       if (value) inquiries.push(JSON.parse(value))
@@ -592,54 +592,54 @@ app.get('/admin/getall', authenticateJWT, async (c) => {
   }
 })
 
-// Update inquiry by id (protected with JWT)
+// Update enquiry by id (protected with JWT)
 app.patch('/admin/update/:id', authenticateJWT, async (c) => {
   try {
     const { id } = c.req.param()
     const updateFields = await c.req.json()
     const allowedFields = ['description', 'name', 'phoneNumber', 'emailId', 'called']
-    const inquiryStr = await c.env.KV.get(`inquiry:${id}`)
-    if (!inquiryStr) {
-      return c.json({ error: 'Inquiry not found' }, 404)
+    const enquiryStr = await c.env.KV.get(`enquiry:${id}`)
+    if (!enquiryStr) {
+      return c.json({ error: 'Enquiry not found' }, 404)
     }
-    const inquiry: IInquiryData = JSON.parse(inquiryStr)
+    const enquiry: IEnquiryData = JSON.parse(enquiryStr)
     for (const key of allowedFields) {
       if (key in updateFields) {
-        (inquiry as any)[key] = updateFields[key]
+        (enquiry as any)[key] = updateFields[key]
       }
     }
-    await c.env.KV.put(`inquiry:${id}`, JSON.stringify(inquiry))
-    return c.json({ message: 'Inquiry updated successfully', inquiry })
+    await c.env.KV.put(`enquiry:${id}`, JSON.stringify(enquiry))
+    return c.json({ message: 'Enquiry updated successfully', enquiry })
   } catch (err) {
     const error = err as Error
-    return c.json({ error: 'Failed to update inquiry', details: error.message }, 500)
+    return c.json({ error: 'Failed to update enquiry', details: error.message }, 500)
   }
 })
 
-// Delete inquiry by id (protected with JWT)
+// Delete enquiry by id (protected with JWT)
 app.delete('/admin/delete/:id', authenticateJWT, async (c) => {
   try {
     const { id } = c.req.param()
     
-    // Check if inquiry exists before deleting
-    const inquiryStr = await c.env.KV.get(`inquiry:${id}`)
-    if (!inquiryStr) {
-      return c.json({ error: 'Inquiry not found' }, 404)
+    // Check if enquiry exists before deleting
+    const enquiryStr = await c.env.KV.get(`enquiry:${id}`)
+    if (!enquiryStr) {
+      return c.json({ error: 'Enquiry not found' }, 404)
     }
     
-    // Get the inquiry data to return in response
-    const inquiry: IInquiryData = JSON.parse(inquiryStr)
+    // Get the enquiry data to return in response
+    const enquiry: IEnquiryData = JSON.parse(enquiryStr)
     
-    // Delete the inquiry from KV
-    await c.env.KV.delete(`inquiry:${id}`)
+    // Delete the enquiry from KV
+    await c.env.KV.delete(`enquiry:${id}`)
     
     return c.json({ 
-      message: 'Inquiry deleted successfully', 
-      deletedInquiry: inquiry 
+      message: 'Enquiry deleted successfully', 
+      deletedEnquiry: enquiry 
     })
   } catch (err) {
     const error = err as Error
-    return c.json({ error: 'Failed to delete inquiry', details: error.message }, 500)
+    return c.json({ error: 'Failed to delete enquiry', details: error.message }, 500)
   }
 })
 
