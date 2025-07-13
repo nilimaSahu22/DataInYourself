@@ -10,7 +10,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
   return (
     <>
       {!isAdminRoute && <Header />}
-      <main className="flex-1">
+      <main className="flex-1 relative">
         {children}
       </main>
       {!isAdminRoute && <Footer />}
