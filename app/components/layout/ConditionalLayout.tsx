@@ -20,7 +20,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
         {children}
       </main>
       {!isAdminRoute && <Footer />}
-      <WhatsAppChat />
+      {!isAdminRoute && <WhatsAppChat />}
     </>
   );
 } 
