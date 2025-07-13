@@ -77,27 +77,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3 - Work With Us */}
-          {/* <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">Work With Us</h4>
-            <ul className="space-y-1 sm:space-y-2">
-              <li><Link href="/become-instructor" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Become Instructor</Link></li>
-              <li><Link href="/blog-guest" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Blog as Guest</Link></li>
-              <li><Link href="/hire" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Hire from DataInYourself</Link></li>
-            </ul>
-          </div> */}
-
-          {/* Column 4 - For Business */}
-          {/* <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">For Business</h4>
-            <ul className="space-y-1 sm:space-y-2">
-              <li><Link href="/corporate-training" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Corporate Training</Link></li>
-              <li><Link href="/reviews" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Reviews</Link></li>
-              <li><Link href="/partners" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Partners</Link></li>
-              <li><Link href="/colleges" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Colleges</Link></li>
-              <li><Link href="/schools" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Schools</Link></li>
-            </ul>
-          </div> */}
+         
 
           {/* Column 5 - Contact */}
           <div>
@@ -118,7 +98,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
           {/* Left - Copyright */}
           <div className="text-gray-400 text-xs sm:text-sm text-center sm:text-left">
-            Copyright ©2024 DATAINYOURSELF E-LEARNING (OPC) PVT LTD. All rights Reserved
+            Copyright ©{new Date().getFullYear()} DATAINYOURSELF E-LEARNING PVT LTD. All rights Reserved
           </div>
           
           {/* Right - Legal Links */}
