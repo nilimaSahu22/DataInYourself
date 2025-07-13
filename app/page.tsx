@@ -54,7 +54,7 @@ export default function Home() {
   const finalStats = {
     studentsLearned: 5000,
     certificatesIssued: 4800,
-    coursesProvided: 20,
+    coursesProvided: 18,
     placements: 3200
   };
 
