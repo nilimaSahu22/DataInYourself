@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Data In Yourself",
+  title: "DataInYourself",
   icons: {
     // Standard favicon sizes
     icon: [
@@ -70,13 +70,13 @@ export const metadata: Metadata = {
     title: 'DataInYourself',
   },
   openGraph: {
-    title: "Data In Yourself | India's Premier Computer Training Platform for Data Science, Analytics, and IT Careers | Rudriva Technology",
+    title: "DataInYourself - Data Science & IT Training",
     description: "Data In Yourself by Rudriva Technology is India's number one computer training platform, offering industry-leading courses in data science, analytics, business intelligence, programming, and IT skills. Learn from top industry experts, earn recognized certifications, and advance your career with our comprehensive, hands-on curriculum. Join thousands of successful students who have transformed their futures with Data In Yourself.",
     url: 'https://datainyourself.com',
     siteName: 'Data In Yourself',
     images: [
       {
-        url: '/images/og-image.png',
+        url: 'https://datainyourself.com/images/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Data In Yourself - India\'s Premier Computer Training Platform',
@@ -87,9 +87,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Data In Yourself | India's Premier Computer Training Platform for Data Science, Analytics, and IT Careers | Rudriva Technology",
+    title: "DataInYourself - Data Science & IT Training",
     description: "Data In Yourself by Rudriva Technology is India's number one computer training platform, offering industry-leading courses in data science, analytics, business intelligence, programming, and IT skills. Learn from top industry experts, earn recognized certifications, and advance your career with our comprehensive, hands-on curriculum. Join thousands of successful students who have transformed their futures with Data In Yourself.",
-    images: ['/images/og-image.png'],
+    images: ['https://datainyourself.com/images/og-image.png'],
     site: '@datainyourself',
   },
 };
