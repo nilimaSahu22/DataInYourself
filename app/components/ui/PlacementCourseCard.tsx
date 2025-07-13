@@ -75,10 +75,17 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
           <div className="absolute inset-0 bg-black/10"></div>
           
           {/* Rating Badge - Top Right Corner */}
-          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 shadow-lg">
+          <div className="absolute top-2 right-2 bg-white/95 backdrop-blur-sm rounded-lg px-2 py-1.5 shadow-lg border border-orange-100">
             <div className="flex items-center space-x-1">
-              <span className="text-xs font-semibold text-orange-600">{rating}</span>
-              <StarIcon size="xs" color="rgb(251 191 36)" className="flex-shrink-0" />
+              <span className="text-xs sm:text-sm font-bold text-orange-600">{rating}</span>
+              <svg 
+                className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" 
+                fill="rgb(251 191 36)" 
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
             </div>
           </div>
         </div>
@@ -93,7 +100,8 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
           </div>
           
           {/* Course Duration - Fixed position at bottom */}
-          <div className="flex items-center justify-center">
+          <div className="flex flex-row items-center justify-center space-y-1">
+            <span className="text-xs text-orange-600 font-medium">Duration</span>
             <div className="flex items-center space-x-1 bg-orange-50 rounded-full px-3 py-1">
               <ClockIcon size="sm" color="rgb(249 115 22)" className="flex-shrink-0" />
               <span className="text-xs sm:text-sm font-medium text-orange-700">{duration}</span>
