@@ -364,7 +364,7 @@ export default function Home() {
         desktopVideo="/media_assets/hero_laptop.MP4"
         mobileVideo="/media_assets/hero_mob.MP4"
         overlayOpacity={0.5}
-        className="pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-4 sm:pb-6 md:pb-8 lg:pb-10 px-4 sm:px-6 md:px-8 lg:px-8 min-h-screen flex items-center justify-center"
+        className="pt-12 sm:pt-24 md:pt-28 lg:pt-32 pb-4 sm:pb-6 md:pb-8 lg:pb-10 px-4 sm:px-6 md:px-8 lg:px-8 min-h-screen flex items-center justify-center"
       >
         <div id="hero-section" className="max-w-7xl mx-auto text-center w-full flex flex-col items-center justify-center relative">
           {/* Text shadow overlay for better visibility */}
