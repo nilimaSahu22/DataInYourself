@@ -6,7 +6,7 @@ export default function WhatsAppChat() {
 
   const handleWhatsAppClick = () => {
     // You can customize the phone number and message
-    const phoneNumber = "919558092200"; // Primary number
+    const phoneNumber = "918839381619"; // Primary number
     const message = "Hello! I'm interested in learning more about your courses.";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
