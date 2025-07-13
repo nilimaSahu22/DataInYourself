@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import Header from "./Header";
 import Footer from "./Footer";
+import WhatsAppChat from "../ui/WhatsAppChat";
 
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function ConditionalLayout({ children }: { children: React.ReactN
         {children}
       </main>
       {!isAdminRoute && <Footer />}
+      <WhatsAppChat />
     </>
   );
 } 
