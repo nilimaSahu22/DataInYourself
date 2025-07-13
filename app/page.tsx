@@ -322,7 +322,7 @@ export default function Home() {
           
           {/* Main heading with text animation and improved visibility */}
           <h1 
-            className={`relative z-10 flex text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-center transform transition-all duration-1000 ease-out drop-shadow-2xl ${
+            className={`relative z-10 flex flex-col sm:flex-row text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-center transform transition-all duration-1000 ease-out drop-shadow-2xl ${
               heroTextVisible 
                 ? 'translate-y-0 opacity-100 scale-100' 
                 : 'translate-y-12 opacity-0 scale-95'
