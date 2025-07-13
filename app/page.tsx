@@ -430,6 +430,50 @@ export default function Home() {
           )}
         </div>
       </section>
+{/* Aesthetic DIY Logo Section */}
+<section className="bg-gradient-to-br from-gray-900 via-gray-800 to-black py-16 sm:py-20 relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-orange-500/5"></div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          {/* Simplified DIY Logo */}
+          <div className="group cursor-pointer">
+            <div className="relative inline-block">
+              {/* Main DIY Text */}
+              <h1 className="text-7xl sm:text-8xl md:text-9xl font-black tracking-tight">
+                <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent group-hover:from-orange-300 group-hover:via-yellow-400 group-hover:to-orange-500 transition-all duration-700">
+                  DIY
+                </span>
+              </h1>
+              
+              {/* Subtle glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-yellow-400/20 to-orange-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
+            </div>
+          </div>
+
+          {/* Elegant subtitle */}
+          <div className="mt-8 sm:mt-10">
+            <p className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-300 group-hover:text-white transition-colors duration-500">
+              <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
+                Data In Yourself
+              </span>
+            </p>
+            <p className="text-sm sm:text-base text-gray-400 mt-3 group-hover:text-gray-300 transition-colors duration-500">
+              India's Premier Computer Training Institute
+            </p>
+          </div>
+
+          {/* Minimal decorative line */}
+          <div className="mt-10 sm:mt-12 flex justify-center">
+            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent group-hover:from-orange-300 group-hover:via-yellow-400 group-hover:to-orange-300 transition-all duration-700"></div>
+          </div>
+        </div>
+
+        {/* Bottom gradient fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black to-transparent"></div>
+      </section>
 
       {/* Statistics Section */}
       <section id="stats-section" className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-600 to-orange-700">
@@ -805,51 +849,6 @@ Truly Outstanding!"
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Aesthetic DIY Logo Section */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-black py-16 sm:py-20 relative overflow-hidden">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-orange-500/5"></div>
-        </div>
-
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          {/* Simplified DIY Logo */}
-          <div className="group cursor-pointer">
-            <div className="relative inline-block">
-              {/* Main DIY Text */}
-              <h1 className="text-7xl sm:text-8xl md:text-9xl font-black tracking-tight">
-                <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent group-hover:from-orange-300 group-hover:via-yellow-400 group-hover:to-orange-500 transition-all duration-700">
-                  DIY
-                </span>
-              </h1>
-              
-              {/* Subtle glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-yellow-400/20 to-orange-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"></div>
-            </div>
-          </div>
-
-          {/* Elegant subtitle */}
-          <div className="mt-8 sm:mt-10">
-            <p className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-300 group-hover:text-white transition-colors duration-500">
-              <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
-                Data In Yourself
-              </span>
-            </p>
-            <p className="text-sm sm:text-base text-gray-400 mt-3 group-hover:text-gray-300 transition-colors duration-500">
-              India's Premier Computer Training Institute
-            </p>
-          </div>
-
-          {/* Minimal decorative line */}
-          <div className="mt-10 sm:mt-12 flex justify-center">
-            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-orange-400 to-transparent group-hover:from-orange-300 group-hover:via-yellow-400 group-hover:to-orange-300 transition-all duration-700"></div>
-          </div>
-        </div>
-
-        {/* Bottom gradient fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black to-transparent"></div>
       </section>
 
       {/* Contact Us Section */}
