@@ -213,7 +213,6 @@ export default function AdminTable() {
 
       const data = await response.json();
       setEnquiries(data.enquiries || []);
-      console.log(enquiries);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred while fetching enquiries';
       setError(errorMessage);

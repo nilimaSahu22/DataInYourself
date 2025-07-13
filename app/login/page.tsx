@@ -63,7 +63,6 @@ export default function LoginPage() {
     setIsCheckingAuth(true);
     
     const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
-    console.log(serverUrl);
     fetch(`${serverUrl}/login`, {
       method: "POST",
       headers: {

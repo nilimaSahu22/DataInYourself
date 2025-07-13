@@ -167,61 +167,6 @@ const AboutUs = () => {
           </div>
         </div>
 
-        {/* Course Catalog */}
-        <div className="mb-16 lg:mb-20">
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Explore Our Course Catalog
-            </h2>
-            <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-              From data analysis to web development, we offer comprehensive programs designed 
-              to launch your career in the most in-demand fields
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 lg:gap-6">
-            {[
-              { name: 'Data Analyst', duration: '3-4 months', emoji: '📊' },
-              { name: 'Business Analyst', duration: '3-4 months', emoji: '💼' },
-              { name: 'Data Science', duration: '4-5 months', emoji: '🔬' },
-              { name: 'SQL Analyst', duration: '1 month', emoji: '🗄️' },
-              { name: 'Machine Learning', duration: '1 month', emoji: '🤖' },
-              { name: 'Python for Beginners', duration: '1 month', emoji: '🐍' },
-              { name: 'Power BI / Tableau', duration: '1 month', emoji: '📈' },
-              { name: 'Digital Marketing', duration: '2-3 months', emoji: '📱' },
-              { name: 'Placement Ready', duration: '1 month', emoji: '🎯' },
-              { name: 'Web Developer', duration: '3 months', emoji: '💻' },
-              { name: 'Cyber Security', duration: '3 months', emoji: '🔒' },
-              { name: 'Cloud Engineer', duration: '2 months', emoji: '☁️' },
-              { name: 'Prompt Engineer', duration: '3 months', emoji: '🤖' },
-              { name: 'Product Management', duration: '3 months', emoji: '📋' },
-              { name: 'Finance Analyst', duration: '3 months', emoji: '💰' },
-              { name: 'AutoCAD AutoDesk', duration: '1-2 months', emoji: '🏗️' },
-              { name: 'Autodesk Revit', duration: '1-2 months', emoji: '🏢' },
-              { name: 'STAAD Pro', duration: '1-2 months', emoji: '⚡' }
-            ].map((course, index) => (
-              <div 
-                key={index} 
-                className={`bg-white rounded-xl p-4 lg:p-6 border-2 transition-all duration-300 cursor-pointer text-center group ${
-                  hoveredIndex === index 
-                    ? 'border-orange-500 shadow-lg shadow-orange-100 transform -translate-y-1' 
-                    : 'border-orange-100 hover:border-orange-300 hover:shadow-md'
-                }`}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <div className="text-2xl lg:text-3xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                  {course.emoji}
-                </div>
-                <h4 className="text-sm lg:text-base font-semibold text-gray-900 mb-2 leading-tight">
-                  {course.name}
-                </h4>
-                <p className="text-xs lg:text-sm text-gray-600">{course.duration}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Our Story */}
         <div className="bg-gradient-to-br from-orange-50 to-white rounded-3xl p-8 sm:p-12 lg:p-16 mb-16 lg:mb-20 border border-orange-100">
           <div className="max-w-4xl mx-auto text-center">

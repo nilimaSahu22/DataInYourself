@@ -75,9 +75,9 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
           </div>
           
           {/* Course Duration - Fixed position at bottom */}
-          <div className="flex flex-row items-center justify-center space-y-1">
-            <span className="text-xs text-orange-600 font-medium">Duration</span>
-            <div className="flex items-center space-x-1 bg-orange-50 rounded-full px-3 py-1">
+          <div className="flex flex-row items-center justify-center gap-2">
+            <span className="text-xs text-orange-600 font-medium">Duration:</span>
+            <div className="flex items-center justify-center space-x-1 bg-orange-50 rounded-full px-3 py-1">
               <ClockIcon size="sm" color="rgb(249 115 22)" className="flex-shrink-0" />
               <span className="text-xs sm:text-sm font-medium text-orange-700">{duration}</span>
             </div>
