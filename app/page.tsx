@@ -453,7 +453,9 @@ export default function Home() {
       </VideoBackground>
 
       {/* Placement Courses Section */}
-      <section className="py-4 sm:py-6 md:py-8 lg:py-12 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 bg-white">
+      <section className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-50 to-white ${
+  shouldTriggerAnimation && !hasNavigatedAway ? 'animate-sectionSlideInLeft' : 'section-slide-initial'
+}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-900 mb-6 sm:mb-8 md:mb-12">Placement Courses</h2>
           
@@ -507,21 +509,22 @@ export default function Home() {
             </div>
           )}
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
-            {filteredCourses.map((course, index) => (
-              <PlacementCourseCard
-                key={`${course.id}-${animationKey}`}
-                id={course.id}
-                iconSrc={course.iconSrc}
-                iconAlt={course.iconAlt}
-                title={course.title}
-                duration={course.duration}
-                index={index}
-                animationKey={animationKey}
-                shouldAnimate={shouldTriggerAnimation && !hasNavigatedAway}
-              />
-            ))}
-          </div>
+        {/* Course Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
+      {filteredCourses.map((course, index) => (
+        <PlacementCourseCard
+          key={`${course.id}-${animationKey}`}
+          id={course.id}
+          iconSrc={course.iconSrc}
+          iconAlt={course.iconAlt}
+          title={course.title}
+          duration={course.duration}
+          index={index}
+          animationKey={animationKey}
+          shouldAnimate={false} // Disable individual card animations
+        />
+      ))}
+    </div>
           
           {/* No results message */}
           {isClient && filteredCourses.length === 0 && searchQuery && (
