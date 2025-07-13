@@ -11,6 +11,7 @@ import SortableHeader, { SortDirection } from "./SortableHeader";
 import DateRangeFilter from "./DateRangeFilter";
 import ConfirmationModal from "./ConfirmationModal";
 import { getAuthHeaders } from "../utils/authUtils";
+import { TrashIcon, ExclamationIcon, DownloadIcon, SpinnerIcon, RefreshIcon } from "./ui/Icons";
 
 // Interface for inquiry data from backend
 interface InquiryData {
@@ -511,9 +512,7 @@ export default function AdminTable() {
               className="p-1 sm:p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
               title="Delete inquiry"
             >
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
+              <TrashIcon size="sm" color="currentColor" />
             </button>
           </td>
         );
@@ -544,9 +543,7 @@ export default function AdminTable() {
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6 text-center sm:text-left">Enquiry Management</h2>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
-            <svg className="w-6 h-6 text-red-400 mx-auto sm:mr-3 sm:ml-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <ExclamationIcon size="lg" color="rgb(248 113 113)" className="mx-auto sm:mr-3 sm:ml-0" />
             <div className="text-center sm:text-left">
               <h3 className="text-base sm:text-lg font-semibold text-red-800">Error Loading Inquiries</h3>
               <p className="text-red-700 mt-1 text-sm sm:text-base">{error}</p>
@@ -573,9 +570,7 @@ export default function AdminTable() {
             className="px-3 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center text-sm sm:text-base"
             title="Download as Excel"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
+            <DownloadIcon size="sm" color="white" className="mr-2" />
             <span className="hidden sm:inline">Export as Excel sheet</span>
             <span className="sm:hidden">Export</span>
           </button>
@@ -583,9 +578,7 @@ export default function AdminTable() {
             onClick={fetchInquiries}
             className="px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center text-sm sm:text-base"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+            <RefreshIcon size="sm" color="white" className="mr-2" />
             Refresh
           </button>
         </div>

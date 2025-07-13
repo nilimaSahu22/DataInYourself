@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { SortIcon, ChevronUpIcon, ChevronDownIcon } from "./ui/Icons";
 
 export type SortDirection = "asc" | "desc" | null;
 
@@ -46,77 +47,41 @@ export default function SortableHeader({
   const getSortIcon = () => {
     if (!isCurrentSort) {
       return (
-        <svg
-          className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-          />
-        </svg>
+        <SortIcon
+          size="sm"
+          color="rgb(156 163 175)"
+          className="opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
+        />
       );
     }
 
     if (currentDirection === "asc") {
       return (
-        <svg
-          className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 15l7-7 7 7"
-          />
-        </svg>
+        <ChevronUpIcon
+          size="sm"
+          color="rgb(249 115 22)"
+          className="text-orange-500 flex-shrink-0"
+        />
       );
     }
 
     if (currentDirection === "desc") {
       return (
-        <svg
-          className="w-3 h-3 sm:w-4 sm:h-4 text-orange-500 flex-shrink-0"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
+        <ChevronDownIcon
+          size="sm"
+          color="rgb(249 115 22)"
+          className="text-orange-500 flex-shrink-0"
+        />
       );
     }
 
     // This case should never be reached, but keeping for safety
     return (
-      <svg
-        className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-        />
-      </svg>
+      <SortIcon
+        size="sm"
+        color="rgb(156 163 175)"
+        className="opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
+      />
     );
   };
 

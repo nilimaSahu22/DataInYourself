@@ -5,6 +5,18 @@ import { usePathname } from "next/navigation";
 import PlacementCourseCard from "./components/ui/PlacementCourseCard";
 import VideoBackground from "./components/ui/VideoBackground";
 import { coursesData } from "./data/courses";
+import { 
+  StarIcon, 
+  CheckIcon, 
+  ExclamationIcon, 
+  SpinnerIcon, 
+  ChevronRightIcon, 
+  ArrowRightIcon,
+  UserIcon,
+  AcademicCapIcon,
+  TrophyIcon,
+  HeartIcon
+} from "./components/ui/Icons";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
