@@ -27,64 +27,66 @@ const isMobileDevice = () => {
   return hasTouchScreen && (isSmallScreen || isMobileUserAgent || isIOSSafari);
 };
 
-// Enhanced download function with progress tracking and multiple fallback methods
-const downloadPDF = async (
-  pdfSrc: string, 
-  fileName: string,
-  onProgress?: (progress: number) => void
-): Promise<{ success: boolean; message: string; method: string }> => {
-  try {
-    // Method 1: Standard fetch with progress tracking
-    const downloadWithProgress = async (): Promise<{ success: boolean; message: string; method: string }> => {
-      try {
-        const response = await fetch(pdfSrc);
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const contentLength = response.headers.get('content-length');
-        const total = contentLength ? parseInt(contentLength, 10) : 0;
-        let loaded = 0;
-        
-        const reader = response.body?.getReader();
-        if (!reader) {
-          throw new Error('Response body not readable');
-        }
-        
-        const chunks: Uint8Array[] = [];
-        
-        while (true) {
-          const { done, value } = await reader.read();
-          
-          if (done) break;
-          
-          chunks.push(value);
-          loaded += value.length;
-          
-          if (total > 0 && onProgress) {
-            const progress = Math.round((loaded / total) * 100);
-            onProgress(progress);
+  // Enhanced download function with progress tracking and multiple fallback methods
+  const downloadPDF = async (
+    pdfSrc: string, 
+    fileName: string,
+    onProgress?: (progress: number) => void
+  ): Promise<{ success: boolean; message: string; method: string }> => {
+    try {
+      // Method 1: Standard fetch with progress tracking
+      const downloadWithProgress = async (): Promise<{ success: boolean; message: string; method: string }> => {
+        try {
+          const response = await fetch(pdfSrc);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
+          
+          const contentLength = response.headers.get('content-length');
+          const total = contentLength ? parseInt(contentLength, 10) : 0;
+          let loaded = 0;
+          
+          const reader = response.body?.getReader();
+          if (!reader) {
+            throw new Error('Response body not readable');
+          }
+          
+          const chunks: Uint8Array[] = [];
+          
+          while (true) {
+            const { done, value } = await reader.read();
+            
+            if (done) break;
+            
+            chunks.push(value);
+            loaded += value.length;
+            
+            if (total > 0 && onProgress) {
+              const progress = Math.round((loaded / total) * 100);
+              onProgress(progress);
+            }
+          }
+          
+          const blob = new Blob(chunks, { type: 'application/pdf' });
+          const url = URL.createObjectURL(blob);
+          
+          // Create download link and trigger download
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Clean up the blob URL
+          setTimeout(() => URL.revokeObjectURL(url), 100);
+          
+          return { success: true, message: 'Download completed successfully', method: 'Direct Download' };
+        } catch (error) {
+          throw error;
         }
-        
-        const blob = new Blob(chunks, { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        setTimeout(() => URL.revokeObjectURL(url), 100);
-        
-        return { success: true, message: 'Download completed successfully', method: 'Standard Download' };
-      } catch (error) {
-        throw error;
-      }
-    };
+      };
 
     // Method 2: Direct link for mobile devices
     const downloadForMobile = async (): Promise<{ success: boolean; message: string; method: string }> => {
@@ -817,7 +819,7 @@ export default function CourseDetail() {
                           return "Your syllabus has been opened in a new tab. To save the PDF: 1) Tap the share button in your browser, 2) Select 'Save to Files' or 'Download', 3) Choose your preferred location.";
                         }
                       })()
-                    : "Your syllabus download has been initiated. The file should start downloading automatically."
+                    : "Your syllabus has been downloaded directly to your device! Check your Downloads folder for the PDF file."
                   }
                 </p>
                 {downloadMethod && (
