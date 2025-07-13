@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { generateCourseSlug } from "../../utils/courseUtils";
 import { StarIcon, ClockIcon } from "./Icons";
@@ -30,39 +30,14 @@ export const PlacementCourseCard: React.FC<PlacementCourseCardProps> = ({
   shouldAnimate = false,
 }) => {
   const courseSlug = generateCourseSlug(title);
-  const [isVisible, setIsVisible] = useState(false);
-  
-  // Calculate delay based on index for staggered animation
-  const animationDelay = index * 500; // 500ms delay between each card for slower animation
-
-  // Single animation control effect
-  useEffect(() => {
-    if (shouldAnimate) {
-      // Reset visibility first
-      setIsVisible(false);
-      
-      // Then trigger animation after delay
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, animationDelay);
-      
-      return () => clearTimeout(timer);
-    } else {
-      // If not animating, show immediately
-      setIsVisible(true);
-    }
-  }, [shouldAnimate, animationDelay]);
+ 
 
   return (
     <Link href={`/courses/${courseSlug}`} className="block w-full h-full group">
       <article 
-        className={`relative w-full h-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col flip-card-hover ${
-          isVisible ? 'animate-flipInRotate' : 'flip-initial'
+        className={`relative w-full h-full bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col 
         }`}
-        style={{
-          animationDelay: `${animationDelay}ms`,
-        }}
-      >
+>
         {/* Image Section - Fixed aspect ratio for consistency */}
         <div className="w-full aspect-[4/3] bg-gradient-to-br from-[#0a1a3a] to-[#1a2a4a] flex items-center justify-center p-4 relative overflow-hidden">
           <img
