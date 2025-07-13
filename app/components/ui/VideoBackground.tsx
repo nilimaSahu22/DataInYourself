@@ -163,10 +163,10 @@ export default function VideoBackground({
         />
       )}
 
-      {/* Gradient Overlay for better text readability */}
+      {/* Dark Overlay for better text readability */}
       {overlayOpacity > 0 && (
         <div 
-          className="absolute inset-0 bg-gradient-to-br from-orange-50 to-white"
+          className="absolute inset-0 bg-black"
           style={{ 
             zIndex: 1,
             opacity: overlayOpacity

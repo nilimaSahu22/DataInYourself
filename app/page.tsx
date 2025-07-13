@@ -169,6 +169,38 @@ export default function Home() {
     }
   }, [hasNavigatedAway]);
 
+  // Hero text animation state
+  const [heroTextVisible, setHeroTextVisible] = useState(false);
+  const [heroTextAnimationKey, setHeroTextAnimationKey] = useState(0);
+
+  // Hero text animation effect
+  useEffect(() => {
+    if (!isClient) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !heroTextVisible) {
+            setHeroTextVisible(true);
+            setHeroTextAnimationKey(prev => prev + 1);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const heroSection = document.getElementById('hero-section');
+    if (heroSection) {
+      observer.observe(heroSection);
+    }
+
+    return () => {
+      if (heroSection) {
+        observer.unobserve(heroSection);
+      }
+    };
+  }, [isClient, heroTextVisible]);
+
   // Handle hash navigation for testimonials
   useEffect(() => {
     if (typeof window !== 'undefined' && window.location.hash === '#testimonials') {
@@ -323,16 +355,86 @@ export default function Home() {
       <VideoBackground
         desktopVideo="/media_assets/hero_laptop.MP4"
         mobileVideo="/media_assets/hero_mob.MP4"
+        overlayOpacity={0.5}
         className="pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-4 sm:pb-6 md:pb-8 lg:pb-10 px-4 sm:px-6 md:px-8 lg:px-8 min-h-screen flex items-center justify-center"
       >
-        <div className="max-w-7xl mx-auto text-center w-full flex flex-col items-center justify-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-orange-900 mb-4 sm:mb-6 text-center">
-            Welcome to <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">DataInYourself</span>
+        <div id="hero-section" className="max-w-7xl mx-auto text-center w-full flex flex-col items-center justify-center relative">
+          {/* Text shadow overlay for better visibility */}
+          <div 
+            className={`absolute inset-0 mx-auto w-full max-w-5xl h-48 sm:h-56 md:h-64 lg:h-72 rounded-3xl transform transition-all duration-1000 ease-out ${
+              heroTextVisible 
+                ? 'opacity-40 scale-100' 
+                : 'opacity-0 scale-95'
+            }`}
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 70%, transparent 100%)',
+              animationDelay: '0.2s',
+              filter: 'blur(2px)'
+            }}
+          />
+          
+          {/* Main heading with text animation and improved visibility */}
+          <h1 
+            className={`relative z-10 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-center transform transition-all duration-1000 ease-out drop-shadow-2xl ${
+              heroTextVisible 
+                ? 'translate-y-0 opacity-100 scale-100' 
+                : 'translate-y-12 opacity-0 scale-95'
+            }`}
+            style={{ animationDelay: '0.4s' }}
+          >
+            <span 
+              className={`inline-block text-white transform transition-all duration-700 ease-out ${
+                heroTextVisible ? 'translate-x-0 opacity-100' : '-translate-x-8 opacity-0'
+              }`}
+              style={{ animationDelay: '0.6s' }}
+            >
+              Welcome to{' '}
+            </span>
+            <span 
+              className={`relative inline-block bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent transform transition-all duration-700 ease-out drop-shadow-lg ${
+                heroTextVisible ? 'translate-x-0 opacity-100 scale-100' : 'translate-x-8 opacity-0 scale-95'
+              }`}
+              style={{ animationDelay: '0.8s' }}
+            >
+              DataInYourself
+              {/* Animated underline effect */}
+              <div 
+                className={`absolute bottom-0 left-0 w-full bg-gradient-to-r transform transition-all duration-1500 ease-out ${
+                  heroTextVisible ? 'scale-x-100' : 'scale-x-0'
+                }`}
+                style={{ 
+                  animationDelay: '1.2s',
+                  height: heroTextVisible ? '3px' : '1px',
+                  background: heroTextVisible 
+                    ? 'linear-gradient(to right, #fb923c, #fdba74)' 
+                    : 'linear-gradient(to right, #ffffff, #ffffff)',
+                  transition: 'all 1.5s ease-out, height 1.5s ease-out, background 1.5s ease-out'
+                }}
+              />
+            </span>
           </h1>
-          <p className="text-base sm:text-lg text-orange-600 font-medium mb-3 sm:mb-4 text-center">
+          
+          {/* Subtitle with staggered animation and improved visibility */}
+          <p 
+            className={`relative z-10 text-base sm:text-lg text-orange-300 font-semibold mb-3 sm:mb-4 text-center transform transition-all duration-700 ease-out drop-shadow-lg ${
+              heroTextVisible 
+                ? 'translate-y-0 opacity-100' 
+                : 'translate-y-8 opacity-0'
+            }`}
+            style={{ animationDelay: '1.0s' }}
+          >
             by Rudriva Technology
           </p>
-          <p className="text-lg sm:text-xl text-orange-800 mb-6 sm:mb-8 max-w-3xl mx-auto px-4 text-center">
+          
+          {/* Description with final animation and improved visibility */}
+          <p 
+            className={`relative z-10 text-lg sm:text-xl text-orange-200 mb-6 sm:mb-8 max-w-3xl mx-auto px-4 text-center transform transition-all duration-700 ease-out drop-shadow-lg font-medium ${
+              heroTextVisible 
+                ? 'translate-y-0 opacity-100' 
+                : 'translate-y-8 opacity-0'
+            }`}
+            style={{ animationDelay: '1.2s' }}
+          >
             India's number one computer training platform. Learn from industry experts and advance your career with our comprehensive courses.
           </p>
         </div>
