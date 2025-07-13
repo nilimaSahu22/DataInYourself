@@ -3,7 +3,7 @@ import { Course } from '../types/course';
 export const coursesData: Course[] = [
   {
     id: 1,
-    iconSrc: "/media_assets/data-analyst.png",
+    iconSrc: "/media_assets/data-analyst.webp",
     iconAlt: "Data Analyst",
     title: "Data Analyst",
     duration: "3-4 months",
@@ -14,7 +14,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 2,
-    iconSrc: "/media_assets/business-analyst.png",
+    iconSrc: "/media_assets/business-analyst.webp",
     iconAlt: "Business Analyst",
     title: "Business Analyst",
     duration: "3-4 months",
@@ -25,7 +25,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 3,
-    iconSrc: "/media_assets/data-science.png",
+    iconSrc: "/media_assets/data-science.webp",
     iconAlt: "Data Science",
     title: "Data Science",
     duration: "4-5 months",
@@ -36,7 +36,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 4,
-    iconSrc: "/media_assets/sql-analyst.png",
+    iconSrc: "/media_assets/sql-analyst.webp",
     iconAlt: "SQL Analyst",
     title: "SQL Analyst",
     duration: "1 month",
@@ -47,7 +47,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 5,
-    iconSrc: "/media_assets/machine-learning.png",
+    iconSrc: "/media_assets/machine-learning.webp",
     iconAlt: "Machine Learning",
     title: "Machine Learning",
     duration: "1 month",
@@ -58,7 +58,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 6,
-    iconSrc: "/media_assets/python.png",
+    iconSrc: "/media_assets/python.webp",
     iconAlt: "Python for Beginners",
     title: "Python for Beginners",
     duration: "1 month",
@@ -69,7 +69,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 7,
-    iconSrc: "/media_assets/power-bi-tableau.png",
+    iconSrc: "/media_assets/power-bi-tableau.webp",
     iconAlt: "Power BI / Tableau Mastery",
     title: "Power BI / Tableau Mastery",
     duration: "1 month",
@@ -80,7 +80,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 8,
-    iconSrc: "/media_assets/digital-marketing.png",
+    iconSrc: "/media_assets/digital-marketing.webp",
     iconAlt: "Digital Marketing",
     title: "Digital Marketing",
     duration: "2-3 months",
@@ -91,7 +91,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 9,
-    iconSrc: "/media_assets/placement-ready.png",
+    iconSrc: "/media_assets/placement-ready.webp",
     iconAlt: "Placement Ready",
     title: "Placement Ready",
     duration: "1 month",
@@ -102,7 +102,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 10,
-    iconSrc: "/media_assets/web-developer.png",
+    iconSrc: "/media_assets/web-developer.webp",
     iconAlt: "Web Developer",
     title: "Web Developer",
     duration: "3 months",
@@ -113,7 +113,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 11,
-    iconSrc: "/media_assets/cyber-security.png",
+    iconSrc: "/media_assets/cyber-security.webp",
     iconAlt: "Cyber Security",
     title: "Cyber Security",
     duration: "3 months",
@@ -124,7 +124,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 12,
-    iconSrc: "/media_assets/cloud-engineer.png",
+    iconSrc: "/media_assets/cloud-engineer.webp",
     iconAlt: "Cloud Engineer",
     title: "Cloud Engineer",
     duration: "2 months",
@@ -135,7 +135,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 13,
-    iconSrc: "/media_assets/prompt-engineer.png",
+    iconSrc: "/media_assets/prompt-engineer.webp",
     iconAlt: "Prompt Engineer",
     title: "Prompt Engineer",
     duration: "3 months",
@@ -146,7 +146,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 14,
-    iconSrc: "/media_assets/product-management.png",
+    iconSrc: "/media_assets/product-management.webp",
     iconAlt: "Product Management",
     title: "Product Management",
     duration: "3 months",
@@ -157,7 +157,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 15,
-    iconSrc: "/media_assets/finance-analyst.png",
+    iconSrc: "/media_assets/finance-analyst.webp",
     iconAlt: "Finance Analyst",
     title: "Finance Analyst",
     duration: "3 months",
@@ -168,7 +168,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 16,
-    iconSrc: "/media_assets/autocad.png",
+    iconSrc: "/media_assets/autocad.webp",
     iconAlt: "AutoCAD AutoDesk",
     title: "AutoCAD AutoDesk",
     duration: "1-2 months",
@@ -179,7 +179,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 17,
-    iconSrc: "/media_assets/autodesk.png",
+    iconSrc: "/media_assets/autodesk.webp",
     iconAlt: "Autodesk Revit",
     title: "Autodesk Revit",
     duration: "1-2 months",
@@ -190,7 +190,7 @@ export const coursesData: Course[] = [
   },
   {
     id: 18,
-    iconSrc: "/media_assets/staad-pro.png",
+    iconSrc: "/media_assets/staad-pro.webp",
     iconAlt: "STAAD Pro",
     title: "STAAD Pro",
     duration: "1-2 months",
