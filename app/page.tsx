@@ -120,7 +120,6 @@ export default function Home() {
   useEffect(() => {
     if (isClient && pathname !== '/') {
       setHasNavigatedAway(true);
-      console.log('User navigated away from home page');
     }
   }, [isClient, pathname]);
 
@@ -135,7 +134,6 @@ export default function Home() {
     
     // Only trigger animation if it's a refresh AND user hasn't navigated away
     if (isRefresh && !hasNavigatedAway) {
-      console.log('Triggering flip animation - page refresh detected');
       setShouldTriggerAnimation(true);
       setAnimationKey(0);
       const timer = setTimeout(() => {
@@ -145,7 +143,6 @@ export default function Home() {
       return () => clearTimeout(timer);
     } else {
       // Skip animation for navigation back
-      console.log('Skipping animation - navigation back or not refresh');
       setShouldTriggerAnimation(false);
       setHasAnimated(true);
       setAnimationKey(0);
@@ -177,7 +174,6 @@ export default function Home() {
   useEffect(() => {
     if (hasNavigatedAway) {
       setShouldTriggerAnimation(false);
-      console.log('Animation disabled - user has navigated away');
     }
   }, [hasNavigatedAway]);
 

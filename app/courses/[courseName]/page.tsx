@@ -148,20 +148,15 @@ export default function CourseDetail() {
 
   useEffect(() => {
     const courseSlug = decodeURIComponent(params.courseName as string);
-    console.log('Looking for course slug:', courseSlug);
     
     const foundCourse = findCourseBySlug(courseSlug, coursesData);
     
     if (!foundCourse) {
-      // Debug: Show all available course slugs
-      console.log('All available course slugs:');
       coursesData.forEach(c => {
         const slug = c.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        console.log(`"${c.title}" -> "${slug}"`);
       });
     }
     
-    console.log('Found course:', foundCourse);
     setCourse(foundCourse);
     setLoading(false);
   }, [params.courseName]);
