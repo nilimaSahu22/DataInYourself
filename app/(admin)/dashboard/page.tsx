@@ -16,7 +16,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-3 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-3 pb-3 sm:px-6 sm:pb-6 -mt-12">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8 p-4 sm:p-6 bg-white rounded-xl shadow-lg border border-gray-200">

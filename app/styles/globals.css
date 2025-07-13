@@ -35,87 +35,8 @@ html {
 }
 
 /* Custom animation for card entrance */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
 
-/* Flip and rotate animation for course cards */
-@keyframes flipInRotate {
-  0% {
-    opacity: 0;
-    transform: perspective(1000px) rotateY(-90deg) rotateX(20deg) scale(0.8);
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  }
-  30% {
-    opacity: 0.3;
-    transform: perspective(1000px) rotateY(-60deg) rotateX(15deg) scale(0.85);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
-  }
-  60% {
-    opacity: 0.7;
-    transform: perspective(1000px) rotateY(-30deg) rotateX(8deg) scale(0.92);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
-  }
-  100% {
-    opacity: 1;
-    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.animate-flipInRotate {
-  animation: flipInRotate 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-}
-
-/* Initial state for flip animation */
-.flip-initial {
-  opacity: 0 !important;
-  transform: perspective(1000px) rotateY(-90deg) rotateX(20deg) scale(0.8) !important;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Hover effect for flip cards */
-.flip-card-hover {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-}
-
-.flip-card-hover:hover {
-  transform: perspective(1000px) rotateY(5deg) rotateX(2deg) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* Fallback for browsers that don't support 3D transforms */
-@supports not (transform: perspective(1000px)) {
-  .animate-flipInRotate {
-    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
-  }
-  
-  .flip-initial {
-    opacity: 0 !important;
-    transform: translateY(30px) scale(0.8) !important;
-  }
-  
-  .flip-card-hover:hover {
-    transform: translateY(-5px) scale(1.02);
-  }
-}
 
 /* Touch-friendly improvements for tablets */
 @media (hover: none) and (pointer: coarse) {
@@ -173,7 +94,7 @@ textarea:focus-visible {
 /* Sticky header fix - Enhanced for all viewports */
 /* Fixed header solution */
 body {
-  padding-top: 64px !important;
+  padding-top: 48px !important;
 }
 
 /* Ensure header stays on top */
