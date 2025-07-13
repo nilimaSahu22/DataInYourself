@@ -387,7 +387,7 @@ export default function Home() {
           
           {/* Main heading with text animation and improved visibility */}
           <h1 
-            className={`relative z-10 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-center transform transition-all duration-1000 ease-out drop-shadow-2xl ${
+            className={`relative z-10 flex text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-center transform transition-all duration-1000 ease-out drop-shadow-2xl ${
               heroTextVisible 
                 ? 'translate-y-0 opacity-100 scale-100' 
                 : 'translate-y-12 opacity-0 scale-95'
@@ -403,12 +403,12 @@ export default function Home() {
               Welcome to{' '}
             </span>
             <span 
-              className={`relative inline-block bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent transform transition-all duration-700 ease-out drop-shadow-lg ${
+              className={`relative inline-block bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent transform transition-all duration-700 ease-out drop-shadow-lg ml-4 ${
                 heroTextVisible ? 'translate-x-0 opacity-100 scale-100' : 'translate-x-8 opacity-0 scale-95'
               }`}
               style={{ animationDelay: '0.8s' }}
             >
-              DataInYourself
+              Data In Yourself
               {/* Animated underline effect */}
               <div 
                 className={`absolute bottom-0 left-0 w-full bg-gradient-to-r transform transition-all duration-1500 ease-out ${
