@@ -14,7 +14,7 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white">
       {/* Section 1 - Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
+      <div className=" flex flex-col justify-between sm:flex-row gap-6 sm:gap-8">
           {/* Column 1 - Company Info */}
           <div className="sm:col-span-2 md:col-span-1 lg:col-span-1">
             <div className="space-y-3 sm:space-y-4">
@@ -82,23 +82,24 @@ export default function Footer() {
             <ul className="space-y-1 sm:space-y-2">
               <li><Link href="/about" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">About Us</Link></li>
               <li><a href="#contact" onClick={handleContactClick} className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base cursor-pointer">Contact Us</a></li>
-              <li><Link href="/career" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Career</Link></li>
-                              <li><button onClick={() => router.push('/login')} className="ml-4 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600" suppressHydrationWarning>Login for admin</button></li>
+              {/* <li><Link href="/career" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Career</Link></li> */}
+              <li><button onClick={() => router.push('/login')} className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600" suppressHydrationWarning>Login for admin</button></li>
+              
             </ul>
           </div>
 
           {/* Column 3 - Work With Us */}
-          <div>
+          {/* <div>
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">Work With Us</h4>
             <ul className="space-y-1 sm:space-y-2">
               <li><Link href="/become-instructor" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Become Instructor</Link></li>
               <li><Link href="/blog-guest" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Blog as Guest</Link></li>
               <li><Link href="/hire" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Hire from DataInYourself</Link></li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Column 4 - For Business */}
-          <div>
+          {/* <div>
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">For Business</h4>
             <ul className="space-y-1 sm:space-y-2">
               <li><Link href="/corporate-training" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Corporate Training</Link></li>
@@ -107,14 +108,14 @@ export default function Footer() {
               <li><Link href="/colleges" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Colleges</Link></li>
               <li><Link href="/schools" className="text-gray-300 hover:text-white transition-colors duration-200 text-sm sm:text-base">Schools</Link></li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Column 5 - Contact */}
           <div>
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">Contact</h4>
             <ul className="space-y-1 sm:space-y-2">
-              <li className="text-gray-300 text-sm sm:text-base">Toll Free: 9558092200, 8839381619</li>
-              <li className="text-gray-300 text-sm sm:text-base">Email: mukulsharma1602@gmail.com</li>
+              <li className="text-gray-300 text-sm sm:text-base"><a href="tel:9558092200">Phone: 9558092200,</a><a href="tel:8839381619"> 8839381619</a></li>
+              <li className="text-gray-300 text-sm sm:text-base"><a href="mailto:mukulsharma1602@gmail.com">Email: mukulsharma1602@gmail.com</a></li>
             </ul>
           </div>
         </div>
