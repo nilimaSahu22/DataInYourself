@@ -25,13 +25,26 @@ type Variables = {
 }
 
 function generateUUID() {
-  // crypto.randomUUID is available in Workers, but fallback for local dev
-  const gCrypto = (globalThis as any).crypto
-  if (typeof gCrypto !== 'undefined' && gCrypto.randomUUID) {
-    return gCrypto.randomUUID()
-  }
-  // Fallback: not cryptographically secure
-  return Math.random().toString(36).substr(2, 9)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// Utility function to format date in IST timezone
+function formatDateInIST(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
 }
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
@@ -142,7 +155,7 @@ app.post('/enquiry', async (c) => {
                 </div>
                 <div class="detail-row">
                   <span class="label">Date:</span>
-                  <span class="value">${new Date(dateTime).toLocaleString('en-IN')}</span>
+                  <span class="value">${formatDateInIST(dateTime)}</span>
                 </div>
               </div>
               
@@ -271,7 +284,7 @@ app.post('/contact', async (c) => {
                 </div>
                 <div class="detail-row">
                   <span class="label">Date:</span>
-                  <span class="value">${new Date().toLocaleString('en-IN')}</span>
+                  <span class="value">${formatDateInIST(new Date().toISOString())}</span>
                 </div>
               </div>
               

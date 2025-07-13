@@ -39,14 +39,18 @@ const columnOptions: ColumnOption[] = [
   { key: "actions", label: "Actions", defaultVisible: true },
 ];
 
-// Helper function to format date
+// Helper function to format date in IST timezone
 const formatDateTime = (dateString: string): string => {
   const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
-  const hours = date.getHours();
-  const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+  // Convert to IST timezone
+  const istDate = new Date(date.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  
+  const day = istDate.getDate().toString().padStart(2, '0');
+  const month = (istDate.getMonth() + 1).toString().padStart(2, '0');
+  const year = istDate.getFullYear();
+  const hours = istDate.getHours();
+  const minutes = istDate.getMinutes().toString().padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const displayHours = hours % 12 || 12;
   
