@@ -124,7 +124,7 @@ export default function TermsAndConditions() {
               </p>
               <div className="bg-gray-100 p-4 rounded-lg">
                 <p className="text-gray-700">
-                  <strong>DataInYourself E-Learning (OPC) Pvt Ltd</strong><br />
+                  <strong>DataInYourself E-Learning Pvt Ltd</strong><br />
                   Email: mukulsharma1602@gmail.com<br />
                   Phone: 9558092200, 8839381619
                 </p>

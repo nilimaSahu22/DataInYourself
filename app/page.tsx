@@ -305,7 +305,7 @@ export default function Home() {
         overlayOpacity={0.5}
         className="pt-12 sm:pt-24 md:pt-28 lg:pt-32 pb-4 sm:pb-6 md:pb-8 lg:pb-10 px-4 sm:px-6 md:px-8 lg:px-8 min-h-screen flex items-center justify-center"
       >
-        <div id="hero-section" className="max-w-7xl mx-auto text-center w-full flex flex-col items-center justify-center relative">
+        <div id="hero-section" className="max-w-7xl mx-auto text-center w-full flex flex-col gap-6 items-center justify-center relative">
           {/* Text shadow overlay for better visibility */}
           <div 
             className={`absolute inset-0 mx-auto w-full max-w-5xl h-48 sm:h-56 md:h-64 lg:h-72 rounded-3xl transform transition-all duration-1000 ease-out ${
@@ -319,7 +319,7 @@ export default function Home() {
               filter: 'blur(2px)'
             }}
           />
-          
+          <div>
           {/* Main heading with text animation and improved visibility */}
           <h1 
             className={`relative z-10 flex flex-col sm:flex-row text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-center transform transition-all duration-1000 ease-out drop-shadow-2xl ${
@@ -372,7 +372,7 @@ export default function Home() {
           >
             by Rudriva Technology
           </p>
-          
+          </div>
           {/* Description with final animation and improved visibility */}
           <p 
             className={`relative z-10 text-lg sm:text-xl text-orange-200 mb-6 sm:mb-8 max-w-3xl mx-auto px-4 text-center transform transition-all duration-700 ease-out drop-shadow-lg font-medium ${

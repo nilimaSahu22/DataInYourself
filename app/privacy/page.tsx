@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. Introduction</h2>
               <p className="text-gray-700 mb-4">
-                DataInYourself E-Learning (OPC) Pvt Ltd ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our e-learning platform.
+                DataInYourself E-Learning Pvt Ltd ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our e-learning platform.
               </p>
               <p className="text-gray-700 mb-4">
                 By using our Service, you agree to the collection and use of information in accordance with this policy.
@@ -181,7 +181,7 @@ export default function PrivacyPolicy() {
               </p>
               <div className="bg-gray-100 p-4 rounded-lg">
                 <p className="text-gray-700">
-                  <strong>DataInYourself E-Learning (OPC) Pvt Ltd</strong><br />
+                  <strong>DataInYourself E-Learning Pvt Ltd</strong><br />
                   Email: mukulsharma1602@gmail.com<br />
                   Phone: 9558092200, 8839381619<br />
                   Address: [Your Business Address]

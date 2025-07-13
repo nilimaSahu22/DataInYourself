@@ -105,7 +105,7 @@ export default function Header() {
             </nav>
 
             {/* Right Section - Hamburger Menu Button */}
-            <div className="lg:hidden flex-shrink-0">
+            <div className="lg:hidden flex-shrink-0 " style={{zIndex: 999999}}>
               <button
                 onClick={toggleMobileMenu}
                 className={`p-2 sm:p-3 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
@@ -143,14 +143,14 @@ export default function Header() {
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0  bg-opacity-30 z-40 lg:hidden"
+          className="fixed inset-0  bg-opacity-10 z-[999999] lg:hidden"
           onClick={closeMobileMenu}
         ></div>
       )}
 
       {/* Mobile Sidebar */}
       <div 
-        className={`fixed top-0 right-0 h-full w-64 sm:w-72 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 h-full w-64 sm:w-72 bg-white shadow-xl z-[9999999] transform transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
