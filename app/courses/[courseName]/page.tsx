@@ -12,139 +12,214 @@ import { BriefcaseIcon, CheckIcon, ExclamationIcon, SpinnerIcon, ChevronLeftIcon
 const isMobileDevice = () => {
   if (typeof window === 'undefined') return false;
   
-  // Check for touch capability (more reliable than user agent)
+  // More comprehensive mobile detection
+  const userAgent = navigator.userAgent.toLowerCase();
+  
+  // Check for mobile user agents
+  const isMobileUserAgent = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile|tablet|ipad|playbook|silk/i.test(userAgent);
+  
+  // Check for touch capability
   const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
   // Check screen size
   const isSmallScreen = window.innerWidth <= 768;
   
-  // Check user agent as fallback
-  const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // Check if it's iOS Safari specifically
+  const isIOSSafari = /ipad|iphone|ipod/.test(userAgent) && /safari/.test(userAgent) && !/crios|fxios|opios|mercury/.test(userAgent);
   
-  // Check if it's iOS Safari (which has specific download behavior)
-  const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
+  // Check if it's Android Chrome
+  const isAndroidChrome = /android/.test(userAgent) && /chrome/.test(userAgent) && !/edg/.test(userAgent);
   
-  return hasTouchScreen && (isSmallScreen || isMobileUserAgent || isIOSSafari);
+  // Check if it's any mobile browser
+  const isMobileBrowser = isMobileUserAgent || (hasTouchScreen && isSmallScreen);
+  
+  return isMobileBrowser || isIOSSafari || isAndroidChrome;
 };
 
-  // Enhanced download function with progress tracking and multiple fallback methods
-  const downloadPDF = async (
-    pdfSrc: string, 
-    fileName: string,
-    onProgress?: (progress: number) => void
-  ): Promise<{ success: boolean; message: string; method: string }> => {
-    try {
-      // Method 1: Standard fetch with progress tracking
-      const downloadWithProgress = async (): Promise<{ success: boolean; message: string; method: string }> => {
-        try {
-          const response = await fetch(pdfSrc);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-          
-          const contentLength = response.headers.get('content-length');
-          const total = contentLength ? parseInt(contentLength, 10) : 0;
-          let loaded = 0;
-          
-          const reader = response.body?.getReader();
-          if (!reader) {
-            throw new Error('Response body not readable');
-          }
-          
-          const chunks: Uint8Array[] = [];
-          
-          while (true) {
-            const { done, value } = await reader.read();
-            
-            if (done) break;
-            
-            chunks.push(value);
-            loaded += value.length;
-            
-            if (total > 0 && onProgress) {
-              const progress = Math.round((loaded / total) * 100);
-              onProgress(progress);
-            }
-          }
-          
-          const blob = new Blob(chunks, { type: 'application/pdf' });
-          const url = URL.createObjectURL(blob);
-          
-          // Create download link and trigger download
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = fileName;
-          link.style.display = 'none';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          // Clean up the blob URL
-          setTimeout(() => URL.revokeObjectURL(url), 100);
-          
-          return { success: true, message: 'Download completed successfully', method: 'Direct Download' };
-        } catch (error) {
-          throw error;
-        }
-      };
+// Enhanced download function with proper mobile handling
+const downloadPDF = async (
+  pdfSrc: string, 
+  fileName: string,
+  onProgress?: (progress: number) => void
+): Promise<{ success: boolean; message: string; method: string }> => {
+  try {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isIOSSafari = /ipad|iphone|ipod/.test(userAgent) && /safari/.test(userAgent) && !/crios|fxios|opios|mercury/.test(userAgent);
+    const isAndroidChrome = /android/.test(userAgent) && /chrome/.test(userAgent) && !/edg/.test(userAgent);
+    const isMobile = isMobileDevice();
 
-    // Method 2: Direct link for mobile devices
-    const downloadForMobile = async (): Promise<{ success: boolean; message: string; method: string }> => {
-      const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
-      
-      if (isIOSSafari) {
-        const link = document.createElement('a');
-        link.href = pdfSrc;
-        link.download = fileName;
-        link.target = '_blank';
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        return { success: true, message: 'Download initiated for iOS device', method: 'iOS Safari Download' };
-      } else {
+    // Method 1: iOS Safari - Open in new tab (iOS Safari doesn't support direct downloads)
+    if (isIOSSafari) {
+      try {
+        // For iOS Safari, we need to open the PDF in a new tab
         const newWindow = window.open(pdfSrc, '_blank');
         if (newWindow) {
-          return { success: true, message: 'PDF opened in new tab for mobile device', method: 'Mobile Tab Open' };
+          return { 
+            success: true, 
+            message: 'PDF opened in new tab. Tap the share button and select "Save to Files" to download.', 
+            method: 'iOS Safari Tab Open' 
+          };
         } else {
+          // Fallback: create a visible link for user to tap
           const link = document.createElement('a');
           link.href = pdfSrc;
           link.target = '_blank';
           link.rel = 'noopener noreferrer';
-          link.style.display = 'none';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          return { success: true, message: 'PDF opened in new tab for mobile device', method: 'Mobile Link Click' };
+          link.style.display = 'block';
+          link.style.padding = '10px';
+          link.style.backgroundColor = '#007AFF';
+          link.style.color = 'white';
+          link.style.textAlign = 'center';
+          link.style.borderRadius = '8px';
+          link.style.margin = '10px 0';
+          link.textContent = 'Tap to Open PDF';
+          link.onclick = () => {
+            setTimeout(() => {
+              if (link.parentNode) {
+                link.parentNode.removeChild(link);
+              }
+            }, 1000);
+          };
+          
+          // Find a good place to insert the link
+          const modal = document.querySelector('.fixed.inset-0');
+          if (modal) {
+            const modalContent = modal.querySelector('.bg-white');
+            if (modalContent) {
+              modalContent.appendChild(link);
+            }
+          }
+          
+          return { 
+            success: true, 
+            message: 'Tap the blue button above to open the PDF, then use the share button to save it.', 
+            method: 'iOS Safari Manual Link' 
+          };
         }
+      } catch (error) {
+        console.error('iOS Safari download failed:', error);
+        return { success: false, message: 'Failed to open PDF on iOS Safari. Please try the alternative method.', method: 'Failed' };
       }
-    };
+    }
 
-    // Method 3: Simple window.open fallback
-    const downloadWithWindowOpen = async (): Promise<{ success: boolean; message: string; method: string }> => {
+    // Method 2: Android Chrome - Try blob download first, then fallback
+    if (isAndroidChrome) {
+      try {
+        const response = await fetch(pdfSrc);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        // Try to trigger download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+        
+        return { success: true, message: 'Download started. Check your Downloads folder.', method: 'Android Chrome Blob Download' };
+      } catch (error) {
+        console.warn('Android Chrome blob download failed, trying window.open:', error);
+        // Fallback to window.open
+        window.open(pdfSrc, '_blank');
+        return { success: true, message: 'PDF opened in new tab. Use browser menu to download.', method: 'Android Chrome Tab Open' };
+      }
+    }
+
+    // Method 3: Other mobile browsers - Try window.open first
+    if (isMobile) {
       try {
         window.open(pdfSrc, '_blank');
-        return { success: true, message: 'PDF opened in new tab', method: 'Window Open' };
+        return { success: true, message: 'PDF opened in new tab. Use browser menu to download.', method: 'Mobile Tab Open' };
       } catch (error) {
-        throw new Error('Window open failed');
+        console.warn('Mobile window.open failed, trying direct link:', error);
+        // Fallback: create a visible link
+        const link = document.createElement('a');
+        link.href = pdfSrc;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.style.display = 'block';
+        link.style.padding = '10px';
+        link.style.backgroundColor = '#007AFF';
+        link.style.color = 'white';
+        link.style.textAlign = 'center';
+        link.style.borderRadius = '8px';
+        link.style.margin = '10px 0';
+        link.textContent = 'Tap to Open PDF';
+        
+        // Find a good place to insert the link
+        const modal = document.querySelector('.fixed.inset-0');
+        if (modal) {
+          const modalContent = modal.querySelector('.bg-white');
+          if (modalContent) {
+            modalContent.appendChild(link);
+          }
+        }
+        
+        return { success: true, message: 'Tap the blue button above to open the PDF.', method: 'Mobile Manual Link' };
       }
-    };
+    }
 
-    // Try methods in order of preference
-    if (isMobileDevice()) {
-      try {
-        return await downloadForMobile();
-      } catch (error) {
-        console.warn('Mobile download failed, trying window.open:', error);
-        return await downloadWithWindowOpen();
+    // Method 4: Desktop browsers - Standard blob download with progress
+    try {
+      const response = await fetch(pdfSrc);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-    } else {
-      try {
-        return await downloadWithProgress();
-      } catch (error) {
-        console.warn('Standard download failed, trying window.open:', error);
-        return await downloadWithWindowOpen();
+      
+      const contentLength = response.headers.get('content-length');
+      const total = contentLength ? parseInt(contentLength, 10) : 0;
+      let loaded = 0;
+      
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('Response body not readable');
       }
+      
+      const chunks: Uint8Array[] = [];
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+        
+        chunks.push(value);
+        loaded += value.length;
+        
+        if (total > 0 && onProgress) {
+          const progress = Math.round((loaded / total) * 100);
+          onProgress(progress);
+        }
+      }
+      
+      const blob = new Blob(chunks, { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      // Create download link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the blob URL
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      
+      return { success: true, message: 'Download completed successfully', method: 'Desktop Blob Download' };
+    } catch (error) {
+      console.warn('Desktop blob download failed, trying window.open:', error);
+      window.open(pdfSrc, '_blank');
+      return { success: true, message: 'PDF opened in new tab', method: 'Desktop Tab Open' };
     }
     
   } catch (error) {
@@ -462,6 +537,8 @@ export default function CourseDetail() {
     
     setDownloadError('');
     setDownloadProgress(0);
+    setDownloadSuccess(false);
+    setShowAlternativeDownload(false);
     
     try {
       const downloadResult = await downloadPDF(
@@ -473,11 +550,15 @@ export default function CourseDetail() {
       if (downloadResult.success) {
         setDownloadSuccess(true);
         setDownloadMethod(downloadResult.method);
+        setDownloadError('');
       } else {
         setDownloadError(downloadResult.message);
+        setShowAlternativeDownload(true);
       }
     } catch (error) {
-      setDownloadError('Alternative download method also failed. Please contact support.');
+      console.error('Alternative download failed:', error);
+      setDownloadError('Alternative download method also failed. Please try the manual link options below.');
+      setShowAlternativeDownload(true);
     }
   };
 
@@ -489,6 +570,47 @@ export default function CourseDetail() {
   const handleDownloadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsDownloadModalOpen(true);
+  };
+
+  // Function to create a manual download link for mobile devices
+  const createManualDownloadLink = () => {
+    if (!course?.pdfSrc) return;
+    
+    const link = document.createElement('a');
+    link.href = course.pdfSrc;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.style.display = 'block';
+    link.style.padding = '12px';
+    link.style.backgroundColor = '#007AFF';
+    link.style.color = 'white';
+    link.style.textAlign = 'center';
+    link.style.borderRadius = '8px';
+    link.style.margin = '10px 0';
+    link.style.fontWeight = '600';
+    link.style.fontSize = '16px';
+    link.textContent = '📱 Tap Here to Open PDF';
+    link.onclick = () => {
+      setTimeout(() => {
+        if (link.parentNode) {
+          link.parentNode.removeChild(link);
+        }
+      }, 2000);
+    };
+    
+    // Find the modal content to insert the link
+    const modal = document.querySelector('.fixed.inset-0');
+    if (modal) {
+      const modalContent = modal.querySelector('.bg-white');
+      if (modalContent) {
+        // Remove any existing manual links first
+        const existingLinks = modalContent.querySelectorAll('a[style*="background-color: rgb(0, 122, 255)"]');
+        existingLinks.forEach(link => link.remove());
+        
+        // Insert the new link at the top of the modal content
+        modalContent.insertBefore(link, modalContent.firstChild);
+      }
+    }
   };
 
   // Load course data on component mount
@@ -810,17 +932,21 @@ export default function CourseDetail() {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Download Started!</h3>
                 <p className="text-gray-600 mb-4">
-                  {isMobileDevice() 
-                    ? (() => {
-                        const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
-                        if (isIOSSafari) {
-                          return "Your syllabus download has been initiated. Check your Downloads folder or Files app. If not found, the PDF may have opened in a new tab - tap the share button and select 'Save to Files'.";
-                        } else {
-                          return "Your syllabus has been opened in a new tab. To save the PDF: 1) Tap the share button in your browser, 2) Select 'Save to Files' or 'Download', 3) Choose your preferred location.";
-                        }
-                      })()
-                    : "Your syllabus has been downloaded directly to your device! Check your Downloads folder for the PDF file."
-                  }
+                  {(() => {
+                    const userAgent = navigator.userAgent.toLowerCase();
+                    const isIOSSafari = /ipad|iphone|ipod/.test(userAgent) && /safari/.test(userAgent) && !/crios|fxios|opios|mercury/.test(userAgent);
+                    const isAndroidChrome = /android/.test(userAgent) && /chrome/.test(userAgent) && !/edg/.test(userAgent);
+                    
+                    if (isIOSSafari) {
+                      return "PDF opened in new tab! To save: 1) Tap the share button (square with arrow), 2) Select 'Save to Files', 3) Choose your preferred folder.";
+                    } else if (isAndroidChrome) {
+                      return "Download started! Check your Downloads folder. If not found, the PDF may have opened in a new tab - use browser menu to download.";
+                    } else if (isMobileDevice()) {
+                      return "PDF opened in new tab! To save: 1) Tap the menu button (three dots), 2) Select 'Download' or 'Save page as', 3) Choose your preferred location.";
+                    } else {
+                      return "Your syllabus has been downloaded directly to your device! Check your Downloads folder for the PDF file.";
+                    }
+                  })()}
                 </p>
                 {downloadMethod && (
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg">
@@ -829,15 +955,24 @@ export default function CourseDetail() {
                 )}
                 {isMobileDevice() && course?.pdfSrc && (
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-blue-700 mb-2">If the download didn't work, try this direct link:</p>
-                    <a 
-                      href={course.pdfSrc} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline text-sm"
-                    >
-                      Open PDF directly
-                    </a>
+                    <p className="text-sm text-blue-700 mb-2">If the download didn't work, try these options:</p>
+                    <div className="space-y-2">
+                      <a 
+                        href={course.pdfSrc} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block text-blue-600 hover:text-blue-800 underline text-sm"
+                      >
+                        🔗 Open PDF directly
+                      </a>
+                      <button
+                        type="button"
+                        onClick={createManualDownloadLink}
+                        className="block text-blue-600 hover:text-blue-800 underline text-sm"
+                      >
+                        📱 Create manual download link
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -988,16 +1123,70 @@ export default function CourseDetail() {
                       </a>
                       <button
                         type="button"
-                        onClick={() => {
-                          const link = document.createElement('a');
-                          link.href = course.pdfSrc;
-                          link.download = `${course.title} Syllabus.pdf`;
-                          link.click();
-                        }}
-                        className="w-full text-left p-2 text-sm text-purple-600 hover:bg-purple-50 rounded transition-colors"
+                        onClick={createManualDownloadLink}
+                        className="w-full text-left p-2 text-sm text-orange-600 hover:bg-orange-50 rounded transition-colors"
                       >
-                        💾 Force Download
+                        📱 Create Manual Download Link
                       </button>
+                      {(() => {
+                        const userAgent = navigator.userAgent.toLowerCase();
+                        const isIOSSafari = /ipad|iphone|ipod/.test(userAgent) && /safari/.test(userAgent) && !/crios|fxios|opios|mercury/.test(userAgent);
+                        
+                        if (isIOSSafari) {
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const link = document.createElement('a');
+                                link.href = course.pdfSrc;
+                                link.target = '_blank';
+                                link.rel = 'noopener noreferrer';
+                                link.style.display = 'block';
+                                link.style.padding = '10px';
+                                link.style.backgroundColor = '#007AFF';
+                                link.style.color = 'white';
+                                link.style.textAlign = 'center';
+                                link.style.borderRadius = '8px';
+                                link.style.margin = '10px 0';
+                                link.textContent = 'Tap to Open PDF';
+                                link.onclick = () => {
+                                  setTimeout(() => {
+                                    if (link.parentNode) {
+                                      link.parentNode.removeChild(link);
+                                    }
+                                  }, 1000);
+                                };
+                                
+                                const modal = document.querySelector('.fixed.inset-0');
+                                if (modal) {
+                                  const modalContent = modal.querySelector('.bg-white');
+                                  if (modalContent) {
+                                    modalContent.appendChild(link);
+                                  }
+                                }
+                              }}
+                              className="w-full text-left p-2 text-sm text-purple-600 hover:bg-purple-50 rounded transition-colors"
+                            >
+                              📱 iOS Safari Manual Link
+                            </button>
+                          );
+                        } else {
+                          return (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const link = document.createElement('a');
+                                link.href = course.pdfSrc;
+                                link.download = `${course.title} Syllabus.pdf`;
+                                link.click();
+                              }}
+                              className="w-full text-left p-2 text-sm text-purple-600 hover:bg-purple-50 rounded transition-colors"
+                            >
+                              💾 Force Download
+                            </button>
+                          );
+                        }
+                      })()}
                     </div>
                   </div>
                 )}
