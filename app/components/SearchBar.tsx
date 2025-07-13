@@ -7,7 +7,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export default function SearchBar({ onSearch, placeholder = "Search inquiries..." }: SearchBarProps) {
+export default function SearchBar({ onSearch, placeholder = "Search enquiries..." }: SearchBarProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {

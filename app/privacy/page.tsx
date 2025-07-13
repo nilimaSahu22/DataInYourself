@@ -76,7 +76,7 @@ export default function PrivacyPolicy() {
                 <li>To communicate with you about your account and courses</li>
                 <li>To send you updates, newsletters, and promotional materials</li>
                 <li>To improve our services and develop new features</li>
-                <li>To provide customer support and respond to inquiries</li>
+                <li>To provide customer support and respond to enquiries</li>
                 <li>To ensure platform security and prevent fraud</li>
                 <li>To comply with legal obligations</li>
               </ul>

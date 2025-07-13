@@ -430,7 +430,7 @@ app.post('/admin/init', async (c) => {
 //       role: role || 'admin',
 //       createdAt: new Date().toISOString(),
 //       lastLogin: null,
-//       permissions: permissions || ['read_inquiries', 'update_inquiries'],
+//       permissions: permissions || ['read_enquiries', 'update_enquiries'],
 //       isActive: true,
 //       email: email || null
 //     }
@@ -575,20 +575,21 @@ app.post('/admin/init', async (c) => {
 //   }
 // })
 
-// Get all inquiries (protected with JWT)
+// Get all enquiries (protected with JWT)
 app.get('/admin/getall', authenticateJWT, async (c) => {
   try {
     // List all keys with prefix 'enquiry:'
     const list = await c.env.KV.list({ prefix: 'enquiry:' })
-    const inquiries: IEnquiryData[] = []
+    const enquiries: IEnquiryData[] = []
     for (const key of list.keys) {
       const value = await c.env.KV.get(key.name)
-      if (value) inquiries.push(JSON.parse(value))
+      if (value) enquiries.push(JSON.parse(value))
     }
-    return c.json({ inquiries })
+  console.log(enquiries);
+    return c.json({ enquiries })
   } catch (err) {
     const error = err as Error
-    return c.json({ error: 'Failed to fetch inquiries', details: error.message }, 500)
+    return c.json({ error: 'Failed to fetch enquiries', details: error.message }, 500)
   }
 })
 

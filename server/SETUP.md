@@ -64,7 +64,7 @@ curl -X POST http://localhost:8787/enquiry \
   -d '{"name": "John Doe", "phoneNumber": "1234567890", "emailId": "john@example.com", "subject": "Course Enquiry"}'
 ```
 
-### Test Getting All Inquiries:
+### Test Getting All Enquiries:
 ```bash
 curl http://localhost:8787/admin/getall
 ```
