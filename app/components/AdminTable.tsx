@@ -80,10 +80,10 @@ const getColumnWidthClass = (columnKey: string): string => {
 };
 
 // Sorting function
-const sortInquiries = (inquiries: EnquiryData[], sortColumn: string, sortDirection: SortDirection) => {
-  if (!sortDirection) return inquiries;
+const sortEnquiries = (enquiries: EnquiryData[], sortColumn: string, sortDirection: SortDirection) => {
+  if (!sortDirection) return enquiries;
 
-  return [...inquiries].sort((a, b) => {
+  return [...enquiries].sort((a, b) => {
     let aValue: any;
     let bValue: any;
 
@@ -135,7 +135,7 @@ const sortInquiries = (inquiries: EnquiryData[], sortColumn: string, sortDirecti
 };
 
 // Function to convert data to CSV and download as Excel
-const downloadAsExcel = (inquiries: EnquiryData[]) => {
+const downloadAsExcel = (enquiries: EnquiryData[]) => {
   // Define headers for the CSV
   const headers = [
     'Sr.',
@@ -151,7 +151,7 @@ const downloadAsExcel = (inquiries: EnquiryData[]) => {
   // Convert data to CSV format
   const csvContent = [
     headers.join(','),
-    ...inquiries.map((inq, index) => [
+    ...enquiries.map((inq, index) => [
       index + 1, // Serial number
       `"${inq.name.replace(/"/g, '""')}"`, // Escape quotes in name
       inq.phoneNumber,
@@ -168,7 +168,7 @@ const downloadAsExcel = (inquiries: EnquiryData[]) => {
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
   link.setAttribute('href', url);
-  link.setAttribute('download', `inquiries_${new Date().toISOString().split('T')[0]}.csv`);
+  link.setAttribute('download', `enquiries_${new Date().toISOString().split('T')[0]}.csv`);
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
   link.click();
@@ -176,7 +176,7 @@ const downloadAsExcel = (inquiries: EnquiryData[]) => {
 };
 
 export default function AdminTable() {
-  const [inquiries, setInquiries] = useState<EnquiryData[]>([]);
+  const [enquiries, setEnquiries] = useState<EnquiryData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -195,8 +195,8 @@ export default function AdminTable() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [enquiryToDelete, setEnquiryToDelete] = useState<EnquiryData | null>(null);
 
-  // Fetch inquiries from backend
-  const fetchInquiries = useCallback(async () => {
+  // Fetch enquiries from backend
+  const fetchEnquiries = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -208,15 +208,16 @@ export default function AdminTable() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch inquiries');
+        throw new Error('Failed to fetch enquiries');
       }
 
       const data = await response.json();
-      setInquiries(data.inquiries || []);
+      setEnquiries(data.enquiries || []);
+      console.log(enquiries);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred while fetching inquiries';
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred while fetching enquiries';
       setError(errorMessage);
-      console.error('Error fetching inquiries:', err);
+      console.error('Error fetching enquiries:', err);
     } finally {
       setLoading(false);
     }
@@ -241,7 +242,7 @@ export default function AdminTable() {
       const data = await response.json();
       
       // Update local state with the updated enquiry
-      setInquiries(prev => 
+      setEnquiries(prev => 
         prev.map(inq => 
           inq.id === id ? { ...inq, ...updateFields } : inq
         )
@@ -257,18 +258,18 @@ export default function AdminTable() {
     }
   }, []);
 
-  // Load inquiries on component mount
+  // Load enquiries on component mount
   useEffect(() => {
-    fetchInquiries();
-  }, [fetchInquiries]);
+    fetchEnquiries();
+  }, [fetchEnquiries]);
 
-  // Filter and sort inquiries
-  const processedInquiries = useMemo(() => {
+  // Filter and sort enquiries
+  const processedEnquiries = useMemo(() => {
     // First filter by search term
-    let filtered = inquiries;
+    let filtered = enquiries;
     if (searchTerm.trim()) {
       const searchLower = searchTerm.toLowerCase();
-      filtered = inquiries.filter((inq) => {
+      filtered = enquiries.filter((inq) => {
         return (
           inq.id.toLowerCase().includes(searchLower) ||
           inq.name.toLowerCase().includes(searchLower) ||
@@ -307,12 +308,12 @@ export default function AdminTable() {
     }));
 
     // Then sort
-    return sortInquiries(withSerialNumbers, sortConfig.column, sortConfig.direction);
-  }, [inquiries, searchTerm, dateRange, sortConfig]);
+    return sortEnquiries(withSerialNumbers, sortConfig.column, sortConfig.direction);
+  }, [enquiries, searchTerm, dateRange, sortConfig]);
 
   const handleCalledChange = async (id: string) => {
     try {
-      const enquiry = inquiries.find(inq => inq.id === id);
+      const enquiry = enquiries.find(inq => inq.id === id);
       if (!enquiry) return;
 
       const newCalledValue = !enquiry.called;
@@ -381,7 +382,7 @@ export default function AdminTable() {
       }
 
       // Remove the enquiry from local state
-      setInquiries(prev => prev.filter(inq => inq.id !== id));
+      setEnquiries(prev => prev.filter(inq => inq.id !== id));
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred while deleting enquiry';
       console.error('Error deleting enquiry:', err);
@@ -529,7 +530,7 @@ export default function AdminTable() {
         <div className="flex items-center justify-center py-8 sm:py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-600 text-sm sm:text-base">Loading inquiries...</p>
+            <p className="text-gray-600 text-sm sm:text-base">Loading enquiries...</p>
           </div>
         </div>
       </div>
@@ -545,10 +546,10 @@ export default function AdminTable() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
             <ExclamationIcon size="lg" color="rgb(248 113 113)" className="mx-auto sm:mr-3 sm:ml-0" />
             <div className="text-center sm:text-left">
-              <h3 className="text-base sm:text-lg font-semibold text-red-800">Error Loading Inquiries</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-red-800">Error Loading Enquiries</h3>
               <p className="text-red-700 mt-1 text-sm sm:text-base">{error}</p>
               <button
-                onClick={fetchInquiries}
+                onClick={fetchEnquiries}
                 className="mt-3 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
               >
                 Try Again
@@ -566,7 +567,7 @@ export default function AdminTable() {
         <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center sm:text-left">Enquiry Management</h2>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <button
-            onClick={() => downloadAsExcel(processedInquiries)}
+            onClick={() => downloadAsExcel(processedEnquiries)}
             className="px-3 sm:px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center text-sm sm:text-base"
             title="Download as Excel"
           >
@@ -575,7 +576,7 @@ export default function AdminTable() {
             <span className="sm:hidden">Export</span>
           </button>
           <button
-            onClick={fetchInquiries}
+            onClick={fetchEnquiries}
             className="px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center text-sm sm:text-base"
           >
             <RefreshIcon size="sm" color="white" className="mr-2" />
@@ -588,7 +589,7 @@ export default function AdminTable() {
       <div className="flex flex-col gap-4 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <span className="text-base sm:text-lg font-semibold text-gray-700 text-center sm:text-left">
-            Total Inquiries: {processedInquiries.length}
+            Total Enquiries: {processedEnquiries.length}
           </span>
           <SearchBar onSearch={setSearchTerm} />
         </div>
@@ -622,7 +623,7 @@ export default function AdminTable() {
             </tr>
           </thead>
           <tbody>
-            {processedInquiries.map((inq, idx) => (
+            {processedEnquiries.map((inq, idx) => (
               <tr
                 key={inq.id}
                 className={
@@ -640,9 +641,9 @@ export default function AdminTable() {
         </table>
         
         {/* No results message */}
-        {processedInquiries.length === 0 && (
+        {processedEnquiries.length === 0 && (
           <div className="text-center py-6 sm:py-8 text-gray-500">
-            <p className="text-base sm:text-lg">No inquiries found matching your criteria.</p>
+            <p className="text-base sm:text-lg">No enquiries found matching your criteria.</p>
           </div>
         )}
       </div>

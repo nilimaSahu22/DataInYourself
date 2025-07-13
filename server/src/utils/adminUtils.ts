@@ -2,8 +2,8 @@ import { IAdmin } from '../db/model/Admin.model'
 
 // Default permissions for different admin roles
 export const DEFAULT_PERMISSIONS = {
-  admin: ['read_inquiries', 'update_inquiries', 'read_admins'],
-  super_admin: ['read_inquiries', 'update_inquiries', 'delete_inquiries', 'read_admins', 'create_admins', 'update_admins', 'delete_admins']
+  admin: ['read_enquiries', 'update_enquiries', 'read_admins'],
+  super_admin: ['read_enquiries', 'update_enquiries', 'delete_enquiries', 'read_admins', 'create_admins', 'update_admins', 'delete_admins']
 }
 
 // Initialize default super admin

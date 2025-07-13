@@ -22,7 +22,7 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8 p-4 sm:p-6 bg-white rounded-xl shadow-lg border border-gray-200">
           <div className="text-center sm:text-left">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">Admin Panel</h1>
-            <p className="text-gray-600 text-sm sm:text-lg">Manage inquiries and system data</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Manage enquiries and system data</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <button
