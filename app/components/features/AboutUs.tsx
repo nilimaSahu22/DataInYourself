@@ -168,7 +168,7 @@ const AboutUs = () => {
         </div>
 
         {/* Course Catalog */}
-        <div className="mb-16 lg:mb-20">
+        {/* <div className="mb-16 lg:mb-20">
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
               Explore Our Course Catalog
@@ -220,7 +220,7 @@ const AboutUs = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Our Story */}
         <div className="bg-gradient-to-br from-orange-50 to-white rounded-3xl p-8 sm:p-12 lg:p-16 mb-16 lg:mb-20 border border-orange-100">
