@@ -8,16 +8,76 @@ import { coursesData } from "../../data/courses";
 import { findCourseBySlug } from "../../utils/courseUtils";
 import { BriefcaseIcon, CheckIcon, ExclamationIcon, SpinnerIcon, ChevronLeftIcon } from "../../components/ui/Icons";
 
-// Utility function to detect mobile devices
+// Utility function to detect mobile devices with improved detection
 const isMobileDevice = () => {
   if (typeof window === 'undefined') return false;
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Check for touch capability (more reliable than user agent)
+  const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  // Check screen size
+  const isSmallScreen = window.innerWidth <= 768;
+  
+  // Check user agent as fallback
+  const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Check if it's iOS Safari (which has specific download behavior)
+  const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
+  
+  return hasTouchScreen && (isSmallScreen || isMobileUserAgent || isIOSSafari);
 };
 
-// Utility function to handle PDF download with mobile fallback
+// Utility function to handle PDF download with improved mobile support
 const downloadPDF = async (pdfSrc: string, fileName: string): Promise<{ success: boolean; message: string }> => {
   try {
-    // First, try to fetch the PDF to ensure it exists
+    // For mobile devices, try to open in new tab first
+    if (isMobileDevice()) {
+      try {
+        // Test if the PDF is accessible
+        const testResponse = await fetch(pdfSrc, { method: 'HEAD' });
+        if (!testResponse.ok) {
+          throw new Error('PDF not accessible');
+        }
+        
+        // Check if it's iOS Safari (special handling needed)
+        const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
+        
+        if (isIOSSafari) {
+          // For iOS Safari, create a link with download attribute and click it
+          const link = document.createElement('a');
+          link.href = pdfSrc;
+          link.download = fileName;
+          link.target = '_blank';
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          return { success: true, message: 'PDF download initiated for iOS device' };
+        } else {
+          // For other mobile browsers, open in new tab
+          const newWindow = window.open(pdfSrc, '_blank');
+          if (newWindow) {
+            return { success: true, message: 'PDF opened in new tab for mobile device' };
+          } else {
+            // If popup blocked, try alternative approach
+            const link = document.createElement('a');
+            link.href = pdfSrc;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            return { success: true, message: 'PDF opened in new tab for mobile device' };
+          }
+        }
+      } catch (mobileError) {
+        console.error('Mobile download error:', mobileError);
+        return { success: false, message: 'Unable to open PDF on mobile. Please try again or contact support.' };
+      }
+    }
+    
+    // Desktop download logic
     const pdfResponse = await fetch(pdfSrc);
     if (!pdfResponse.ok) {
       throw new Error('PDF not found');
@@ -52,17 +112,13 @@ const downloadPDF = async (pdfSrc: string, fileName: string): Promise<{ success:
       return { success: false, message: 'Syllabus PDF not available at the moment. Please try again later.' };
     }
     
-    // Fallback for mobile: open in new tab
-    if (isMobileDevice()) {
-      try {
-        window.open(pdfSrc, '_blank');
-        return { success: true, message: 'PDF opened in new tab for mobile device' };
-      } catch (fallbackError) {
-        return { success: false, message: 'Unable to open PDF. Please check your internet connection.' };
-      }
+    // Final fallback for any device
+    try {
+      window.open(pdfSrc, '_blank');
+      return { success: true, message: 'PDF opened in new tab' };
+    } catch (fallbackError) {
+      return { success: false, message: 'Unable to download file. Please check your internet connection and try again.' };
     }
-    
-    return { success: false, message: 'Failed to download file. Please check your internet connection.' };
   }
 };
 
@@ -341,13 +397,19 @@ export default function CourseDetail() {
         if (course?.pdfSrc) {
           setIsDownloading(true);
           try {
+            console.log('Attempting download for:', course.pdfSrc);
+            console.log('Device type:', isMobileDevice() ? 'Mobile' : 'Desktop');
+            console.log('User agent:', navigator.userAgent);
+            
             const downloadResult = await downloadPDF(course.pdfSrc, `${course.title} Syllabus.pdf`);
+            console.log('Download result:', downloadResult);
+            
             if (downloadResult.success) {
               setDownloadSuccess(true);
               setDownloadError(''); // Clear previous errors
               
               // Longer delay for mobile to read instructions
-              const delay = isMobileDevice() ? 4000 : 2000;
+              const delay = isMobileDevice() ? 5000 : 2000;
               setTimeout(() => {
                 setIsDownloadModalOpen(false);
                 setDownloadSuccess(false);
@@ -355,9 +417,14 @@ export default function CourseDetail() {
             } else {
               setDownloadError(downloadResult.message);
             }
+          } catch (downloadError) {
+            console.error('Download error in handleDownloadSubmit:', downloadError);
+            setDownloadError('Download failed. Please try again or contact support.');
           } finally {
             setIsDownloading(false);
           }
+        } else {
+          setDownloadError('Syllabus PDF not available for this course.');
         }
       } else {
         setDownloadError(result.error || 'Failed to submit download request. Please try again.');
@@ -674,12 +741,32 @@ export default function CourseDetail() {
                   <CheckIcon size="xl" color="rgb(22 163 74)" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Download Started!</h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 mb-4">
                   {isMobileDevice() 
-                    ? "Your syllabus has been opened in a new tab. You can save it from there, or check your downloads folder if it was automatically saved."
+                    ? (() => {
+                        const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
+                        if (isIOSSafari) {
+                          return "Your syllabus download has been initiated. Check your Downloads folder or Files app. If not found, the PDF may have opened in a new tab - tap the share button and select 'Save to Files'.";
+                        } else {
+                          return "Your syllabus has been opened in a new tab. To save the PDF: 1) Tap the share button in your browser, 2) Select 'Save to Files' or 'Download', 3) Choose your preferred location.";
+                        }
+                      })()
                     : "Your syllabus download has been initiated. The file should start downloading automatically."
                   }
                 </p>
+                {isMobileDevice() && course?.pdfSrc && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-700 mb-2">If the download didn't work, try this direct link:</p>
+                    <a 
+                      href={course.pdfSrc} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline text-sm"
+                    >
+                      Open PDF directly
+                    </a>
+                  </div>
+                )}
               </div>
             ) : (
               <form onSubmit={handleDownloadSubmit} className="space-y-6">
