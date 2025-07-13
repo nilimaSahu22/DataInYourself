@@ -1,12 +1,12 @@
 "use client";
 export const runtime = 'edge';
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { coursesData } from "../../data/courses";
 import { findCourseBySlug } from "../../utils/courseUtils";
-import { BriefcaseIcon, CheckIcon, ExclamationIcon, SpinnerIcon, ChevronLeftIcon } from "../../components/ui/Icons";
+import { BriefcaseIcon, CheckIcon, ExclamationIcon, SpinnerIcon, ChevronLeftIcon, DownloadIcon } from "../../components/ui/Icons";
 
 // Utility function to detect mobile devices with improved detection
 const isMobileDevice = () => {
@@ -27,98 +27,143 @@ const isMobileDevice = () => {
   return hasTouchScreen && (isSmallScreen || isMobileUserAgent || isIOSSafari);
 };
 
-// Utility function to handle PDF download with improved mobile support
-const downloadPDF = async (pdfSrc: string, fileName: string): Promise<{ success: boolean; message: string }> => {
+// Enhanced download function with progress tracking and multiple fallback methods
+const downloadPDF = async (
+  pdfSrc: string, 
+  fileName: string,
+  onProgress?: (progress: number) => void
+): Promise<{ success: boolean; message: string; method: string }> => {
   try {
-    // For mobile devices, try to open in new tab first
-    if (isMobileDevice()) {
+    // Method 1: Standard fetch with progress tracking
+    const downloadWithProgress = async (): Promise<{ success: boolean; message: string; method: string }> => {
       try {
-        // Test if the PDF is accessible
-        const testResponse = await fetch(pdfSrc, { method: 'HEAD' });
-        if (!testResponse.ok) {
-          throw new Error('PDF not accessible');
+        const response = await fetch(pdfSrc);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        // Check if it's iOS Safari (special handling needed)
-        const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
+        const contentLength = response.headers.get('content-length');
+        const total = contentLength ? parseInt(contentLength, 10) : 0;
+        let loaded = 0;
         
-        if (isIOSSafari) {
-          // For iOS Safari, create a link with download attribute and click it
+        const reader = response.body?.getReader();
+        if (!reader) {
+          throw new Error('Response body not readable');
+        }
+        
+        const chunks: Uint8Array[] = [];
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          
+          if (done) break;
+          
+          chunks.push(value);
+          loaded += value.length;
+          
+          if (total > 0 && onProgress) {
+            const progress = Math.round((loaded / total) * 100);
+            onProgress(progress);
+          }
+        }
+        
+        const blob = new Blob(chunks, { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+        
+        return { success: true, message: 'Download completed successfully', method: 'Standard Download' };
+      } catch (error) {
+        throw error;
+      }
+    };
+
+    // Method 2: Direct link for mobile devices
+    const downloadForMobile = async (): Promise<{ success: boolean; message: string; method: string }> => {
+      const isIOSSafari = /iPad|iPhone|iPod/.test(navigator.userAgent) && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS|mercury/.test(navigator.userAgent);
+      
+      if (isIOSSafari) {
+        const link = document.createElement('a');
+        link.href = pdfSrc;
+        link.download = fileName;
+        link.target = '_blank';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return { success: true, message: 'Download initiated for iOS device', method: 'iOS Safari Download' };
+      } else {
+        const newWindow = window.open(pdfSrc, '_blank');
+        if (newWindow) {
+          return { success: true, message: 'PDF opened in new tab for mobile device', method: 'Mobile Tab Open' };
+        } else {
           const link = document.createElement('a');
           link.href = pdfSrc;
-          link.download = fileName;
           link.target = '_blank';
+          link.rel = 'noopener noreferrer';
           link.style.display = 'none';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-          return { success: true, message: 'PDF download initiated for iOS device' };
-        } else {
-          // For other mobile browsers, open in new tab
-          const newWindow = window.open(pdfSrc, '_blank');
-          if (newWindow) {
-            return { success: true, message: 'PDF opened in new tab for mobile device' };
-          } else {
-            // If popup blocked, try alternative approach
-            const link = document.createElement('a');
-            link.href = pdfSrc;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            return { success: true, message: 'PDF opened in new tab for mobile device' };
-          }
+          return { success: true, message: 'PDF opened in new tab for mobile device', method: 'Mobile Link Click' };
         }
-      } catch (mobileError) {
-        console.error('Mobile download error:', mobileError);
-        return { success: false, message: 'Unable to open PDF on mobile. Please try again or contact support.' };
+      }
+    };
+
+    // Method 3: Simple window.open fallback
+    const downloadWithWindowOpen = async (): Promise<{ success: boolean; message: string; method: string }> => {
+      try {
+        window.open(pdfSrc, '_blank');
+        return { success: true, message: 'PDF opened in new tab', method: 'Window Open' };
+      } catch (error) {
+        throw new Error('Window open failed');
+      }
+    };
+
+    // Try methods in order of preference
+    if (isMobileDevice()) {
+      try {
+        return await downloadForMobile();
+      } catch (error) {
+        console.warn('Mobile download failed, trying window.open:', error);
+        return await downloadWithWindowOpen();
+      }
+    } else {
+      try {
+        return await downloadWithProgress();
+      } catch (error) {
+        console.warn('Standard download failed, trying window.open:', error);
+        return await downloadWithWindowOpen();
       }
     }
     
-    // Desktop download logic
-    const pdfResponse = await fetch(pdfSrc);
-    if (!pdfResponse.ok) {
-      throw new Error('PDF not found');
-    }
-    
-    const pdfBlob = await pdfResponse.blob();
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    
-    // Create download link
-    const link = document.createElement('a');
-    link.href = pdfUrl;
-    link.download = fileName;
-    link.style.display = 'none';
-    
-    // Add to DOM and trigger download
-    document.body.appendChild(link);
-    link.click();
-    
-    // Clean up
-    setTimeout(() => {
-      document.body.removeChild(link);
-      URL.revokeObjectURL(pdfUrl);
-    }, 100);
-    
-    return { success: true, message: 'Download initiated successfully' };
-    
   } catch (error) {
-    console.error('Download error:', error);
+    console.error('All download methods failed:', error);
     
-    // Check if it's a network error or file not found
-    if (error instanceof Error && error.message === 'PDF not found') {
-      return { success: false, message: 'Syllabus PDF not available at the moment. Please try again later.' };
+    // Provide specific error messages based on error type
+    if (error instanceof Error) {
+      if (error.message.includes('HTTP 404')) {
+        return { success: false, message: 'PDF file not found. Please contact support.', method: 'Failed' };
+      } else if (error.message.includes('HTTP 403')) {
+        return { success: false, message: 'Access denied to PDF file. Please contact support.', method: 'Failed' };
+      } else if (error.message.includes('HTTP 500')) {
+        return { success: false, message: 'Server error. Please try again later.', method: 'Failed' };
+      } else if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+        return { success: false, message: 'Network error. Please check your internet connection and try again.', method: 'Failed' };
+      } else if (error.message.includes('CORS')) {
+        return { success: false, message: 'Cross-origin error. Please try the alternative download method.', method: 'Failed' };
+      }
     }
     
-    // Final fallback for any device
-    try {
-      window.open(pdfSrc, '_blank');
-      return { success: true, message: 'PDF opened in new tab' };
-    } catch (fallbackError) {
-      return { success: false, message: 'Unable to download file. Please check your internet connection and try again.' };
-    }
+    return { success: false, message: 'Download failed. Please try the alternative method or contact support.', method: 'Failed' };
   }
 };
 
@@ -145,6 +190,9 @@ export default function CourseDetail() {
   const [downloadError, setDownloadError] = useState('');
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [downloadMethod, setDownloadMethod] = useState('');
+  const [showAlternativeDownload, setShowAlternativeDownload] = useState(false);
   
   // Validation states for enrollment form
   const [validationErrors, setValidationErrors] = useState({
@@ -219,74 +267,25 @@ export default function CourseDetail() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
     
-    // For phone number, only allow digits
-    if (name === 'phone') {
-      const numericValue = value.replace(/\D/g, '');
-      // Limit to 10 digits
-      const limitedValue = numericValue.slice(0, 10);
-      
-      setFormData(prev => ({
-        ...prev,
-        [name]: limitedValue
-      }));
-      
-      // Validate the field
-      const fieldError = validateField(name, limitedValue);
-      setValidationErrors(prev => ({
-        ...prev,
-        [name]: fieldError
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-      
-      // Validate the field
-      const fieldError = validateField(name, value);
-      setValidationErrors(prev => ({
-        ...prev,
-        [name]: fieldError
-      }));
+    // Clear validation error when user starts typing
+    if (validationErrors[name as keyof typeof validationErrors]) {
+      setValidationErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const handleDownloadInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setDownloadFormData(prev => ({ ...prev, [name]: value }));
     
-    // For phone number, only allow digits
-    if (name === 'phone') {
-      const numericValue = value.replace(/\D/g, '');
-      // Limit to 10 digits
-      const limitedValue = numericValue.slice(0, 10);
-      
-      setDownloadFormData(prev => ({
-        ...prev,
-        [name]: limitedValue
-      }));
-      
-      // Validate the field
-      const fieldError = validateField(name, limitedValue);
-      setDownloadValidationErrors(prev => ({
-        ...prev,
-        [name]: fieldError
-      }));
-    } else {
-      setDownloadFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-      
-      // Validate the field
-      const fieldError = validateField(name, value);
-      setDownloadValidationErrors(prev => ({
-        ...prev,
-        [name]: fieldError
-      }));
+    // Clear validation error when user starts typing
+    if (downloadValidationErrors[name as keyof typeof downloadValidationErrors]) {
+      setDownloadValidationErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
+  // Enhanced admission submit with better error handling
   const handleAdmissionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -334,15 +333,30 @@ export default function CourseDetail() {
           setSubmitSuccess(false);
         }, 2000);
       } else {
-        setSubmitError(result.error || 'Failed to submit enrollment. Please try again.');
+        // Enhanced error handling
+        if (response.status === 400) {
+          setSubmitError('Invalid data provided. Please check your information and try again.');
+        } else if (response.status === 429) {
+          setSubmitError('Too many requests. Please wait a moment and try again.');
+        } else if (response.status >= 500) {
+          setSubmitError('Server error. Please try again later or contact support.');
+        } else {
+          setSubmitError(result.error || 'Failed to submit enrollment. Please try again.');
+        }
       }
     } catch (error) {
-      setSubmitError('Network error. Please check your connection and try again.');
+      console.error('Enrollment submission error:', error);
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        setSubmitError('Network error. Please check your internet connection and try again.');
+      } else {
+        setSubmitError('An unexpected error occurred. Please try again or contact support.');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Enhanced download submit with faster trigger and better error handling
   const handleDownloadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -365,11 +379,39 @@ export default function CourseDetail() {
     setIsDownloadSubmitting(true);
     setDownloadError('');
     setDownloadSuccess(false);
+    setDownloadProgress(0);
+    setDownloadMethod('');
+    setShowAlternativeDownload(false);
 
     try {
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+      // IMPROVEMENT 1: Trigger download immediately after validation
+      if (course?.pdfSrc) {
+        setIsDownloading(true);
+        console.log('Starting download for:', course.pdfSrc);
+        
+        const downloadResult = await downloadPDF(
+          course.pdfSrc, 
+          `${course.title} Syllabus.pdf`,
+          (progress) => setDownloadProgress(progress)
+        );
+        
+        setDownloadMethod(downloadResult.method);
+        console.log('Download result:', downloadResult);
+        
+        if (downloadResult.success) {
+          setDownloadSuccess(true);
+          setDownloadError('');
+        } else {
+          setDownloadError(downloadResult.message);
+          setShowAlternativeDownload(true);
+        }
+      } else {
+        setDownloadError('Syllabus PDF not available for this course.');
+        setShowAlternativeDownload(true);
+      }
       
-      // Map form data to backend API structure for download tracking
+      // Send form data to backend (non-blocking)
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
       const enquiryData = {
         name: downloadFormData.name,
         phoneNumber: downloadFormData.phone,
@@ -378,62 +420,62 @@ export default function CourseDetail() {
         dateTime: new Date().toISOString()
       };
 
-      const response = await fetch(`${serverUrl}/enquiry`, {
+      // Fire and forget - don't block the UI
+      fetch(`${serverUrl}/enquiry`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(enquiryData),
+      }).catch(error => {
+        console.error('Background form submission failed:', error);
+        // Don't show error to user since download already worked
       });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        setDownloadSuccess(true);
-        setDownloadFormData({ name: '', email: '', phone: '' });
-        setDownloadValidationErrors({ name: '', email: '', phone: '' });
-        
-                // Trigger the actual download only after successful backend storage
-        if (course?.pdfSrc) {
-          setIsDownloading(true);
-          try {
-            console.log('Attempting download for:', course.pdfSrc);
-            console.log('Device type:', isMobileDevice() ? 'Mobile' : 'Desktop');
-            console.log('User agent:', navigator.userAgent);
-            
-            const downloadResult = await downloadPDF(course.pdfSrc, `${course.title} Syllabus.pdf`);
-            console.log('Download result:', downloadResult);
-            
-            if (downloadResult.success) {
-              setDownloadSuccess(true);
-              setDownloadError(''); // Clear previous errors
-              
-              // Longer delay for mobile to read instructions
-              const delay = isMobileDevice() ? 5000 : 2000;
-              setTimeout(() => {
-                setIsDownloadModalOpen(false);
-                setDownloadSuccess(false);
-              }, delay);
-            } else {
-              setDownloadError(downloadResult.message);
-            }
-          } catch (downloadError) {
-            console.error('Download error in handleDownloadSubmit:', downloadError);
-            setDownloadError('Download failed. Please try again or contact support.');
-          } finally {
-            setIsDownloading(false);
-          }
-        } else {
-          setDownloadError('Syllabus PDF not available for this course.');
-        }
-      } else {
-        setDownloadError(result.error || 'Failed to submit download request. Please try again.');
-      }
+      // Clear form data
+      setDownloadFormData({ name: '', email: '', phone: '' });
+      setDownloadValidationErrors({ name: '', email: '', phone: '' });
+      
+      // Close modal after delay
+      const delay = isMobileDevice() ? 5000 : 3000;
+      setTimeout(() => {
+        setIsDownloadModalOpen(false);
+        setDownloadSuccess(false);
+        setDownloadProgress(0);
+        setDownloadMethod('');
+        setShowAlternativeDownload(false);
+      }, delay);
+      
     } catch (error) {
-      console.error('Error submitting download request:', error);
-      setDownloadError('Network error. Please check your connection and try again.');
+      console.error('Download error in handleDownloadSubmit:', error);
+      setDownloadError('An unexpected error occurred. Please try the alternative method.');
+      setShowAlternativeDownload(true);
     } finally {
       setIsDownloadSubmitting(false);
+      setIsDownloading(false);
+    }
+  };
+
+  // Alternative download method
+  const handleAlternativeDownload = async () => {
+    if (!course?.pdfSrc) return;
+    
+    setDownloadError('');
+    setDownloadProgress(0);
+    
+    try {
+      const downloadResult = await downloadPDF(
+        course.pdfSrc, 
+        `${course.title} Syllabus.pdf`,
+        (progress) => setDownloadProgress(progress)
+      );
+      
+      if (downloadResult.success) {
+        setDownloadSuccess(true);
+        setDownloadMethod(downloadResult.method);
+      } else {
+        setDownloadError(downloadResult.message);
+      }
+    } catch (error) {
+      setDownloadError('Alternative download method also failed. Please contact support.');
     }
   };
 
@@ -446,6 +488,30 @@ export default function CourseDetail() {
     e.preventDefault();
     setIsDownloadModalOpen(true);
   };
+
+  // Load course data on component mount
+  useEffect(() => {
+    const loadCourse = async () => {
+      try {
+        const courseSlug = params.courseName as string;
+        const foundCourse = findCourseBySlug(courseSlug, coursesData);
+        
+        if (foundCourse) {
+          setCourse(foundCourse);
+        } else {
+          console.error('Course not found:', courseSlug);
+        }
+      } catch (error) {
+        console.error('Error loading course:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.courseName) {
+      loadCourse();
+    }
+  }, [params.courseName]);
 
   if (loading) {
     return (
@@ -754,6 +820,11 @@ export default function CourseDetail() {
                     : "Your syllabus download has been initiated. The file should start downloading automatically."
                   }
                 </p>
+                {downloadMethod && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-700 mb-1">Download method: {downloadMethod}</p>
+                  </div>
+                )}
                 {isMobileDevice() && course?.pdfSrc && (
                   <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                     <p className="text-sm text-blue-700 mb-2">If the download didn't work, try this direct link:</p>
@@ -774,7 +845,36 @@ export default function CourseDetail() {
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                     <div className="flex">
                       <ExclamationIcon size="md" color="rgb(248 113 113)" className="mt-0.5" />
-                      <p className="ml-3 text-sm text-red-700">{downloadError}</p>
+                      <div className="ml-3">
+                        <p className="text-sm text-red-700">{downloadError}</p>
+                        {showAlternativeDownload && course?.pdfSrc && (
+                          <div className="mt-3">
+                            <button
+                              type="button"
+                              onClick={handleAlternativeDownload}
+                              className="text-sm bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-md transition-colors"
+                            >
+                              Try Alternative Download
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Progress Indicator */}
+                {isDownloading && downloadProgress > 0 && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-blue-700">Downloading...</span>
+                      <span className="text-sm text-blue-600">{downloadProgress}%</span>
+                    </div>
+                    <div className="w-full bg-blue-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${downloadProgress}%` }}
+                      ></div>
                     </div>
                   </div>
                 )}
@@ -790,7 +890,7 @@ export default function CourseDetail() {
                     value={downloadFormData.name}
                     onChange={handleDownloadInputChange}
                     required
-                    disabled={isDownloadSubmitting}
+                    disabled={isDownloadSubmitting || isDownloading}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
                       downloadValidationErrors.name ? 'border-red-300' : 'border-gray-300'
                     }`}
@@ -812,7 +912,7 @@ export default function CourseDetail() {
                     value={downloadFormData.email}
                     onChange={handleDownloadInputChange}
                     required
-                    disabled={isDownloadSubmitting}
+                    disabled={isDownloadSubmitting || isDownloading}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
                       downloadValidationErrors.email ? 'border-red-300' : 'border-gray-300'
                     }`}
@@ -834,7 +934,7 @@ export default function CourseDetail() {
                     value={downloadFormData.phone}
                     onChange={handleDownloadInputChange}
                     required
-                    disabled={isDownloadSubmitting}
+                    disabled={isDownloadSubmitting || isDownloading}
                     maxLength={10}
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors disabled:bg-gray-50 disabled:cursor-not-allowed ${
                       downloadValidationErrors.phone ? 'border-red-300' : 'border-gray-300'
@@ -844,7 +944,6 @@ export default function CourseDetail() {
                   {downloadValidationErrors.phone && (
                     <p className="mt-1 text-sm text-red-600">{downloadValidationErrors.phone}</p>
                   )}
-                  
                 </div>
                 
                 <button
@@ -855,12 +954,51 @@ export default function CourseDetail() {
                   {isDownloadSubmitting || isDownloading ? (
                     <>
                       <SpinnerIcon size="md" color="white" className="-ml-1 mr-3" />
-                      {isDownloading ? 'Processing Download...' : 'Downloading...'}
+                      {isDownloading ? `Downloading... ${downloadProgress}%` : 'Processing...'}
                     </>
                   ) : (
-                    'Download Syllabus'
+                    <>
+                      <DownloadIcon size="md" color="white" className="-ml-1 mr-2" />
+                      Download Syllabus
+                    </>
                   )}
                 </button>
+
+                {/* Alternative Download Options */}
+                {showAlternativeDownload && course?.pdfSrc && (
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">Alternative Download Methods:</h4>
+                    <div className="space-y-2">
+                      <button
+                        type="button"
+                        onClick={handleAlternativeDownload}
+                        className="w-full text-left p-2 text-sm text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                      >
+                        🔄 Try Different Download Method
+                      </button>
+                      <a
+                        href={course.pdfSrc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full text-left p-2 text-sm text-green-600 hover:bg-green-50 rounded transition-colors"
+                      >
+                        🔗 Open PDF in New Tab
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = course.pdfSrc;
+                          link.download = `${course.title} Syllabus.pdf`;
+                          link.click();
+                        }}
+                        className="w-full text-left p-2 text-sm text-purple-600 hover:bg-purple-50 rounded transition-colors"
+                      >
+                        💾 Force Download
+                      </button>
+                    </div>
+                  </div>
+                )}
               </form>
             )}
           </div>

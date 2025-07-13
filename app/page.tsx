@@ -22,11 +22,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCourses, setFilteredCourses] = useState(coursesData);
   const [isClient, setIsClient] = useState(false);
-  const [animationKey, setAnimationKey] = useState(0); // Add animation trigger key
   const pathname = usePathname();
-  const [hasAnimated, setHasAnimated] = useState(false); // Track if animation has already played
-  const [shouldTriggerAnimation, setShouldTriggerAnimation] = useState(false); // Explicit animation trigger
-  const [hasNavigatedAway, setHasNavigatedAway] = useState(false); // Track navigation away
   
   // Contact form state
   const [contactForm, setContactForm] = useState({
@@ -116,66 +112,9 @@ export default function Home() {
     }, stepDuration);
   };
 
-  // Track navigation away from home page
-  useEffect(() => {
-    if (isClient && pathname !== '/') {
-      setHasNavigatedAway(true);
-    }
-  }, [isClient, pathname]);
-
-  // Animation control - ONLY on first load or refresh
-  useEffect(() => {
-    if (!isClient || pathname !== '/') return;
-
-    // Check if this is a page refresh or first visit
-    const navigationEntry = performance.getEntriesByType('navigation')[0] as any;
-    const isRefresh = (navigationEntry && navigationEntry.type === 'reload') ||
-                     (performance.navigation && performance.navigation.type === 1);
-    
-    // Only trigger animation if it's a refresh AND user hasn't navigated away
-    if (isRefresh && !hasNavigatedAway) {
-      setShouldTriggerAnimation(true);
-      setAnimationKey(0);
-      const timer = setTimeout(() => {
-        setAnimationKey(prev => prev + 1);
-      }, 200);
-      setHasAnimated(true);
-      return () => clearTimeout(timer);
-    } else {
-      // Skip animation for navigation back
-      setShouldTriggerAnimation(false);
-      setHasAnimated(true);
-      setAnimationKey(0);
-    }
-  }, [isClient, pathname, hasNavigatedAway]);
 
 
 
-  // Cleanup effect to reset animation state when component unmounts
-  useEffect(() => {
-    return () => {
-      // Reset animation state when component unmounts
-      setShouldTriggerAnimation(false);
-      setHasAnimated(false);
-      setAnimationKey(0);
-    };
-  }, []);
-
-  // Additional safeguard: Reset animation state when navigating away
-  useEffect(() => {
-    if (isClient && pathname !== '/') {
-      setShouldTriggerAnimation(false);
-      setHasAnimated(false);
-      setAnimationKey(0);
-    }
-  }, [isClient, pathname]);
-
-  // Force disable animation when user has navigated away
-  useEffect(() => {
-    if (hasNavigatedAway) {
-      setShouldTriggerAnimation(false);
-    }
-  }, [hasNavigatedAway]);
 
   // Hero text animation state
   const [heroTextVisible, setHeroTextVisible] = useState(false);
@@ -449,9 +388,7 @@ export default function Home() {
       </VideoBackground>
 
       {/* Placement Courses Section */}
-      <section className={`py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-50 to-white ${
-  shouldTriggerAnimation && !hasNavigatedAway ? 'animate-sectionSlideInLeft' : 'section-slide-initial'
-}`}>
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-50 to-white animate-slide-in-right">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-900 mb-6 sm:mb-8 md:mb-12">Placement Courses</h2>
           
@@ -509,15 +446,13 @@ export default function Home() {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-6 lg:gap-8">
       {filteredCourses.map((course, index) => (
         <PlacementCourseCard
-          key={`${course.id}-${animationKey}`}
+          key={course.id}
           id={course.id}
           iconSrc={course.iconSrc}
           iconAlt={course.iconAlt}
           title={course.title}
           duration={course.duration}
           index={index}
-          animationKey={animationKey}
-          shouldAnimate={false} // Disable individual card animations
         />
       ))}
     </div>
