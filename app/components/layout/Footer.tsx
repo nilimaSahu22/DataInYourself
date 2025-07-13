@@ -33,7 +33,7 @@ export default function Footer() {
               <p className="text-gray-300 text-sm sm:text-base">India's number one computer training</p>
               
               {/* Row 3: Social Media Icons */}
-              <div className="flex space-x-3 sm:space-x-4">
+              <div className="flex space-x-4">
                 <Link 
                   href="#" 
                   className="text-gray-400 hover:text-orange-400 transition-colors duration-200"
@@ -76,7 +76,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2 - Company */}
+          
           <div>
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">Company</h4>
             <ul className="space-y-1 sm:space-y-2">
@@ -125,7 +125,7 @@ export default function Footer() {
       <hr className="border-gray-700" />
 
       {/* Section 2 - Copyright and Legal */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
           {/* Left - Copyright */}
           <div className="text-gray-400 text-xs sm:text-sm text-center sm:text-left">
