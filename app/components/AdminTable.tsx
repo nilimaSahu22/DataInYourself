@@ -602,7 +602,11 @@ export default function AdminTable() {
             visibleColumns={visibleColumns}
             onColumnsChange={handleColumnsChange}
           />
-          <DateRangeFilter onDateRangeChange={handleDateRangeChange} />
+          <DateRangeFilter 
+            onDateRangeChange={handleDateRangeChange}
+            currentFromDate={dateRange.from}
+            currentToDate={dateRange.to}
+          />
         </div>
       </div>
 

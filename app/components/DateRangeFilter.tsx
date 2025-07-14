@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 
 interface DateRangeFilterProps {
   onDateRangeChange: (fromDate: Date | null, toDate: Date | null) => void;
+  currentFromDate?: Date | null;
+  currentToDate?: Date | null;
 }
 
-export default function DateRangeFilter({ onDateRangeChange }: DateRangeFilterProps) {
+export default function DateRangeFilter({ onDateRangeChange, currentFromDate = null, currentToDate = null }: DateRangeFilterProps) {
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState(false);
@@ -13,25 +15,25 @@ export default function DateRangeFilter({ onDateRangeChange }: DateRangeFilterPr
   // Get today's date in YYYY-MM-DD format for max attribute
   const today = new Date().toISOString().split('T')[0];
 
-  useEffect(() => {
-    const from = fromDate ? new Date(fromDate) : null;
-    const to = toDate ? new Date(toDate) : null;
-    
-    // If to date is set, set it to end of day (23:59:59)
-    if (to) {
-      to.setHours(23, 59, 59, 999);
-    }
-    
-    onDateRangeChange(from, to);
-  }, [fromDate, toDate, onDateRangeChange]);
+  // Initialize local state with current filter values when opening modal
+  const openModal = () => {
+    setFromDate(currentFromDate ? currentFromDate.toISOString().split('T')[0] : "");
+    setToDate(currentToDate ? currentToDate.toISOString().split('T')[0] : "");
+    setIsExpanded(true);
+  };
 
   const handleClear = () => {
     setFromDate("");
     setToDate("");
-    setIsExpanded(false);
   };
 
   const handleApply = () => {
+    const from = fromDate ? new Date(fromDate) : null;
+    const to = toDate ? new Date(toDate) : null;
+    if (to) {
+      to.setHours(23, 59, 59, 999);
+    }
+    onDateRangeChange(from, to);
     setIsExpanded(false);
   };
 
@@ -55,7 +57,7 @@ export default function DateRangeFilter({ onDateRangeChange }: DateRangeFilterPr
     <div className="relative text-black">
       {/* Toggle Button */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={openModal}
         className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-all duration-200 ${
           fromDate || toDate
             ? "bg-orange-50 border-orange-300 text-orange-700 hover:bg-orange-100"
