@@ -99,7 +99,10 @@ export default function DateRangeFilter({ onDateRangeChange, currentFromDate = n
 
       {/* Dropdown Menu */}
       {isExpanded && (
-        <div className="absolute top-full left-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <div
+          className="fixed inset-x-0 top-0 mx-auto w-full max-w-xs min-w-0 sm:absolute sm:top-full sm:left-0 sm:mt-2 sm:w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-y-auto max-h-[80vh]"
+          style={{ right: 'auto' }}
+        >
           <div className="p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-gray-800">Date Range Filter</h3>
