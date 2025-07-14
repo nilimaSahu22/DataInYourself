@@ -84,7 +84,7 @@ export default function Footer() {
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-orange-400">Contact</h4>
             <ul className="space-y-1 sm:space-y-2">
               <li className="text-gray-300 text-sm sm:text-base"><a href="tel:9558092200">Phone: 9558092200,</a><a href="tel:8839381619"> 8839381619</a></li>
-              <li className="text-gray-300 text-sm sm:text-base"><a href="mailto:mukulsharma1602@gmail.com">Email: mukulsharma1602@gmail.com</a></li>
+              <li className="text-gray-300 text-sm sm:text-base"><a href="mailto:info@datainyourself.com">Email: info@datainyourself.com</a></li>
             </ul>
           </div>
         </div>

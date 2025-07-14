@@ -911,10 +911,10 @@ Truly Outstanding!"
                   <div>
                     <h4 className="text-sm sm:text-base font-semibold text-orange-900 mb-1 sm:mb-2">Email</h4>
                     <a 
-                      href="mailto:mukulsharma1602@gmail.com" 
+                      href="mailto:info@datainyourself.co.in" 
                       className="text-orange-700 hover:text-orange-600 text-sm sm:text-base transition-colors duration-200"
                     >
-                      mukulsharma1602@gmail.com
+                      info@datainyourself.co.in
                     </a>
                   </div>
                 </div>

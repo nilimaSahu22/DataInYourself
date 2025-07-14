@@ -781,7 +781,7 @@ export default function CourseDetail() {
                 Call +91 9558092200
               </a>
               <a 
-                href="mailto:mukulsharma1602@gmail.com"
+                href="mailto:info@datainyourself.com"
                 className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all duration-300"
               >
                 Send Email

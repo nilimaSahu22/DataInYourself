@@ -182,7 +182,7 @@ export default function PrivacyPolicy() {
               <div className="bg-gray-100 p-4 rounded-lg">
                 <p className="text-gray-700">
                   <strong>DataInYourself E-Learning Pvt Ltd</strong><br />
-                  Email: mukulsharma1602@gmail.com<br />
+                  Email: info@datainyourself.com<br />
                   Phone: 9558092200, 8839381619<br />
                   Address: [Your Business Address]
                 </p>
