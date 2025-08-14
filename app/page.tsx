@@ -911,10 +911,10 @@ Truly Outstanding!"
                   <div>
                     <h4 className="text-sm sm:text-base font-semibold text-orange-900 mb-1 sm:mb-2">Email</h4>
                     <a 
-                      href="mailto:info@datainyourself.co.in" 
+                      href="mailto:info@datainyourself.com" 
                       className="text-orange-700 hover:text-orange-600 text-sm sm:text-base transition-colors duration-200"
                     >
-                      info@datainyourself.co.in
+                      info@datainyourself.com
                     </a>
                   </div>
                 </div>
@@ -1070,7 +1070,7 @@ Truly Outstanding!"
                     value={contactForm.course}
                     onChange={handleContactInputChange}
                     disabled={isSubmitting}
-                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-gray-800 bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-orange-400 bg-white disabled:bg-gray-50 disabled:cursor-not-allowed"
                     suppressHydrationWarning
                   >
                     <option value="" className="text-gray-800">Select a course</option>
