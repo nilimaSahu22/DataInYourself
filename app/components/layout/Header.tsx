@@ -50,7 +50,7 @@ export default function Header() {
   }}
 >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12 sm:h-16">
+          <div className="flex items-center justify-between h-16 sm:h-16">
             {/* Left Section - Logo */}
             <div className="flex-shrink-0">
               <Link 
@@ -63,7 +63,7 @@ export default function Header() {
                   alt="DataInYourself Logo"
                   width={500}
                   height={150}
-                  className="h-8 sm:h-12 w-auto"
+                  className="h-12 sm:h-12 w-auto"
                   priority
                 />
               </Link>
