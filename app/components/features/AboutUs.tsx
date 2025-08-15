@@ -167,6 +167,152 @@ const AboutUs = () => {
           </div>
         </div>
 
+        {/* DIY Course Features */}
+        <div className="mb-16 lg:mb-20">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              DIY Course Experience
+            </h2>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              Discover why our DIY approach revolutionizes learning and career preparation
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">🏢</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                No Classroom Study
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Learn in a corporate-style environment with real-time office experience
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">💼</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Real-Time Office Experience
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Feel like you're already working in IT with hands-on industry projects
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">🎯</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Live Project Practice
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Work on real industry projects to build your portfolio and confidence
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">👨‍🏫</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                1:1 Mentorship
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Personalized guidance & doubt-clearing sessions with expert trainers
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">👨‍💻</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Expert Trainers
+              </h3>
+              <p className="text-gray-700 text-sm">
+                All trainers have 5+ years of corporate IT experience
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">🎯</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                100% Job Placement Assistance
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Comprehensive support to help you land your dream job
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">🔄</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Flexible Learning
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Online & offline batch options to fit your schedule
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">🌟</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Personality Development Workshops
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Build confidence and professional communication skills
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">📚</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Lifetime Access to Recorded Lectures
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Revisit anytime, forever - never lose access to your learning materials
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">🏆</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Course Completion Certificate
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Industry-recognized certification upon successful completion
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-md border border-orange-100 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-xl text-white">💼</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                3-Month Internship Certificate
+              </h3>
+              <p className="text-gray-700 text-sm">
+                Get real-world experience on paper to boost your resume
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Our Story */}
         <div className="bg-gradient-to-br from-orange-50 to-white rounded-3xl p-8 sm:p-12 lg:p-16 mb-16 lg:mb-20 border border-orange-100">
           <div className="max-w-4xl mx-auto text-center">
