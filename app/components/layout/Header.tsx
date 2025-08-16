@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useContactNavigation } from '../../utils/contactNavigation';
 import { useTestimonialNavigation } from '../../utils/testimonialNavigation';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
   const handleContactClick = useContactNavigation();
   const handleTestimonialClick = useTestimonialNavigation();
 
@@ -19,6 +21,17 @@ export default function Header() {
     { name: 'Testimonials', href: '#testimonials' },
     { name: 'Contact Us', href: '#contact' },
   ];
+
+  // Function to check if a link is active
+  const isActiveLink = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    if (href.startsWith('#')) {
+      return false; // Hash links are never considered active in header
+    }
+    return pathname === href;
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -71,37 +84,58 @@ export default function Header() {
 
             {/* Center Section - Navigation */}
             <nav className="hidden lg:flex space-x-6 xl:space-x-8" aria-label="Main navigation">
-              {navigationLinks.map((link) => (
-                <div key={link.name} className="relative">
-                  {link.name === 'Contact Us' ? (
-                    <a
-                      href={link.href}
-                      onClick={handleContactNavigation}
-                      className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer"
-                    >
-                      {link.name}
-                      <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
-                    </a>
-                  ) : link.name === 'Testimonials' ? (
-                    <a
-                      href={link.href}
-                      onClick={handleTestimonialClick}
-                      className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer"
-                    >
-                      {link.name}
-                      <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
-                    </a>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="text-gray-700 hover:text-orange-500 px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center"
-                    >
-                      {link.name}
-                      <span className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 transition-all duration-200 group-hover:w-full"></span>
-                    </Link>
-                  )}
-                </div>
-              ))}
+              {navigationLinks.map((link) => {
+                const isActive = isActiveLink(link.href);
+                return (
+                  <div key={link.name} className="relative">
+                    {link.name === 'Contact Us' ? (
+                      <a
+                        href={link.href}
+                        onClick={handleContactNavigation}
+                        className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer ${
+                          isActive 
+                            ? 'text-orange-600' 
+                            : 'text-gray-700 hover:text-orange-500'
+                        }`}
+                      >
+                        {link.name}
+                        <span className={`absolute bottom-0 left-0 h-1 bg-orange-500 transition-all duration-200 ${
+                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}></span>
+                      </a>
+                    ) : link.name === 'Testimonials' ? (
+                      <a
+                        href={link.href}
+                        onClick={handleTestimonialClick}
+                        className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer ${
+                          isActive 
+                            ? 'text-orange-600' 
+                            : 'text-gray-700 hover:text-orange-500'
+                        }`}
+                      >
+                        {link.name}
+                        <span className={`absolute bottom-0 left-0 h-1 bg-orange-500 transition-all duration-200 ${
+                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}></span>
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center ${
+                          isActive 
+                            ? 'text-orange-600' 
+                            : 'text-gray-700 hover:text-orange-500'
+                        }`}
+                      >
+                        {link.name}
+                        <span className={`absolute bottom-0 left-0 h-1 bg-orange-500 transition-all duration-200 ${
+                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`}></span>
+                      </Link>
+                    )}
+                  </div>
+                );
+              })}
             </nav>
 
             {/* Right Section - Hamburger Menu Button */}
@@ -173,38 +207,53 @@ export default function Header() {
           {/* Sidebar Navigation */}
           <nav className="flex-1 px-4 py-4" aria-label="Mobile navigation">
             <div className="space-y-2">
-              {navigationLinks.map((link) => (
-                <div key={link.name}>
-                  {link.name === 'Contact Us' ? (
-                    <a
-                      href={link.href}
-                      onClick={handleContactNavigation}
-                      className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm cursor-pointer"
-                    >
-                      {link.name}
-                    </a>
-                  ) : link.name === 'Testimonials' ? (
-                    <a
-                      href={link.href}
-                      onClick={(e) => {
-                        handleTestimonialClick(e);
-                        closeMobileMenu();
-                      }}
-                      className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm cursor-pointer"
-                    >
-                      {link.name}
-                    </a>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      onClick={closeMobileMenu}
-                      className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border border-gray-100 hover:border-orange-200 hover:shadow-sm"
-                    >
-                      {link.name}
-                    </Link>
-                  )}
-                </div>
-              ))}
+              {navigationLinks.map((link) => {
+                const isActive = isActiveLink(link.href);
+                return (
+                  <div key={link.name}>
+                    {link.name === 'Contact Us' ? (
+                      <a
+                        href={link.href}
+                        onClick={handleContactNavigation}
+                        className={`block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border hover:shadow-sm cursor-pointer ${
+                          isActive
+                            ? 'text-orange-600 bg-orange-50 border-orange-200'
+                            : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 border-gray-100 hover:border-orange-200'
+                        }`}
+                      >
+                        {link.name}
+                      </a>
+                    ) : link.name === 'Testimonials' ? (
+                      <a
+                        href={link.href}
+                        onClick={(e) => {
+                          handleTestimonialClick(e);
+                          closeMobileMenu();
+                        }}
+                        className={`block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border hover:shadow-sm cursor-pointer ${
+                          isActive
+                            ? 'text-orange-600 bg-orange-50 border-orange-200'
+                            : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 border-gray-100 hover:border-orange-200'
+                        }`}
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        onClick={closeMobileMenu}
+                        className={`block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border hover:shadow-sm ${
+                          isActive
+                            ? 'text-orange-600 bg-orange-50 border-orange-200'
+                            : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 border-gray-100 hover:border-orange-200'
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </nav>
 
