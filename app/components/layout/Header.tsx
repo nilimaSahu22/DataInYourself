@@ -7,6 +7,17 @@ import { usePathname } from 'next/navigation';
 import { useContactNavigation } from '../../utils/contactNavigation';
 import { useTestimonialNavigation } from '../../utils/testimonialNavigation';
 import AdBanner from '../ui/AdBanner';
+import { 
+  MenuIcon, 
+  CloseIcon, 
+  HomeIcon, 
+  UserGroupIcon, 
+  PhotoIcon, 
+  BuildingOfficeIcon, 
+  ChatBubbleLeftRightIcon, 
+  PhoneIcon,
+  AcademicCapIcon
+} from '../ui/Icons';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,12 +26,12 @@ export default function Header() {
   const handleTestimonialClick = useTestimonialNavigation();
 
   const navigationLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Gallery', href: '/gallery' },
-    { name: 'Franchise', href: '/franchise' },
-    { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Contact Us', href: '#contact' },
+    { name: 'Home', href: '/', icon: HomeIcon },
+    { name: 'About Us', href: '/about', icon: UserGroupIcon },
+    { name: 'Gallery', href: '/gallery', icon: PhotoIcon },
+    { name: 'Franchise', href: '/franchise', icon: BuildingOfficeIcon },
+    { name: 'Testimonials', href: '#testimonials', icon: ChatBubbleLeftRightIcon },
+    { name: 'Contact Us', href: '#contact', icon: PhoneIcon },
   ];
 
   // Function to check if a link is active
@@ -50,22 +61,55 @@ export default function Header() {
 
   return (
     <>
-        <header 
-  className="bg-white shadow-sm border-b border-gray-200"
-  style={{
-    background: 'white',
-    width: '100%',
-    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)'
-  }}
->
-  <AdBanner />
+      <header 
+        className="bg-gradient-to-r from-white via-orange-50 to-white shadow-lg border-b border-orange-100 mobile-header-enhanced mobile-header-gradient animate-gradient-shift"
+        style={{
+          background: 'linear-gradient(135deg, #ffffff 0%, #fef3c7 25%, #fed7aa 50%, #fef3c7 75%, #ffffff 100%)',
+          width: '100%',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+        }}
+      >
+        <AdBanner />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-16">
-            {/* Left Section - Logo */}
-            <div className="flex-shrink-0">
+          <div className="flex items-center justify-between h-16 sm:h-18">
+            {/* Left Section - Hamburger Menu Button (Mobile Only) */}
+            <div className="lg:hidden flex-shrink-0" style={{zIndex: 999999}}>
+              <button
+                onClick={toggleMobileMenu}
+                className={`p-3 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 hover:scale-105 mobile-touch-target ${
+                  isMobileMenuOpen 
+                    ? 'text-orange-600 bg-gradient-to-r from-orange-100 to-orange-200 shadow-lg animate-pulse-glow' 
+                    : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50'
+                }`}
+                aria-label="Toggle mobile menu"
+                aria-expanded={isMobileMenuOpen}
+                suppressHydrationWarning
+              >
+                <div className="w-6 h-6 sm:w-7 sm:h-7 flex flex-col justify-center items-center relative">
+                  <span 
+                    className={`block w-5 h-0.5 bg-current transition-all duration-300 ease-in-out rounded-full hamburger-line ${
+                      isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : '-translate-y-1'
+                    }`}
+                  ></span>
+                  <span 
+                    className={`block w-5 h-0.5 bg-current transition-all duration-300 ease-in-out rounded-full hamburger-line ${
+                      isMobileMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
+                    }`}
+                  ></span>
+                  <span 
+                    className={`block w-5 h-0.5 bg-current transition-all duration-300 ease-in-out rounded-full hamburger-line ${
+                      isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : 'translate-y-1'
+                    }`}
+                  ></span>
+                </div>
+              </button>
+            </div>
+
+            {/* Center Section - Logo */}
+            <div className="flex-shrink-0 flex-1 flex justify-center lg:justify-start">
               <Link 
                 href="/" 
-                className="flex items-center hover:opacity-80 transition-opacity duration-200 p-2"
+                className="flex items-center hover:opacity-80 transition-all duration-300 p-2 rounded-lg hover:bg-white/50 mobile-touch-target mobile-logo-enhanced"
                 aria-label="DataInYourself - Home"
               >
                 <Image
@@ -73,108 +117,88 @@ export default function Header() {
                   alt="DataInYourself Logo"
                   width={500}
                   height={150}
-                  className="h-12 sm:h-12 w-auto"
+                  className="h-12 sm:h-14 w-auto drop-shadow-sm"
                   priority
                 />
               </Link>
             </div>
 
-            {/* Center Section - Navigation */}
-            <nav className="hidden lg:flex space-x-6 xl:space-x-8" aria-label="Main navigation">
-              {navigationLinks.map((link) => {
-                const isActive = isActiveLink(link.href);
-                return (
-                  <div key={link.name} className="relative">
-                    {link.name === 'Contact Us' ? (
-                      <a
-                        href={link.href}
-                        onClick={handleContactNavigation}
-                        className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer ${
-                          isActive 
-                            ? 'text-orange-600' 
-                            : 'text-gray-700 hover:text-orange-500'
-                        }`}
-                      >
-                        {link.name}
-                        <span className={`absolute bottom-0 left-0 h-1 bg-orange-500 transition-all duration-200 ${
-                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                        }`}></span>
-                      </a>
-                    ) : link.name === 'Testimonials' ? (
-                      <a
-                        href={link.href}
-                        onClick={handleTestimonialClick}
-                        className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center cursor-pointer ${
-                          isActive 
-                            ? 'text-orange-600' 
-                            : 'text-gray-700 hover:text-orange-500'
-                        }`}
-                      >
-                        {link.name}
-                        <span className={`absolute bottom-0 left-0 h-1 bg-orange-500 transition-all duration-200 ${
-                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                        }`}></span>
-                      </a>
-                    ) : (
-                      <Link
-                        href={link.href}
-                        className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-colors duration-200 relative group flex items-center ${
-                          isActive 
-                            ? 'text-orange-600' 
-                            : 'text-gray-700 hover:text-orange-500'
-                        }`}
-                      >
-                        {link.name}
-                        <span className={`absolute bottom-0 left-0 h-1 bg-orange-500 transition-all duration-200 ${
-                          isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                        }`}></span>
-                      </Link>
-                    )}
-                  </div>
-                );
-              })}
-            </nav>
+            {/* Right Section - Desktop Navigation & Mobile Courses Button */}
+            <div className="flex items-center space-x-4">
+              {/* Desktop Navigation */}
+              <nav className="hidden lg:flex space-x-6 xl:space-x-8" aria-label="Main navigation">
+                {navigationLinks.map((link) => {
+                  const isActive = isActiveLink(link.href);
+                  return (
+                    <div key={link.name} className="relative">
+                      {link.name === 'Contact Us' ? (
+                        <a
+                          href={link.href}
+                          onClick={handleContactNavigation}
+                          className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-all duration-300 relative group flex items-center cursor-pointer rounded-lg hover:bg-orange-100/50 ${
+                            isActive 
+                              ? 'text-orange-600 bg-orange-100/30' 
+                              : 'text-gray-700 hover:text-orange-500'
+                          }`}
+                        >
+                          {link.name}
+                          <span className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full transition-all duration-300 ${
+                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`}></span>
+                        </a>
+                      ) : link.name === 'Testimonials' ? (
+                        <a
+                          href={link.href}
+                          onClick={handleTestimonialClick}
+                          className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-all duration-300 relative group flex items-center cursor-pointer rounded-lg hover:bg-orange-100/50 ${
+                            isActive 
+                              ? 'text-orange-600 bg-orange-100/30' 
+                              : 'text-gray-700 hover:text-orange-500'
+                          }`}
+                        >
+                          {link.name}
+                          <span className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full transition-all duration-300 ${
+                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`}></span>
+                        </a>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className={`px-3 xl:px-4 py-3 text-sm xl:text-base font-medium transition-all duration-300 relative group flex items-center rounded-lg hover:bg-orange-100/50 ${
+                            isActive 
+                              ? 'text-orange-600 bg-orange-100/30' 
+                              : 'text-gray-700 hover:text-orange-500'
+                          }`}
+                        >
+                          {link.name}
+                          <span className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full transition-all duration-300 ${
+                            isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`}></span>
+                        </Link>
+                      )}
+                    </div>
+                  );
+                })}
+              </nav>
 
-            {/* Right Section - Hamburger Menu Button */}
-            <div className="lg:hidden flex-shrink-0 " style={{zIndex: 999999}}>
-              <button
-                onClick={toggleMobileMenu}
-                className={`p-2 sm:p-3 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
-                  isMobileMenuOpen 
-                    ? 'text-orange-600 bg-orange-50 hover:bg-orange-100' 
-                    : 'text-gray-700 hover:text-orange-500'
-                }`}
-                aria-label="Toggle mobile menu"
-                aria-expanded={isMobileMenuOpen}
-                suppressHydrationWarning
-              >
-                <div className="w-6 h-6 sm:w-7 sm:h-7 flex flex-col justify-center items-center">
-                  <span 
-                    className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                      isMobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'
-                    }`}
-                  ></span>
-                  <span 
-                    className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                      isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
-                    }`}
-                  ></span>
-                  <span 
-                    className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                      isMobileMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'
-                    }`}
-                  ></span>
-                </div>
-              </button>
+              {/* Mobile Courses Button */}
+              <div className="lg:hidden flex-shrink-0">
+                <Link
+                  href="#courses"
+                  className="flex justify-center items-center px-3 py-2 text-sm font-medium text-orange-600 bg-orange-100/50 hover:bg-orange-100 rounded-lg transition-all duration-300 hover:scale-105 mobile-touch-target"
+                >
+                  <AcademicCapIcon size="sm" className="text-orange-500" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Enhanced Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed bg-opacity-10 z-[999999] lg:hidden"
+          className="fixed bg-black/20 backdrop-blur-sm z-[999999] lg:hidden animate-fade-in"
           style={{
             top: 'calc(var(--ad-banner-height) + var(--header-height))',
             left: 0,
@@ -185,37 +209,59 @@ export default function Header() {
         ></div>
       )}
 
-      {/* Mobile Sidebar */}
+      {/* Enhanced Mobile Sidebar - Now slides from left */}
       <div 
-        className={`fixed right-0 h-full w-64 sm:w-72 bg-white shadow-xl z-[9999999] transform transition-transform duration-300 ease-in-out lg:hidden ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed left-0 h-full w-72 sm:w-80 bg-gradient-to-b from-white via-orange-50 to-white shadow-2xl z-[9999999] transform transition-all duration-500 ease-out lg:hidden mobile-menu-enhanced ${
+          isMobileMenuOpen ? 'translate-x-0 opacity-100 animate-slide-in-left' : '-translate-x-full opacity-0'
         }`}
         style={{
           top: 'calc(var(--ad-banner-height) + var(--header-height))'
         }}
       >
         <div className="flex flex-col h-full">
-          {/* Sidebar Header */}
-         
+          {/* Enhanced Sidebar Header */}
+          <div className="px-6 py-6 border-b border-orange-200 bg-gradient-to-r from-orange-100/50 to-orange-50/50 animate-slide-in-top">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">D</span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800">DataInYourself</h3>
+                  <p className="text-sm text-gray-600">Your Learning Partner</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          {/* Sidebar Navigation */}
-          <nav className="flex-1 px-4 py-4" aria-label="Mobile navigation">
-            <div className="space-y-2">
-              {navigationLinks.map((link) => {
+          {/* Enhanced Sidebar Navigation */}
+          <nav className="flex-1 px-4 py-6" aria-label="Mobile navigation">
+            <div className="space-y-3">
+              {navigationLinks.map((link, index) => {
                 const isActive = isActiveLink(link.href);
+                const IconComponent = link.icon;
                 return (
-                  <div key={link.name}>
+                  <div key={link.name} className="animate-fade-in mobile-menu-item" style={{ animationDelay: `${index * 100}ms` }}>
                     {link.name === 'Contact Us' ? (
                       <a
                         href={link.href}
                         onClick={handleContactNavigation}
-                        className={`block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border hover:shadow-sm cursor-pointer ${
+                        className={`flex items-center px-4 py-4 text-sm font-medium rounded-xl transition-all duration-300 border-2 hover:shadow-lg cursor-pointer group mobile-touch-target ${
                           isActive
-                            ? 'text-orange-600 bg-orange-50 border-orange-200'
-                            : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 border-gray-100 hover:border-orange-200'
+                            ? 'text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 border-orange-300 shadow-md'
+                            : 'text-gray-700 hover:text-orange-500 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 border-orange-100 hover:border-orange-300'
                         }`}
                       >
+                        <IconComponent 
+                          size="sm" 
+                          className={`mr-3 transition-all duration-300 ${
+                            isActive ? 'text-orange-500' : 'text-gray-500 group-hover:text-orange-500'
+                          }`} 
+                        />
                         {link.name}
+                        <div className={`ml-auto w-2 h-2 rounded-full transition-all duration-300 ${
+                          isActive ? 'bg-orange-500' : 'bg-transparent'
+                        }`}></div>
                       </a>
                     ) : link.name === 'Testimonials' ? (
                       <a
@@ -224,25 +270,43 @@ export default function Header() {
                           handleTestimonialClick(e);
                           closeMobileMenu();
                         }}
-                        className={`block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border hover:shadow-sm cursor-pointer ${
+                        className={`flex items-center px-4 py-4 text-sm font-medium rounded-xl transition-all duration-300 border-2 hover:shadow-lg cursor-pointer group mobile-touch-target ${
                           isActive
-                            ? 'text-orange-600 bg-orange-50 border-orange-200'
-                            : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 border-gray-100 hover:border-orange-200'
+                            ? 'text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 border-orange-300 shadow-md'
+                            : 'text-gray-700 hover:text-orange-500 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 border-orange-100 hover:border-orange-300'
                         }`}
                       >
+                        <IconComponent 
+                          size="sm" 
+                          className={`mr-3 transition-all duration-300 ${
+                            isActive ? 'text-orange-500' : 'text-gray-500 group-hover:text-orange-500'
+                          }`} 
+                        />
                         {link.name}
+                        <div className={`ml-auto w-2 h-2 rounded-full transition-all duration-300 ${
+                          isActive ? 'bg-orange-500' : 'bg-transparent'
+                        }`}></div>
                       </a>
                     ) : (
                       <Link
                         href={link.href}
                         onClick={closeMobileMenu}
-                        className={`block px-3 py-3 text-sm font-medium rounded-md transition-all duration-200 border hover:shadow-sm ${
+                        className={`flex items-center px-4 py-4 text-sm font-medium rounded-xl transition-all duration-300 border-2 hover:shadow-lg group mobile-touch-target ${
                           isActive
-                            ? 'text-orange-600 bg-orange-50 border-orange-200'
-                            : 'text-gray-700 hover:text-orange-500 hover:bg-orange-50 border-gray-100 hover:border-orange-200'
+                            ? 'text-orange-600 bg-gradient-to-r from-orange-50 to-orange-100 border-orange-300 shadow-md'
+                            : 'text-gray-700 hover:text-orange-500 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 border-orange-100 hover:border-orange-300'
                         }`}
                       >
+                        <IconComponent 
+                          size="sm" 
+                          className={`mr-3 transition-all duration-300 ${
+                            isActive ? 'text-orange-500' : 'text-gray-500 group-hover:text-orange-500'
+                          }`} 
+                        />
                         {link.name}
+                        <div className={`ml-auto w-2 h-2 rounded-full transition-all duration-300 ${
+                          isActive ? 'bg-orange-500' : 'bg-transparent'
+                        }`}></div>
                       </Link>
                     )}
                   </div>
@@ -251,17 +315,18 @@ export default function Header() {
             </div>
           </nav>
 
-          {/* Sidebar Footer */}
-          {/* <div className="py-3 px-4 border-t border-gray-200 bg-orange-50"
-                  style={{
-                    bottom: '200px'
-                  }}
-          >
+          {/* Enhanced Sidebar Footer */}
+          <div className="px-4 py-6 border-t border-orange-200 bg-gradient-to-r from-orange-50/50 to-orange-100/50">
             <div className="text-center">
-              <p className="text-sm text-gray-500">DataInYourself</p>
-              <p className="text-xs text-gray-400 mt-1">© {new Date().getFullYear()} All rights reserved</p>
+              <div className="flex items-center justify-center space-x-2 mb-2">
+                <div className="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 bg-orange-600 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+              <p className="text-sm text-gray-600 font-medium">DataInYourself</p>
+              <p className="text-xs text-gray-500 mt-1">© {new Date().getFullYear()} All rights reserved</p>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </>

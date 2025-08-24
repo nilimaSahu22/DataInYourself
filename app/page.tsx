@@ -389,7 +389,7 @@ export default function Home() {
       </VideoBackground>
 
       {/* Placement Courses Section */}
-      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-50 to-white animate-slide-in-right">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-8 bg-gradient-to-br from-orange-50 to-white animate-slide-in-right" id="courses">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-900 mb-6 sm:mb-8 md:mb-12">Placement Courses</h2>
           
