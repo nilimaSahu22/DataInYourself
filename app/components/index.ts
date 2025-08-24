@@ -20,3 +20,4 @@ export { default as DateRangeFilter } from './DateRangeFilter';
 export { default as ExpandableDescriptionField } from './ExpandableDescriptionField';
 export { default as ExpandableNameField } from './ExpandableNameField';
 export { default as ConfirmationModal } from './ConfirmationModal';
+export { default as EditCampaignModal } from './EditCampaignModal';

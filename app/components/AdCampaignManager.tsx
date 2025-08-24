@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { IAdCampaign } from "../../server/src/db/model/AdCampaign.model";
 import { getAuthToken, makeAuthenticatedRequest } from "../utils/authUtils";
+import ConfirmationModal from "./ConfirmationModal";
+import EditCampaignModal from "./EditCampaignModal";
 
 interface AdCampaignFormData {
   text: string;
@@ -20,6 +22,9 @@ export default function AdCampaignManager() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<IAdCampaign | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [campaignToDelete, setCampaignToDelete] = useState<IAdCampaign | null>(null);
   const [formData, setFormData] = useState<AdCampaignFormData>({
     text: "",
     startDate: "",
@@ -148,55 +153,10 @@ export default function AdCampaignManager() {
     }
   };
 
-  // Update campaign
-  const handleUpdateCampaign = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingCampaign) return;
 
-    try {
-      setSubmitting(true);
-      setError("");
-      const token = getAuthToken();
-      if (!token) {
-        setError("Authentication required");
-        return;
-      }
-
-      const response = await makeAuthenticatedRequest(`${serverUrl}/admin/ad-campaigns/${editingCampaign.id}`, {
-        method: "PATCH",
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update campaign");
-      }
-
-      // Get the updated campaign data from response
-      const updatedCampaign = await response.json();
-      
-      // Update local state immediately for instant UI feedback
-      setCampaigns(prevCampaigns => 
-        prevCampaigns.map(campaign => 
-          campaign.id === editingCampaign.id 
-            ? { ...campaign, ...updatedCampaign.campaign }
-            : campaign
-        )
-      );
-
-      setSuccess("Campaign updated successfully!");
-      resetForm();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update campaign");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   // Delete campaign
   const handleDeleteCampaign = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this campaign?")) return;
-
     try {
       setError("");
       const token = getAuthToken();
@@ -223,6 +183,21 @@ export default function AdCampaignManager() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete campaign");
     }
+  };
+
+  // Show delete confirmation modal
+  const showDeleteConfirmation = (campaign: IAdCampaign) => {
+    setCampaignToDelete(campaign);
+    setShowDeleteModal(true);
+  };
+
+  // Handle delete confirmation
+  const handleDeleteConfirmation = () => {
+    if (campaignToDelete) {
+      handleDeleteCampaign(campaignToDelete.id);
+    }
+    setShowDeleteModal(false);
+    setCampaignToDelete(null);
   };
 
   // Toggle campaign status
@@ -263,15 +238,52 @@ export default function AdCampaignManager() {
   // Edit campaign
   const handleEditCampaign = (campaign: IAdCampaign) => {
     setEditingCampaign(campaign);
-    setFormData({
-      text: campaign.text,
-      startDate: campaign.startDate.split("T")[0],
-      endDate: campaign.endDate.split("T")[0],
-      backgroundColor: campaign.backgroundColor || "#ff6b35",
-      textColor: campaign.textColor || "#ffffff",
-      priority: campaign.priority,
-    });
-    setShowCreateForm(true);
+    setShowEditModal(true);
+  };
+
+  // Handle edit save
+  const handleEditSave = async (formData: AdCampaignFormData) => {
+    if (!editingCampaign) return;
+
+    try {
+      setSubmitting(true);
+      setError("");
+      const token = getAuthToken();
+      if (!token) {
+        setError("Authentication required");
+        return;
+      }
+
+      const response = await makeAuthenticatedRequest(`${serverUrl}/admin/ad-campaigns/${editingCampaign.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update campaign");
+      }
+
+      // Get the updated campaign data from response
+      const updatedCampaign = await response.json();
+      
+      // Update local state immediately for instant UI feedback
+      setCampaigns(prevCampaigns => 
+        prevCampaigns.map(campaign => 
+          campaign.id === editingCampaign.id 
+            ? { ...campaign, ...updatedCampaign.campaign }
+            : campaign
+        )
+      );
+
+      setSuccess("Campaign updated successfully!");
+      setShowEditModal(false);
+      setEditingCampaign(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update campaign");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Format date for display
@@ -358,7 +370,7 @@ export default function AdCampaignManager() {
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 animate-fade-in">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-semibold text-gray-800">
-              {editingCampaign ? "Edit Campaign" : "Create New Campaign"}
+              Create New Campaign
             </h3>
             <button
               onClick={resetForm}
@@ -370,7 +382,7 @@ export default function AdCampaignManager() {
             </button>
           </div>
           
-          <form onSubmit={editingCampaign ? handleUpdateCampaign : handleCreateCampaign} className="space-y-6">
+          <form onSubmit={handleCreateCampaign} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Campaign Text *
@@ -468,7 +480,7 @@ export default function AdCampaignManager() {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 )}
-                {editingCampaign ? "Update Campaign" : "Create Campaign"}
+                Create Campaign
               </button>
               <button
                 type="button"
@@ -600,7 +612,7 @@ export default function AdCampaignManager() {
                       {campaign.isActive ? "Deactivate" : "Activate"}
                     </button>
                     <button
-                      onClick={() => handleDeleteCampaign(campaign.id)}
+                      onClick={() => showDeleteConfirmation(campaign)}
                       className="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 font-medium text-sm shadow-sm hover:shadow-md"
                     >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -615,6 +627,33 @@ export default function AdCampaignManager() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setCampaignToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirmation}
+        title="Delete Campaign"
+        message={`Are you sure you want to delete the campaign "${campaignToDelete?.text}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmButtonClass="bg-red-500 hover:bg-red-600"
+      />
+
+      {/* Edit Campaign Modal */}
+      <EditCampaignModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingCampaign(null);
+        }}
+        onSave={handleEditSave}
+        campaign={editingCampaign}
+        submitting={submitting}
+      />
     </div>
   );
 } 
