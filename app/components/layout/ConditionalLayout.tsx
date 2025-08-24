@@ -12,15 +12,17 @@ const WhatsAppChat = dynamic(() => import("../ui/WhatsAppChat"), {
 export default function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/dashboard");
+  const isLoginPage = pathname === "/login";
+  const shouldShowComponents = !isAdminRoute && !isLoginPage;
 
   return (
     <>
-      {!isAdminRoute && <Header />}
+      {shouldShowComponents && <Header />}
       <main className="flex-1 relative">
         {children}
       </main>
-      {!isAdminRoute && <Footer />}
-      {!isAdminRoute && <WhatsAppChat />}
+      {shouldShowComponents && <Footer />}
+      {shouldShowComponents && <WhatsAppChat />}
     </>
   );
 } 

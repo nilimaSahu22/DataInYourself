@@ -20,7 +20,17 @@ export default function AdBanner() {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (mounted && campaign) {
+      // Set CSS variable for ad banner height
+      document.documentElement.style.setProperty('--ad-banner-height', '40px');
+    } else {
+      // Reset when no campaign
+      document.documentElement.style.setProperty('--ad-banner-height', '0px');
+    }
+  }, [mounted, campaign]);
+
+  useEffect(() => {
+
 
     const fetchActiveCampaign = async () => {
       try {
@@ -44,7 +54,7 @@ export default function AdBanner() {
     const interval = setInterval(fetchActiveCampaign, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [serverUrl, mounted]);
+  }, [serverUrl]);
 
   // Don't render anything during SSR or if no active campaign
   if (!mounted || loading || !campaign) {
@@ -53,14 +63,19 @@ export default function AdBanner() {
 
   return (
     <div 
-      className="w-full py-2 px-4 overflow-hidden relative"
+      className="w-full py-2 px-4 overflow-hidden"
       style={{
         backgroundColor: campaign.backgroundColor,
         color: campaign.textColor,
+        height: '40px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
+      suppressHydrationWarning
     >
       <div className="animate-scroll-text whitespace-nowrap text-center font-medium text-sm sm:text-base">
-        {campaign.text}
+        {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text}
       </div>
     </div>
   );

@@ -7,6 +7,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --ad-banner-height: 0px;
+  --header-height: 64px;
 }
 
 /* @theme inline {
@@ -93,9 +95,6 @@ textarea:focus-visible {
 
 /* Sticky header fix - Enhanced for all viewports */
 /* Fixed header solution */
-body {
-  padding-top: 48px !important;
-}
 
 /* Ensure header stays on top */
 header {
@@ -129,7 +128,7 @@ header {
 /* Scrolling text animation for ad banner */
 @keyframes scrollText {
   0% {
-    transform: translateX(100%);
+    transform: translateX(50%);
   }
   100% {
     transform: translateX(-100%);
@@ -139,4 +138,6 @@ header {
 .animate-scroll-text {
   animation: scrollText 20s linear infinite;
   display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
 }

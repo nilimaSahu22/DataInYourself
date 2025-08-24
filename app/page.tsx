@@ -4,7 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import PlacementCourseCard from "./components/ui/PlacementCourseCard";
 import VideoBackground from "./components/ui/VideoBackground";
-import AdBanner from "./components/ui/AdBanner";
+
 import { coursesData } from "./data/courses";
 import { 
   StarIcon, 
@@ -299,9 +299,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Ad Banner */}
-      <AdBanner />
-      
       {/* Hero Section */}
       <VideoBackground
         desktopVideo="/media_assets/hero_laptop.MP4"

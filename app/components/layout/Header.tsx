@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useContactNavigation } from '../../utils/contactNavigation';
 import { useTestimonialNavigation } from '../../utils/testimonialNavigation';
+import AdBanner from '../ui/AdBanner';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -49,19 +50,15 @@ export default function Header() {
 
   return (
     <>
-      <header 
+        <header 
   className="bg-white shadow-sm border-b border-gray-200"
   style={{
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 99999,
     background: 'white',
     width: '100%',
     boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)'
   }}
 >
+  <AdBanner />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-16">
             {/* Left Section - Logo */}
@@ -177,32 +174,29 @@ export default function Header() {
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0  bg-opacity-10 z-[999999] lg:hidden"
+          className="fixed bg-opacity-10 z-[999999] lg:hidden"
+          style={{
+            top: 'calc(var(--ad-banner-height) + var(--header-height))',
+            left: 0,
+            right: 0,
+            bottom: 0
+          }}
           onClick={closeMobileMenu}
         ></div>
       )}
 
       {/* Mobile Sidebar */}
       <div 
-        className={`fixed top-0 right-0 h-full w-64 sm:w-72 bg-white shadow-xl z-[9999999] transform transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed right-0 h-full w-64 sm:w-72 bg-white shadow-xl z-[9999999] transform transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{
+          top: 'calc(var(--ad-banner-height) + var(--header-height))'
+        }}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between py-3 px-4 border-b border-gray-200 bg-orange-50">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Menu</h2>
-            <button
-              onClick={closeMobileMenu}
-              className="text-orange-600 hover:text-orange-700 hover:bg-orange-100 p-2 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-              aria-label="Close mobile menu"
-              suppressHydrationWarning
-            >
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+         
 
           {/* Sidebar Navigation */}
           <nav className="flex-1 px-4 py-4" aria-label="Mobile navigation">
@@ -258,12 +252,16 @@ export default function Header() {
           </nav>
 
           {/* Sidebar Footer */}
-          <div className="py-3 px-4 border-t border-gray-200 bg-orange-50">
+          {/* <div className="py-3 px-4 border-t border-gray-200 bg-orange-50"
+                  style={{
+                    bottom: '200px'
+                  }}
+          >
             <div className="text-center">
               <p className="text-sm text-gray-500">DataInYourself</p>
               <p className="text-xs text-gray-400 mt-1">© {new Date().getFullYear()} All rights reserved</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
