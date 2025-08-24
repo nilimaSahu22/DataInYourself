@@ -153,3 +153,8 @@ header {
   white-space: nowrap;
   will-change: transform;
 }
+
+/* Pause animation on hover */
+.animate-scroll-text:hover {
+  animation-play-state: paused;
+}
