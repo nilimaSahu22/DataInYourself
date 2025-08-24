@@ -125,3 +125,18 @@ header {
 .animate-slide-in-right {
   animation: slideInRight 0.8s ease-out forwards;
 }
+
+/* Scrolling text animation for ad banner */
+@keyframes scrollText {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-scroll-text {
+  animation: scrollText 20s linear infinite;
+  display: inline-block;
+}

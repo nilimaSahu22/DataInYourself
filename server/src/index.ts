@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { IEnquiryData } from './db/model/EnquiryData.model'
 import { IAdmin } from './db/model/Admin.model'
+import { IAdCampaign } from './db/model/AdCampaign.model'
 import { initializeDefaultAdmin } from './setup/initAdmin'
 import { generateJWT } from './utils/jwtUtils'
 import { authenticateJWT } from './middleware/authMiddleware'
@@ -667,6 +668,165 @@ app.get('/verify-token', authenticateJWT, async (c) => {
       role: user.role
     }
   })
+})
+
+// ===== AD CAMPAIGN ENDPOINTS =====
+
+// Create new ad campaign (protected with JWT)
+app.post('/admin/ad-campaigns', authenticateJWT, async (c) => {
+  try {
+    const { text, startDate, endDate, backgroundColor, textColor, priority } = await c.req.json()
+    const user = c.get('user')
+    
+    if (!text || !startDate || !endDate) {
+      return c.json({ error: 'Missing required fields: text, startDate, endDate' }, 400)
+    }
+    
+    const id = generateUUID()
+    const now = new Date().toISOString()
+    
+    const campaign: IAdCampaign = {
+      id,
+      text: text.trim(),
+      isActive: true,
+      startDate,
+      endDate,
+      createdAt: now,
+      updatedAt: now,
+      createdBy: user.username,
+      priority: priority || 1,
+      backgroundColor: backgroundColor || '#ff6b35',
+      textColor: textColor || '#ffffff'
+    }
+    
+    await c.env.KV.put(`ad-campaign:${id}`, JSON.stringify(campaign))
+    
+    return c.json({ 
+      message: 'Ad campaign created successfully', 
+      campaign 
+    }, 201)
+  } catch (err) {
+    const error = err as Error
+    return c.json({ error: 'Failed to create ad campaign', details: error.message }, 500)
+  }
+})
+
+// Get all ad campaigns (protected with JWT)
+app.get('/admin/ad-campaigns', authenticateJWT, async (c) => {
+  try {
+    const list = await c.env.KV.list({ prefix: 'ad-campaign:' })
+    const campaigns: IAdCampaign[] = []
+    
+    for (const key of list.keys) {
+      const value = await c.env.KV.get(key.name)
+      if (value) {
+        campaigns.push(JSON.parse(value))
+      }
+    }
+    
+    // Sort by priority (highest first), then by creation date (newest first)
+    campaigns.sort((a, b) => {
+      if (b.priority !== a.priority) {
+        return b.priority - a.priority
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+    
+    return c.json({ campaigns })
+  } catch (err) {
+    const error = err as Error
+    return c.json({ error: 'Failed to fetch ad campaigns', details: error.message }, 500)
+  }
+})
+
+// Get active ad campaign for public display
+app.get('/ad-campaigns/active', async (c) => {
+  try {
+    const list = await c.env.KV.list({ prefix: 'ad-campaign:' })
+    const now = new Date().toISOString()
+    const activeCampaigns: IAdCampaign[] = []
+    
+    for (const key of list.keys) {
+      const value = await c.env.KV.get(key.name)
+      if (value) {
+        const campaign: IAdCampaign = JSON.parse(value)
+        
+        // Check if campaign is active and within date range
+        if (campaign.isActive && 
+            campaign.startDate <= now && 
+            campaign.endDate >= now) {
+          activeCampaigns.push(campaign)
+        }
+      }
+    }
+    
+    // Return the highest priority campaign, or null if none active
+    if (activeCampaigns.length > 0) {
+      activeCampaigns.sort((a, b) => b.priority - a.priority)
+      return c.json({ campaign: activeCampaigns[0] })
+    } else {
+      return c.json({ campaign: null })
+    }
+  } catch (err) {
+    const error = err as Error
+    return c.json({ error: 'Failed to fetch active ad campaign', details: error.message }, 500)
+  }
+})
+
+// Update ad campaign (protected with JWT)
+app.patch('/admin/ad-campaigns/:id', authenticateJWT, async (c) => {
+  try {
+    const { id } = c.req.param()
+    const updateFields = await c.req.json()
+    
+    const campaignStr = await c.env.KV.get(`ad-campaign:${id}`)
+    if (!campaignStr) {
+      return c.json({ error: 'Ad campaign not found' }, 404)
+    }
+    
+    const campaign: IAdCampaign = JSON.parse(campaignStr)
+    const allowedFields = ['text', 'isActive', 'startDate', 'endDate', 'priority', 'backgroundColor', 'textColor']
+    
+    for (const key of allowedFields) {
+      if (key in updateFields) {
+        (campaign as any)[key] = updateFields[key]
+      }
+    }
+    
+    campaign.updatedAt = new Date().toISOString()
+    await c.env.KV.put(`ad-campaign:${id}`, JSON.stringify(campaign))
+    
+    return c.json({ 
+      message: 'Ad campaign updated successfully', 
+      campaign 
+    })
+  } catch (err) {
+    const error = err as Error
+    return c.json({ error: 'Failed to update ad campaign', details: error.message }, 500)
+  }
+})
+
+// Delete ad campaign (protected with JWT)
+app.delete('/admin/ad-campaigns/:id', authenticateJWT, async (c) => {
+  try {
+    const { id } = c.req.param()
+    
+    const campaignStr = await c.env.KV.get(`ad-campaign:${id}`)
+    if (!campaignStr) {
+      return c.json({ error: 'Ad campaign not found' }, 404)
+    }
+    
+    const campaign: IAdCampaign = JSON.parse(campaignStr)
+    await c.env.KV.delete(`ad-campaign:${id}`)
+    
+    return c.json({ 
+      message: 'Ad campaign deleted successfully', 
+      deletedCampaign: campaign 
+    })
+  } catch (err) {
+    const error = err as Error
+    return c.json({ error: 'Failed to delete ad campaign', details: error.message }, 500)
+  }
 })
 
 export default app

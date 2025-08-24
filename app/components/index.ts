@@ -12,6 +12,7 @@ export { default as VideoBackground } from './ui/VideoBackground';
 
 // Admin components
 export { default as AdminTable } from './AdminTable';
+export { default as AdCampaignManager } from './AdCampaignManager';
 export { default as SearchBar } from './SearchBar';
 export { default as ColumnSelector } from './ColumnSelector';
 export { default as SortableHeader } from './SortableHeader';

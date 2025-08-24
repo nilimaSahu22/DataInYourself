@@ -1,10 +1,13 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import AdminTable from "../../components/AdminTable";
+import AdCampaignManager from "../../components/AdCampaignManager";
 import { clearAuthData } from "../../utils/authUtils";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'enquiries' | 'campaigns'>('enquiries');
 
   const handleLogout = () => {
     clearAuthData();
@@ -43,9 +46,39 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Admin Table */}
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 sm:p-6 mb-6">
+          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab('enquiries')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                activeTab === 'enquiries'
+                  ? 'bg-white text-orange-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Enquiries
+            </button>
+            <button
+              onClick={() => setActiveTab('campaigns')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                activeTab === 'campaigns'
+                  ? 'bg-white text-orange-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              Ad Campaigns
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 sm:p-6">
-          <AdminTable />
+          {activeTab === 'enquiries' ? (
+            <AdminTable />
+          ) : (
+            <AdCampaignManager />
+          )}
         </div>
       </div>
     </div>

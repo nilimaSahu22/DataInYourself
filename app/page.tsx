@@ -4,6 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import PlacementCourseCard from "./components/ui/PlacementCourseCard";
 import VideoBackground from "./components/ui/VideoBackground";
+import AdBanner from "./components/ui/AdBanner";
 import { coursesData } from "./data/courses";
 import { 
   StarIcon, 
@@ -298,6 +299,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Ad Banner */}
+      <AdBanner />
+      
       {/* Hero Section */}
       <VideoBackground
         desktopVideo="/media_assets/hero_laptop.MP4"
@@ -781,7 +785,7 @@ export default function Home() {
                 </div>
                 <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-orange-200">
                   <p className="text-xs sm:text-sm text-orange-600">
-                    <span className="font-semibold">Course completed:</span> 2 months ago
+                    <span className="font-semibold">Course completed:</span> December 15, 2024
                   </p>
                 </div>
               </div>
@@ -814,7 +818,7 @@ export default function Home() {
                 </div>
                 <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-orange-200">
                   <p className="text-xs sm:text-sm text-orange-600">
-                    <span className="font-semibold">Course completed:</span> 1 month ago
+                    <span className="font-semibold">Course completed:</span> January 20, 2025
                   </p>
                 </div>
               </div>
@@ -849,7 +853,7 @@ Truly Outstanding!"
                 </p>
                 <div className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-orange-200">
                   <p className="text-xs sm:text-sm text-orange-600">
-                    <span className="font-semibold">Course completed:</span> 3 weeks ago
+                    <span className="font-semibold">Course completed:</span> February 5, 2025
                   </p>
                 </div>
               </div>
