@@ -16,8 +16,10 @@ export default function AdCampaignManager() {
   const [campaigns, setCampaigns] = useState<IAdCampaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<IAdCampaign | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState<AdCampaignFormData>({
     text: "",
     startDate: "",
@@ -28,6 +30,17 @@ export default function AdCampaignManager() {
   });
 
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
+
+  // Clear notifications after 5 seconds
+  useEffect(() => {
+    if (success || error) {
+      const timer = setTimeout(() => {
+        setSuccess("");
+        setError("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [success, error]);
 
   // Fetch campaigns
   const fetchCampaigns = async () => {
@@ -84,12 +97,15 @@ export default function AdCampaignManager() {
     });
     setEditingCampaign(null);
     setShowCreateForm(false);
+    setSubmitting(false);
   };
 
   // Create campaign
   const handleCreateCampaign = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setSubmitting(true);
+      setError("");
       const token = getAuthToken();
       if (!token) {
         setError("Authentication required");
@@ -109,10 +125,26 @@ export default function AdCampaignManager() {
         throw new Error(errorData.error || "Failed to create campaign");
       }
 
-      await fetchCampaigns();
+      // Get the created campaign data from response
+      const createdCampaign = await response.json();
+      
+      // Update local state immediately for instant UI feedback
+      setCampaigns(prevCampaigns => {
+        const newCampaign = {
+          ...createdCampaign.campaign,
+          id: createdCampaign.campaign.id || createdCampaign.campaign._id,
+          createdAt: createdCampaign.campaign.createdAt || new Date().toISOString(),
+          isActive: createdCampaign.campaign.isActive ?? true,
+        };
+        return [newCampaign, ...prevCampaigns];
+      });
+
+      setSuccess("Campaign created successfully!");
       resetForm();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create campaign");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -122,6 +154,8 @@ export default function AdCampaignManager() {
     if (!editingCampaign) return;
 
     try {
+      setSubmitting(true);
+      setError("");
       const token = getAuthToken();
       if (!token) {
         setError("Authentication required");
@@ -138,10 +172,24 @@ export default function AdCampaignManager() {
         throw new Error(errorData.error || "Failed to update campaign");
       }
 
-      await fetchCampaigns();
+      // Get the updated campaign data from response
+      const updatedCampaign = await response.json();
+      
+      // Update local state immediately for instant UI feedback
+      setCampaigns(prevCampaigns => 
+        prevCampaigns.map(campaign => 
+          campaign.id === editingCampaign.id 
+            ? { ...campaign, ...updatedCampaign.campaign }
+            : campaign
+        )
+      );
+
+      setSuccess("Campaign updated successfully!");
       resetForm();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update campaign");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -150,6 +198,7 @@ export default function AdCampaignManager() {
     if (!confirm("Are you sure you want to delete this campaign?")) return;
 
     try {
+      setError("");
       const token = getAuthToken();
       if (!token) {
         setError("Authentication required");
@@ -165,7 +214,12 @@ export default function AdCampaignManager() {
         throw new Error(errorData.error || "Failed to delete campaign");
       }
 
-      await fetchCampaigns();
+      // Update local state immediately for instant UI feedback
+      setCampaigns(prevCampaigns => 
+        prevCampaigns.filter(campaign => campaign.id !== id)
+      );
+
+      setSuccess("Campaign deleted successfully!");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete campaign");
     }
@@ -174,6 +228,7 @@ export default function AdCampaignManager() {
   // Toggle campaign status
   const handleToggleStatus = async (campaign: IAdCampaign) => {
     try {
+      setError("");
       const token = getAuthToken();
       if (!token) {
         setError("Authentication required");
@@ -190,7 +245,16 @@ export default function AdCampaignManager() {
         throw new Error(errorData.error || "Failed to update campaign");
       }
 
-      await fetchCampaigns();
+      // Update local state immediately for instant UI feedback
+      setCampaigns(prevCampaigns => 
+        prevCampaigns.map(c => 
+          c.id === campaign.id 
+            ? { ...c, isActive: !c.isActive }
+            : c
+        )
+      );
+
+      setSuccess(`Campaign ${campaign.isActive ? 'deactivated' : 'activated'} successfully!`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update campaign");
     }
@@ -227,10 +291,21 @@ export default function AdCampaignManager() {
     return campaign.isActive && now >= startDate && now <= endDate;
   };
 
+  // Sort campaigns by priority and creation date
+  const sortedCampaigns = [...campaigns].sort((a, b) => {
+    if (a.priority !== b.priority) {
+      return b.priority - a.priority; // Higher priority first
+    }
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(); // Newer first
+  });
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+      <div className="flex justify-center items-center py-12">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+          <p className="text-gray-600">Loading campaigns...</p>
+        </div>
       </div>
     );
   }
@@ -245,34 +320,57 @@ export default function AdCampaignManager() {
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
-          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl flex items-center justify-center text-sm sm:text-base"
+          className="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl flex items-center justify-center text-sm sm:text-base transform hover:scale-105"
         >
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           Create Campaign
         </button>
       </div>
 
+      {/* Success Message */}
+      {success && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 animate-fade-in">
+          <div className="flex items-center">
+            <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="ml-3 text-sm text-green-700 font-medium">{success}</p>
+          </div>
+        </div>
+      )}
+
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex">
-            <svg className="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 animate-fade-in">
+          <div className="flex items-center">
+            <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="ml-3 text-sm text-red-700">{error}</p>
+            <p className="ml-3 text-sm text-red-700 font-medium">{error}</p>
           </div>
         </div>
       )}
 
       {/* Create/Edit Form */}
       {showCreateForm && (
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            {editingCampaign ? "Edit Campaign" : "Create New Campaign"}
-          </h3>
-          <form onSubmit={editingCampaign ? handleUpdateCampaign : handleCreateCampaign} className="space-y-4">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 animate-fade-in">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-semibold text-gray-800">
+              {editingCampaign ? "Edit Campaign" : "Create New Campaign"}
+            </h3>
+            <button
+              onClick={resetForm}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <form onSubmit={editingCampaign ? handleUpdateCampaign : handleCreateCampaign} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Campaign Text *
@@ -283,12 +381,12 @@ export default function AdCampaignManager() {
                 onChange={handleInputChange}
                 required
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                 placeholder="Enter your campaign message..."
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Start Date *
@@ -299,7 +397,7 @@ export default function AdCampaignManager() {
                   value={formData.startDate}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
               <div>
@@ -312,12 +410,12 @@ export default function AdCampaignManager() {
                   value={formData.endDate}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Priority
@@ -329,7 +427,7 @@ export default function AdCampaignManager() {
                   onChange={handleInputChange}
                   min="1"
                   max="10"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
               <div>
@@ -341,7 +439,7 @@ export default function AdCampaignManager() {
                   name="backgroundColor"
                   value={formData.backgroundColor}
                   onChange={handleInputChange}
-                  className="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full h-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                 />
               </div>
               <div>
@@ -353,22 +451,30 @@ export default function AdCampaignManager() {
                   name="textColor"
                   value={formData.textColor}
                   onChange={handleInputChange}
-                  className="w-full h-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  className="w-full h-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 cursor-pointer"
                 />
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-4 pt-4">
               <button
                 type="submit"
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-all duration-200 font-semibold"
+                disabled={submitting}
+                className="px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
+                {submitting && (
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                )}
                 {editingCampaign ? "Update Campaign" : "Create Campaign"}
               </button>
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-200 font-semibold"
+                disabled={submitting}
+                className="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
@@ -379,61 +485,86 @@ export default function AdCampaignManager() {
 
       {/* Campaigns List */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800">Active Campaigns</h3>
+        <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-gray-800">Campaigns ({sortedCampaigns.length})</h3>
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span>Live</span>
+              <div className="w-3 h-3 bg-blue-500 rounded-full ml-3"></div>
+              <span>Active</span>
+            </div>
+          </div>
         </div>
         
-        {campaigns.length === 0 ? (
-          <div className="p-8 text-center">
-            <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2" />
-            </svg>
-            <p className="text-gray-500">No campaigns found. Create your first campaign to get started.</p>
+        {sortedCampaigns.length === 0 ? (
+          <div className="p-12 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2" />
+              </svg>
+            </div>
+            <h4 className="text-lg font-medium text-gray-900 mb-2">No campaigns yet</h4>
+            <p className="text-gray-500 mb-4">Create your first campaign to start promoting your content.</p>
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+            >
+              Create Campaign
+            </button>
           </div>
         ) : (
-          <div className="divide-y divide-gray-200">
-            {campaigns.map((campaign) => (
-              <div key={campaign.id} className="p-6">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h4 className="text-lg font-semibold text-gray-800">{campaign.text}</h4>
-                      <div className="flex gap-2">
-                        {isCurrentlyActive(campaign) && (
-                          <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                            Live
+          <div className="divide-y divide-gray-100">
+            {sortedCampaigns.map((campaign, index) => (
+              <div key={campaign.id} className={`p-6 hover:bg-gray-50 transition-colors duration-200 ${index === 0 ? 'bg-gradient-to-r from-orange-50 to-yellow-50' : ''}`}>
+                <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+                  <div className="flex-1 space-y-4">
+                    {/* Header with status badges */}
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                      <div className="flex-1">
+                        <h4 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">{campaign.text}</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {isCurrentlyActive(campaign) && (
+                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                              Live Now
+                            </span>
+                          )}
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                            campaign.isActive 
+                              ? "bg-blue-100 text-blue-800" 
+                              : "bg-gray-100 text-gray-800"
+                          }`}>
+                            {campaign.isActive ? "Active" : "Inactive"}
                           </span>
-                        )}
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          campaign.isActive 
-                            ? "bg-blue-100 text-blue-800" 
-                            : "bg-gray-100 text-gray-800"
-                        }`}>
-                          {campaign.isActive ? "Active" : "Inactive"}
-                        </span>
-                        <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs font-medium rounded-full">
-                          Priority {campaign.priority}
-                        </span>
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                            Priority {campaign.priority}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
-                      <div>
-                        <span className="font-medium">Start:</span> {formatDate(campaign.startDate)}
+                    {/* Campaign details */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Start Date</div>
+                        <div className="text-sm font-semibold text-gray-800">{formatDate(campaign.startDate)}</div>
                       </div>
-                      <div>
-                        <span className="font-medium">End:</span> {formatDate(campaign.endDate)}
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">End Date</div>
+                        <div className="text-sm font-semibold text-gray-800">{formatDate(campaign.endDate)}</div>
                       </div>
-                      <div>
-                        <span className="font-medium">Created:</span> {formatDate(campaign.createdAt)}
+                      <div className="bg-gray-50 rounded-lg p-3">
+                        <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Created</div>
+                        <div className="text-sm font-semibold text-gray-800">{formatDate(campaign.createdAt)}</div>
                       </div>
                     </div>
 
                     {/* Preview */}
-                    <div className="mb-3">
-                      <p className="text-sm font-medium text-gray-700 mb-1">Preview:</p>
+                    <div>
+                      <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Preview</div>
                       <div 
-                        className="px-4 py-2 rounded-lg text-center font-medium"
+                        className="px-6 py-4 rounded-xl text-center font-medium shadow-sm border"
                         style={{
                           backgroundColor: campaign.backgroundColor,
                           color: campaign.textColor,
@@ -444,27 +575,37 @@ export default function AdCampaignManager() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-2">
+                  {/* Action buttons */}
+                  <div className="flex flex-col sm:flex-row gap-2 lg:flex-col">
                     <button
                       onClick={() => handleEditCampaign(campaign)}
-                      className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 transition-colors"
+                      className="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 font-medium text-sm shadow-sm hover:shadow-md"
                     >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
                       Edit
                     </button>
                     <button
                       onClick={() => handleToggleStatus(campaign)}
-                      className={`px-3 py-1 rounded text-sm transition-colors ${
+                      className={`inline-flex items-center px-4 py-2 rounded-lg transition-all duration-200 font-medium text-sm shadow-sm hover:shadow-md ${
                         campaign.isActive
                           ? "bg-yellow-500 text-white hover:bg-yellow-600"
                           : "bg-green-500 text-white hover:bg-green-600"
                       }`}
                     >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={campaign.isActive ? "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" : "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"} />
+                      </svg>
                       {campaign.isActive ? "Deactivate" : "Activate"}
                     </button>
                     <button
                       onClick={() => handleDeleteCampaign(campaign.id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-colors"
+                      className="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 font-medium text-sm shadow-sm hover:shadow-md"
                     >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
                       Delete
                     </button>
                   </div>
