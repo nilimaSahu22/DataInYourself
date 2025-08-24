@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DataInYourself",
+  title: "Data In Yourself | India\'s #1 Data Science & IT Training Platform",
   icons: {
     // Standard favicon sizes
     icon: [
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     title: 'DataInYourself',
   },
   openGraph: {
-    title: "DataInYourself - Data Science & IT Training",
+    title: "DataInYourself | Data Science & IT Training",
     description: "Data In Yourself by Rudriva Technology is India's number one computer training platform, offering industry-leading courses in data science, analytics, business intelligence, programming, and IT skills. Learn from top industry experts, earn recognized certifications, and advance your career with our comprehensive, hands-on curriculum. Join thousands of successful students who have transformed their futures with Data In Yourself.",
     url: 'https://datainyourself.com',
     siteName: 'Data In Yourself',
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
         url: 'https://datainyourself.com/images/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Data In Yourself - India\'s Premier Computer Training Platform',
+        alt: 'Data In Yourself | India\'s Premier Computer Training Platform',
       },
     ],
     type: 'website',
