@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface AdCampaign {
   id: string;
@@ -12,6 +12,8 @@ export default function AdBanner() {
   const [campaign, setCampaign] = useState<AdCampaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [animationDurationSeconds, setAnimationDurationSeconds] = useState<number>(20);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "https://server.mukulsharma1602.workers.dev";
 
@@ -56,6 +58,27 @@ export default function AdBanner() {
     return () => clearInterval(interval);
   }, [serverUrl]);
 
+  // Ensure a fixed pixel speed regardless of text length by adjusting duration
+  useEffect(() => {
+    if (!mounted) return;
+    const element = contentRef.current;
+    if (!element) return;
+
+    const computeAndSetDuration = () => {
+      // Desired constant speed in pixels per second
+      const pixelsPerSecond = 60; // tweak as desired
+      // Distance covered by current keyframes is 150% of element width (from 50% to -100%)
+      const elementWidth = element.scrollWidth;
+      const distancePixels = elementWidth * 1.5;
+      const seconds = Math.max(10, distancePixels / pixelsPerSecond); // clamp to a sensible minimum
+      setAnimationDurationSeconds(seconds);
+    };
+
+    computeAndSetDuration();
+    window.addEventListener('resize', computeAndSetDuration);
+    return () => window.removeEventListener('resize', computeAndSetDuration);
+  }, [mounted, campaign]);
+
   // Don't render anything during SSR or if no active campaign
   if (!mounted || loading || !campaign) {
     return null;
@@ -74,7 +97,11 @@ export default function AdBanner() {
       }}
       suppressHydrationWarning
     >
-      <div className="animate-scroll-text whitespace-nowrap text-center font-medium text-sm sm:text-base">
+      <div
+        ref={contentRef}
+        className="animate-scroll-text whitespace-nowrap text-center font-medium text-sm sm:text-base"
+        style={{ animationDuration: `${animationDurationSeconds}s` }}
+      >
         {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text}
       </div>
     </div>
