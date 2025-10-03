@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { IAdCampaign } from "../../server/src/db/model/AdCampaign.model";
+import AdBanner from "./ui/AdBanner";
 
 interface AdCampaignFormData {
   text: string;
@@ -61,6 +62,21 @@ export default function EditCampaignModal({
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Validate dates: end date must be after start date (not same day)
+    const start = new Date(formData.startDate);
+    const end = new Date(formData.endDate);
+    if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+      const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+      if (endDay.getTime() === startDay.getTime()) {
+        alert("End date must be after start date. They cannot be the same day.");
+        return;
+      }
+      if (endDay.getTime() < startDay.getTime()) {
+        alert("End date cannot be before start date.");
+        return;
+      }
+    }
     onSave(formData);
   };
 
@@ -83,16 +99,16 @@ export default function EditCampaignModal({
       
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 transform transition-all">
+        <div className="relative themed-form rounded-xl shadow-2xl max-w-2xl w-full mx-4 transform transition-all">
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between p-6 border-b themed-border">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </div>
-              <h3 className="ml-3 text-lg font-semibold text-gray-900">
+              <h3 className="ml-3 text-lg font-semibold themed-label">
                 Edit Campaign
               </h3>
             </div>
@@ -111,7 +127,7 @@ export default function EditCampaignModal({
           <div className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium themed-label mb-2">
                   Campaign Text *
                 </label>
                 <textarea
@@ -121,14 +137,14 @@ export default function EditCampaignModal({
                   required
                   rows={3}
                   disabled={submitting}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 rounded-xl themed-textarea disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Enter your campaign message..."
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium themed-label mb-2">
                     Start Date *
                   </label>
                   <input
@@ -138,11 +154,11 @@ export default function EditCampaignModal({
                     onChange={handleInputChange}
                     required
                     disabled={submitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 rounded-xl themed-input disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium themed-label mb-2">
                     End Date *
                   </label>
                   <input
@@ -152,14 +168,15 @@ export default function EditCampaignModal({
                     onChange={handleInputChange}
                     required
                     disabled={submitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 rounded-xl themed-input disabled:opacity-50 disabled:cursor-not-allowed"
+                    min={formData.startDate ? new Date(new Date(formData.startDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0] : undefined}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium themed-label mb-2">
                     Priority
                   </label>
                   <input
@@ -170,11 +187,11 @@ export default function EditCampaignModal({
                     min="1"
                     max="10"
                     disabled={submitting}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 rounded-xl themed-input disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium themed-label mb-2">
                     Background Color
                   </label>
                   <input
@@ -183,11 +200,11 @@ export default function EditCampaignModal({
                     value={formData.backgroundColor}
                     onChange={handleInputChange}
                     disabled={submitting}
-                    className="w-full h-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-12 rounded-xl themed-color-input cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium themed-label mb-2">
                     Text Color
                   </label>
                   <input
@@ -196,31 +213,27 @@ export default function EditCampaignModal({
                     value={formData.textColor}
                     onChange={handleInputChange}
                     disabled={submitting}
-                    className="w-full h-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-12 rounded-xl themed-color-input cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
               </div>
 
               {/* Preview */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium themed-label mb-2">
                   Preview
                 </label>
-                <div 
-                  className="px-6 py-4 rounded-xl text-center font-medium shadow-sm border"
-                  style={{
-                    backgroundColor: formData.backgroundColor,
-                    color: formData.textColor,
-                  }}
-                >
-                  {formData.text || "Campaign preview will appear here..."}
-                </div>
+                <AdBanner campaign={{
+                  text: formData.text || "",
+                  backgroundColor: formData.backgroundColor,
+                  textColor: formData.textColor,
+                }} />
               </div>
             </form>
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
+          <div className="flex items-center justify-end gap-3 p-6 border-t themed-border">
             <button
               onClick={handleClose}
               disabled={submitting}

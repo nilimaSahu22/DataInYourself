@@ -4,6 +4,7 @@ import { IAdCampaign } from "../../server/src/db/model/AdCampaign.model";
 import { getAuthToken, makeAuthenticatedRequest } from "../utils/authUtils";
 import ConfirmationModal from "./ConfirmationModal";
 import EditCampaignModal from "./EditCampaignModal";
+import AdBanner from "./ui/AdBanner";
 
 interface AdCampaignFormData {
   text: string;
@@ -111,6 +112,24 @@ export default function AdCampaignManager() {
     try {
       setSubmitting(true);
       setError("");
+      // Validate dates: end date must be after start date (not the same day)
+      const start = new Date(formData.startDate);
+      const end = new Date(formData.endDate);
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        // Normalize to midnight to compare calendar days
+        const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+        const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+        if (endDay.getTime() === startDay.getTime()) {
+          setError("End date must be after start date. They cannot be the same day.");
+          setSubmitting(false);
+          return;
+        }
+        if (endDay.getTime() < startDay.getTime()) {
+          setError("End date cannot be before start date.");
+          setSubmitting(false);
+          return;
+        }
+      }
       const token = getAuthToken();
       if (!token) {
         setError("Authentication required");
@@ -367,7 +386,7 @@ export default function AdCampaignManager() {
 
       {/* Create/Edit Form */}
       {showCreateForm && (
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 animate-fade-in">
+        <div className="themed-form rounded-xl shadow-lg p-6 animate-fade-in">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-semibold text-gray-800">
               Create New Campaign
@@ -384,7 +403,7 @@ export default function AdCampaignManager() {
           
           <form onSubmit={handleCreateCampaign} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium themed-label mb-2">
                 Campaign Text *
               </label>
               <textarea
@@ -393,14 +412,14 @@ export default function AdCampaignManager() {
                 onChange={handleInputChange}
                 required
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 rounded-xl themed-textarea"
                 placeholder="Enter your campaign message..."
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium themed-label mb-2">
                   Start Date *
                 </label>
                 <input
@@ -409,11 +428,11 @@ export default function AdCampaignManager() {
                   value={formData.startDate}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl themed-input"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium themed-label mb-2">
                   End Date *
                 </label>
                 <input
@@ -422,14 +441,15 @@ export default function AdCampaignManager() {
                   value={formData.endDate}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl themed-input"
+                  min={formData.startDate ? new Date(new Date(formData.startDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0] : undefined}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium themed-label mb-2">
                   Priority
                 </label>
                 <input
@@ -439,11 +459,11 @@ export default function AdCampaignManager() {
                   onChange={handleInputChange}
                   min="1"
                   max="10"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl themed-input"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium themed-label mb-2">
                   Background Color
                 </label>
                 <input
@@ -451,11 +471,11 @@ export default function AdCampaignManager() {
                   name="backgroundColor"
                   value={formData.backgroundColor}
                   onChange={handleInputChange}
-                  className="w-full h-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+                  className="w-full h-12 rounded-xl themed-color-input cursor-pointer"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium themed-label mb-2">
                   Text Color
                 </label>
                 <input
@@ -463,9 +483,19 @@ export default function AdCampaignManager() {
                   name="textColor"
                   value={formData.textColor}
                   onChange={handleInputChange}
-                  className="w-full h-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+                  className="w-full h-12 rounded-xl themed-color-input cursor-pointer"
                 />
               </div>
+            </div>
+
+            {/* Live Preview */}
+            <div>
+              <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Preview</div>
+              <AdBanner campaign={{
+                text: formData.text,
+                backgroundColor: formData.backgroundColor,
+                textColor: formData.textColor,
+              }} />
             </div>
 
             <div className="flex gap-4 pt-4">
@@ -496,8 +526,8 @@ export default function AdCampaignManager() {
       )}
 
       {/* Campaigns List */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+      <div className="themed-form rounded-xl shadow-lg overflow-hidden">
+        <div className="px-6 py-4 border-b themed-border bg-gradient-to-r from-gray-50 to-gray-100">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold text-gray-800">Campaigns ({sortedCampaigns.length})</h3>
             <div className="flex items-center space-x-2 text-sm text-gray-600">
@@ -575,15 +605,12 @@ export default function AdCampaignManager() {
                     {/* Preview */}
                     <div>
                       <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Preview</div>
-                      <div 
-                        className="px-6 py-4 rounded-xl text-center font-medium shadow-sm border"
-                        style={{
-                          backgroundColor: campaign.backgroundColor,
-                          color: campaign.textColor,
-                        }}
-                      >
-                        {campaign.text}
-                      </div>
+                      <AdBanner campaign={{
+                        id: campaign.id,
+                        text: campaign.text,
+                        backgroundColor: campaign.backgroundColor,
+                        textColor: campaign.textColor,
+                      }} />
                     </div>
                   </div>
 

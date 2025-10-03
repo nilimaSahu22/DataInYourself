@@ -2,13 +2,18 @@
 import { useState, useEffect, useRef } from "react";
 
 interface AdCampaign {
-  id: string;
+  id?: string;
   text: string;
   backgroundColor: string;
   textColor: string;
 }
 
-export default function AdBanner() {
+interface AdBannerProps {
+  // If provided, render this campaign directly (preview mode) and skip fetching
+  campaign?: AdCampaign | null;
+}
+
+export default function AdBanner({ campaign: campaignProp = null }: AdBannerProps) {
   const [campaign, setCampaign] = useState<AdCampaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -32,7 +37,12 @@ export default function AdBanner() {
   }, [mounted, campaign]);
 
   useEffect(() => {
-
+    // If a campaign is provided via props, use it and skip fetching
+    if (campaignProp) {
+      setCampaign(campaignProp);
+      setLoading(false);
+      return;
+    }
 
     const fetchActiveCampaign = async () => {
       try {
@@ -42,6 +52,8 @@ export default function AdBanner() {
         if (response.ok) {
           const data = await response.json();
           setCampaign(data.campaign);
+        } else {
+          setCampaign(null);
         }
       } catch (error) {
         console.error("Failed to fetch active campaign:", error);
@@ -52,11 +64,11 @@ export default function AdBanner() {
 
     fetchActiveCampaign();
 
-    // Refresh campaign every 5 minutes
+    // Refresh campaign every 5 minutes if not in preview mode
     const interval = setInterval(fetchActiveCampaign, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [serverUrl]);
+  }, [serverUrl, campaignProp]);
 
   // Ensure a fixed pixel speed regardless of text length by adjusting duration
   useEffect(() => {
@@ -79,18 +91,20 @@ export default function AdBanner() {
     return () => window.removeEventListener('resize', computeAndSetDuration);
   }, [mounted, campaign]);
 
-  // Don't render anything during SSR or if no active campaign
+  // Don't render anything during SSR or if no campaign (in live mode)
   if (!mounted || loading || !campaign) {
     return null;
   }
 
   return (
     <div 
-      className="w-full py-2 px-4 overflow-hidden"
+      className="w-full px-4 overflow-hidden"
       style={{
         backgroundColor: campaign.backgroundColor,
         color: campaign.textColor,
         height: '40px',
+        lineHeight: '40px',
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -100,9 +114,28 @@ export default function AdBanner() {
       <div
         ref={contentRef}
         className="animate-scroll-text whitespace-nowrap text-center font-medium text-sm sm:text-base"
-        style={{ animationDuration: `${animationDurationSeconds}s` }}
+        style={{ 
+          animationDuration: `${animationDurationSeconds}s`,
+          position: 'absolute',
+          top: 0,
+          height: '40px',
+          lineHeight: '40px',
+          willChange: 'transform',
+        }}
       >
-        {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text} • {campaign.text}
+        <span className="inline-block align-middle">{campaign.text}</span>
+        <span className="mx-3">•</span>
+        <span className="inline-block align-middle">{campaign.text}</span>
+        <span className="mx-3">•</span>
+        <span className="inline-block align-middle">{campaign.text}</span>
+        <span className="mx-3">•</span>
+        <span className="inline-block align-middle">{campaign.text}</span>
+        <span className="mx-3">•</span>
+        <span className="inline-block align-middle">{campaign.text}</span>
+        <span className="mx-3">•</span>
+        <span className="inline-block align-middle">{campaign.text}</span>
+        <span className="mx-3">•</span>
+        <span className="inline-block align-middle">{campaign.text}</span>
       </div>
     </div>
   );

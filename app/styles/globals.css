@@ -19,7 +19,25 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --input-background: #1f2937;
+    --input-border: #374151;
+    --input-text: #f9fafb;
+    --input-placeholder: #9ca3af;
+    --label-text: #e5e7eb;
+    --form-background: #111827;
+    --form-border: #374151;
   }
+}
+
+/* Light theme variables */
+:root {
+  --input-background: #ffffff;
+  --input-border: #d1d5db;
+  --input-text: #111827;
+  --input-placeholder: #6b7280;
+  --label-text: #374151;
+  --form-background: #ffffff;
+  --form-border: #e5e7eb;
 }
 
 body {
@@ -278,4 +296,86 @@ header {
 /* Pause animation on hover */
 .animate-scroll-text:hover {
   animation-play-state: paused;
+}
+
+/* Enhanced input field styles for both light and dark themes */
+.themed-input {
+  background-color: var(--input-background);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  transition: all 0.2s ease-in-out;
+}
+
+.themed-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.themed-input:focus {
+  outline: none;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  background-color: var(--input-background);
+}
+
+.themed-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--input-background);
+  color: var(--input-placeholder);
+}
+
+.themed-label {
+  color: var(--label-text);
+}
+
+.themed-form {
+  background-color: var(--form-background);
+  border: 1px solid var(--form-border);
+}
+
+.themed-border {
+  border-color: var(--form-border);
+}
+
+.themed-textarea {
+  background-color: var(--input-background);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  transition: all 0.2s ease-in-out;
+}
+
+.themed-textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+.themed-textarea:focus {
+  outline: none;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  background-color: var(--input-background);
+}
+
+.themed-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--input-background);
+  color: var(--input-placeholder);
+}
+
+/* Color input specific styles */
+.themed-color-input {
+  background-color: transparent;
+  border: 1px solid var(--input-border);
+  transition: all 0.2s ease-in-out;
+}
+
+.themed-color-input:focus {
+  outline: none;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.themed-color-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
